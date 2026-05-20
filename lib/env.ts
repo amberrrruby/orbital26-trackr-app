@@ -5,10 +5,12 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     DIRECT_URL: z.string().url(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: z.string().min(1),
+    NEXT_PUBLIC_SITE_URL: z.string().url(),
   },
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -16,5 +18,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY:
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   },
 });

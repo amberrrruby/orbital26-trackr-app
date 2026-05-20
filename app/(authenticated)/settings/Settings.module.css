@@ -1,0 +1,56 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.dangerButton {
+  background: #dc2626;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: rgb(88, 14, 14);
+  padding: 20px;
+  border-radius: 8px;
+  width: 320px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 48rem;
+}
+
+.toast {
+  padding: 0.75rem 1rem;
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  color: #166534;
+  border-radius: 0.5rem;
+}
