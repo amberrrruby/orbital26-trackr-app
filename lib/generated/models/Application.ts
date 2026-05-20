@@ -237,7 +237,7 @@ export type ApplicationWhereInput = {
   tags?: Prisma.StringNullableListFilter<"Application">;
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
-  userId?: Prisma.StringFilter<"Application"> | string;
+  userId?: Prisma.UuidFilter<"Application"> | string;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
 };
 
@@ -273,7 +273,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<
     tags?: Prisma.StringNullableListFilter<"Application">;
     createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
-    userId?: Prisma.StringFilter<"Application"> | string;
+    userId?: Prisma.UuidFilter<"Application"> | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   },
   "id"
@@ -334,7 +334,7 @@ export type ApplicationScalarWhereWithAggregatesInput = {
     | Prisma.DateTimeWithAggregatesFilter<"Application">
     | Date
     | string;
-  userId?: Prisma.StringWithAggregatesFilter<"Application"> | string;
+  userId?: Prisma.UuidWithAggregatesFilter<"Application"> | string;
 };
 
 export type ApplicationCreateInput = {
@@ -715,7 +715,7 @@ export type ApplicationScalarWhereInput = {
   tags?: Prisma.StringNullableListFilter<"Application">;
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
-  userId?: Prisma.StringFilter<"Application"> | string;
+  userId?: Prisma.UuidFilter<"Application"> | string;
 };
 
 export type ApplicationCreateManyUserInput = {
