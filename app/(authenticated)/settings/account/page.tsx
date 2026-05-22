@@ -3,7 +3,6 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountButton from "../DeleteAccountComponents";
 import ChangeEmailForm from "./ChangeEmailForm";
 import styles from "../Settings.module.css";
-import { changePasswordAction } from "@/app/actions/settings/edit-account";
 
 type Props = {
   searchParams: Promise<{
@@ -41,7 +40,7 @@ export default async function AccountSettingsPage({ searchParams }: Props) {
 
         <h1>Change Password</h1>
         {canChangePassword ? (
-          <ChangePasswordForm action={changePasswordAction} />
+          <ChangePasswordForm />
         ) : (
           <p>
             <i>This account does not use a password.</i>
