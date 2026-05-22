@@ -3,6 +3,7 @@ import { useActionState } from "react";
 import { loginAction } from "@/app/actions/auth/handle-login";
 import styles from "./LoginForm.module.css";
 import GoogleLogin from "./GoogleLogin";
+import Link from "next/link";
 
 export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
@@ -26,6 +27,7 @@ export default function LoginForm() {
         >
           Don&apos;t have an account? Sign up
         </button>
+        <Link href="/login/forgot-password">Forgot password?</Link>
       </form>
       <div className={styles.oauthSection}>
         <GoogleLogin />
