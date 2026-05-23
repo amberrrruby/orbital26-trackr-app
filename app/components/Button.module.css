@@ -1,0 +1,168 @@
+/* ── Base ─────────────────────────────────────────────────────── */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background var(--ease-fast),
+    color var(--ease-fast),
+    border-color var(--ease-fast),
+    box-shadow var(--ease-fast),
+    opacity var(--ease-fast);
+  position: relative;
+  user-select: none;
+  text-decoration: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Sizes ───────────────────────────────────────────────────── */
+
+.sm {
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+  height: 28px;
+  gap: var(--space-1);
+}
+
+.md {
+  font-size: var(--text-base);
+  padding: var(--space-2) var(--space-4);
+  height: 34px;
+}
+
+.lg {
+  font-size: var(--text-md);
+  padding: var(--space-3) var(--space-5);
+  height: 42px;
+  gap: var(--space-2);
+}
+
+/* ── Variants ────────────────────────────────────────────────── */
+
+/* Primary — accent fill */
+.primary {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border-color: transparent;
+}
+.primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+.primary:active:not(:disabled) {
+  opacity: 0.88;
+}
+
+/* Secondary — raised muted fill */
+.secondary {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+.secondary:hover:not(:disabled) {
+  background: var(--color-bg-overlay);
+  border-color: var(--color-border-strong);
+}
+.secondary:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Outline — transparent with border */
+.outline {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+.outline:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+  border-color: var(--color-text-tertiary);
+}
+.outline:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Ghost — no border, no fill */
+.ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: transparent;
+}
+.ghost:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+.ghost:active:not(:disabled) {
+  opacity: 0.8;
+}
+
+/* Danger — destructive actions */
+.danger {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+  border-color: transparent;
+}
+.danger:hover:not(:disabled) {
+  background: var(--color-danger);
+  color: #ffffff;
+}
+.danger:active:not(:disabled) {
+  opacity: 0.88;
+}
+
+/* ── Loading ─────────────────────────────────────────────────── */
+
+.loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.spinnerSvg {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Icon + label ────────────────────────────────────────────── */
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}

@@ -1,0 +1,160 @@
+.viewport {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 340px;
+  max-width: calc(100vw - var(--space-8));
+  z-index: var(--z-toast);
+  outline: none;
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg-overlay);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.toast[data-state="open"] {
+  animation: slideIn 0.2s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
+}
+
+.toast[data-state="closed"] {
+  animation: slideOut 0.15s ease forwards;
+}
+
+.toast[data-swipe="move"] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+
+.toast[data-swipe="end"] {
+  animation: swipeOut 0.15s ease forwards;
+}
+
+/* ── Variants ────────────────────────────────────────────────── */
+
+.default .icon {
+  color: var(--color-text-secondary);
+}
+
+.success {
+  border-left: 3px solid var(--color-success);
+}
+.success .icon {
+  color: var(--color-success);
+}
+
+.warning {
+  border-left: 3px solid var(--color-warning);
+}
+.warning .icon {
+  color: var(--color-warning);
+}
+
+.danger {
+  border-left: 3px solid var(--color-danger);
+}
+.danger .icon {
+  color: var(--color-danger);
+}
+
+.info {
+  border-left: 3px solid var(--color-info);
+}
+.info .icon {
+  color: var(--color-info);
+}
+
+/* ── Internals ───────────────────────────────────────────────── */
+
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.description {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition:
+    background var(--ease-fast),
+    color var(--ease-fast);
+}
+
+.close:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + var(--space-4)));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(100% + var(--space-4)));
+  }
+}
+
+@keyframes swipeOut {
+  from {
+    transform: translateX(var(--radix-toast-swipe-end-x));
+  }
+  to {
+    transform: translateX(calc(100% + var(--space-4)));
+  }
+}
