@@ -9,8 +9,9 @@
  */
 
 export const Status = {
+  WISHLIST: "WISHLIST",
   APPLIED: "APPLIED",
-  OA: "OA",
+  OA_ASSESSMENT: "OA_ASSESSMENT",
   INTERVIEW: "INTERVIEW",
   OFFER: "OFFER",
   REJECTED: "REJECTED",

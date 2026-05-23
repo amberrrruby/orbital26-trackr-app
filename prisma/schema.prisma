@@ -21,8 +21,9 @@ model User {
 }
 
 enum Status {
+  WISHLIST
   APPLIED
-  OA
+  OA_ASSESSMENT
   INTERVIEW
   OFFER
   REJECTED
