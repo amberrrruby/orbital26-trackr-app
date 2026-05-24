@@ -1,0 +1,55 @@
+.content {
+  background: var(--color-bg-overlay);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-normal);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-tooltip);
+  max-width: 220px;
+  user-select: none;
+
+  /* Radix animation states */
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+  animation: tooltipIn var(--ease-fast) forwards;
+}
+
+.content[data-state="delayed-open"] {
+  animation: tooltipIn 0.12s ease forwards;
+}
+
+.content[data-state="closed"] {
+  animation: tooltipOut 0.08s ease forwards;
+}
+
+.arrow {
+  fill: var(--color-bg-overlay);
+  /* Arrow border not natively supported by Radix — border handled via drop-shadow */
+  filter: drop-shadow(0 1px 0 var(--color-border-strong));
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tooltipOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
