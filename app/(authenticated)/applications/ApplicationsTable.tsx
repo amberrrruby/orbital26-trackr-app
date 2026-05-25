@@ -1,3 +1,5 @@
+"use client";
+
 import { Application } from "@/lib/generated/browser";
 import { useState } from "react";
 import {
@@ -23,25 +25,30 @@ export default function ApplicationsTable({
 
   const columns: ColumnDef<Application>[] = [
     {
-      accessorKey: "role",
-      header: "Role",
-    },
-    {
       accessorKey: "company",
       header: "Company",
     },
     {
-      accessorKey: "status",
-      header: "Status",
+      accessorKey: "role",
+      header: "Role",
     },
     {
       accessorKey: "source",
       header: "Source",
     },
     {
+      accessorKey: "status",
+      header: "Status",
+    },
+    {
+      accessorKey: "dateApplied",
+      header: "Date Applied",
+      cell: ({ row }) => row.original.dateApplied.toLocaleDateString(),
+    },
+    {
       accessorKey: "createdAt",
       header: ({ column }) => (
-        <button onClick={() => column.toggleSorting()}>
+        <button onClick={column.getToggleSortingHandler()}>
           Created At
           {column.getIsSorted() === "asc" && " ↑"}
           {column.getIsSorted() === "desc" && " ↓"}
@@ -53,7 +60,7 @@ export default function ApplicationsTable({
     {
       accessorKey: "updatedAt",
       header: ({ column }) => (
-        <button onClick={() => column.toggleSorting()}>
+        <button onClick={column.getToggleSortingHandler()}>
           Updated At
           {column.getIsSorted() === "asc" && " ↑"}
           {column.getIsSorted() === "desc" && " ↓"}

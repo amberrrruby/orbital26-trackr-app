@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link.js";
 import type { Application } from "@/lib/generated/browser";
 import { getApplications } from "@/app/actions/applications/get-applications";
 import ApplicationsTable from "./ApplicationsTable";
@@ -20,7 +21,10 @@ export default function ApplicationsPage() {
 
   return (
     <main>
-      <h1>Applications</h1>
+      <div>
+        <h1>Applications</h1>
+        <Link href="/applications/new">Add Applications</Link>
+      </div>
 
       {loading ? (
         <p>Applications loading...</p>
