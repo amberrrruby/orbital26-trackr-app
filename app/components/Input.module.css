@@ -1,0 +1,59 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.required {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+/* Base styles are in base-components.css — only overrides here */
+.input,
+.textarea {
+  width: 100%;
+}
+
+.inputError {
+  border-color: var(--color-danger) !important;
+  box-shadow: 0 0 0 3px var(--color-danger-subtle) !important;
+}
+
+.error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.error::before {
+  content: "!";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 9px;
+  font-weight: var(--weight-bold);
+  flex-shrink: 0;
+}
+
+.helper {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
