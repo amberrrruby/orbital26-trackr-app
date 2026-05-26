@@ -1,15 +1,16 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUserOrRedirectLogin } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { Status } from "@/lib/generated/browser";
 
 const validStatuses = Object.values(Status);
 
-export async function createApplication(formData: FormData) {
+export async function updateApplication(formData: FormData) {
   const user = await requireUserOrRedirectLogin();
 
+  const id = formData.get("id")?.toString().trim();
   const company = formData.get("company")?.toString().trim();
   const role = formData.get("role")?.toString().trim();
   const source = formData.get("source")?.toString().trim();
@@ -29,7 +30,11 @@ export async function createApplication(formData: FormData) {
     };
   }
 
-  await prisma.application.create({
+  const result = await prisma.application.updateMany({
+    where: {
+      id,
+      userId: user,
+    },
     data: {
       company,
       role,
@@ -41,5 +46,15 @@ export async function createApplication(formData: FormData) {
     },
   });
 
-  redirect("/applications");
+  if (result.count === 0) {
+    return {
+      error: "Application not found or you have no permission to edit it.",
+    };
+  }
+
+  revalidatePath("/applications");
+
+  return {
+    success: true,
+  };
 }

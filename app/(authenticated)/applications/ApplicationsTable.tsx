@@ -1,6 +1,7 @@
 "use client";
 
 import { Application } from "@/lib/generated/browser";
+import EditApplicationModal from "./EditApplicationModal";
 import { useState } from "react";
 import {
   useReactTable,
@@ -22,6 +23,8 @@ export default function ApplicationsTable({
 }: ApplicationsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [editingApplication, setEditingApplication] =
+    useState<Application | null>(null);
 
   const columns: ColumnDef<Application>[] = [
     {
@@ -67,6 +70,26 @@ export default function ApplicationsTable({
         </button>
       ),
       cell: ({ row }) => row.original.updatedAt.toLocaleDateString(),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const application = row.original;
+        return (
+          <div>
+            <button
+              type="button"
+              onClick={() => setEditingApplication(application)}
+            >
+              Edit
+            </button>
+            <button type="button" disabled>
+              Delete
+            </button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -138,6 +161,13 @@ export default function ApplicationsTable({
           ))}
         </tbody>
       </table>
+
+      {editingApplication && (
+        <EditApplicationModal
+          application={editingApplication}
+          onClose={() => setEditingApplication(null)}
+        />
+      )}
     </div>
   );
 }

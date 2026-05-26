@@ -1,23 +1,9 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import Link from "next/link.js";
-import type { Application } from "@/lib/generated/browser";
+import Link from "next/link";
 import { getApplications } from "@/app/actions/applications/get-applications";
 import ApplicationsTable from "./ApplicationsTable";
 
-export default function ApplicationsPage() {
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadApplications() {
-      const data = await getApplications();
-      setApplications(data);
-      setLoading(false);
-    }
-    loadApplications();
-  }, []);
+export default async function ApplicationsPage() {
+  const applications = await getApplications();
 
   return (
     <main>
@@ -26,11 +12,7 @@ export default function ApplicationsPage() {
         <Link href="/applications/new">Add Applications</Link>
       </div>
 
-      {loading ? (
-        <p>Applications loading...</p>
-      ) : (
-        <ApplicationsTable applications={applications} />
-      )}
+      <ApplicationsTable applications={applications} />
     </main>
   );
 }

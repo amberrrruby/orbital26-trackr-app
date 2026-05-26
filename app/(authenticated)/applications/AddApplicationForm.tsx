@@ -63,7 +63,9 @@ export default function AddApplicationForm() {
         <textarea id="notes" name="notes" />
       </div>
 
-      <button type="submit">Create Application</button>
+      <div>
+        <button type="submit">Create Application</button>
+      </div>
     </form>
   );
 }
