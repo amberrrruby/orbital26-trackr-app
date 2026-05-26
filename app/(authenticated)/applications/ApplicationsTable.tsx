@@ -2,6 +2,7 @@
 
 import { Application } from "@/lib/generated/browser";
 import EditApplicationModal from "./EditApplicationModal";
+import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { useState } from "react";
 import {
   useReactTable,
@@ -24,6 +25,8 @@ export default function ApplicationsTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [editingApplication, setEditingApplication] =
+    useState<Application | null>(null);
+  const [deletingApplication, setDeletingApplication] =
     useState<Application | null>(null);
 
   const columns: ColumnDef<Application>[] = [
@@ -84,7 +87,10 @@ export default function ApplicationsTable({
             >
               Edit
             </button>
-            <button type="button" disabled>
+            <button
+              type="button"
+              onClick={() => setDeletingApplication(application)}
+            >
               Delete
             </button>
           </div>
@@ -166,6 +172,13 @@ export default function ApplicationsTable({
         <EditApplicationModal
           application={editingApplication}
           onClose={() => setEditingApplication(null)}
+        />
+      )}
+
+      {deletingApplication && (
+        <DeleteApplicationDialog
+          application={deletingApplication}
+          onClose={() => setDeletingApplication(null)}
         />
       )}
     </div>
