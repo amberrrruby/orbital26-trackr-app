@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase/server-client";
-import type { Result, AppAuthError } from "./types";
+import type { Result, AppAuthError, AppOwnershipError } from "./types";
 import { User as AuthUser } from "@supabase/supabase-js";
+import { Application } from "./generated/client";
+import { prisma } from "@/lib/prisma";
 
 export async function requireUser(): Promise<Result<string, AppAuthError>> {
   const supabase = await createSupabaseServerClient();
@@ -49,5 +51,59 @@ export async function redirectIfAuthenticated(
   const res = await requireUser();
   if (res.ok) {
     redirect(redirectTo);
+  }
+}
+
+export async function requireApplicationOwnership(
+  applicationId: string,
+  userId: string,
+): Promise<Result<Application, AppOwnershipError>> {
+  try {
+    const application = await prisma.application.findFirst({
+      where: { id: applicationId, userId },
+    });
+    if (!application) {
+      return {
+        ok: false,
+        error: { type: "NOT_FOUND", message: "Not found" },
+      };
+    }
+    return {
+      ok: true,
+      value: application,
+    };
+  } catch {
+    // also return NOT_FOUND to not leak internal state for enumeration protection
+    return {
+      ok: false,
+      error: { type: "NOT_FOUND", message: "Not found" },
+    };
+  }
+}
+
+export async function requireResumeOwnership(
+  resumeId: string,
+  userId: string,
+): Promise<Result<Resume, AppOwnershipError>> {
+  try {
+    const resume = await prisma.resume.findFirst({
+      where: { id: resumeId, userId },
+    });
+    if (!resume) {
+      return {
+        ok: false,
+        error: { type: "NOT_FOUND", message: "Not found" },
+      };
+    }
+    return {
+      ok: true,
+      value: resume,
+    };
+  } catch {
+    // also return NOT_FOUND to not leak internal state for enumeration protection
+    return {
+      ok: false,
+      error: { type: "NOT_FOUND", message: "Not found" },
+    };
   }
 }

@@ -7,6 +7,8 @@ import ApplicationsTable from "./ApplicationsTable";
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
+
+  // eliminate entirely?
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

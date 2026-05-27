@@ -1,3 +1,5 @@
+"use client";
+
 import { Application } from "@/lib/generated/browser";
 import { useState } from "react";
 import {
