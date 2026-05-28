@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteApplication } from "@/app/actions/applications/delete-application";
 import { Application } from "@/lib/generated/browser";
+import { Button } from "@/app/components/Button";
+import styles from "./DeleteApplicationDialog.module.css";
 
 type DeleteApplicationProps = {
   application: Application;
@@ -34,23 +36,37 @@ export default function DeleteApplicationDialog({
   }
 
   return (
-    <div>
-      <h2>Delete Application</h2>
-      <p>
-        Are you sure you want to delete your application for{" "}
-        <strong>{application.role}</strong> at{" "}
-        <strong>{application.company}</strong>?
-      </p>
-      <p>This action is irreversible and cannot be undone.</p>
+    <div className={styles.dialog}>
+      <h2 className={styles.title}>Delete Application</h2>
+      <div className={styles.message}>
+        <p>
+          Are you sure you want to delete your application for{" "}
+          <strong>{application.role}</strong> at{" "}
+          <strong>{application.company}</strong>?
+        </p>
+        <p>This action is irreversible and cannot be undone.</p>
+      </div>
 
       {error && <p>{error}</p>}
-      <div>
-        <button type="button" onClick={onClose} disabled={isDeleting}>
+      <div className={styles.buttonRow}>
+        <Button
+          type="button"
+          onClick={onClose}
+          disabled={isDeleting}
+          variant="secondary"
+          size="md"
+        >
           Cancel
-        </button>
-        <button type="button" onClick={handleDelete} disabled={isDeleting}>
+        </Button>
+        <Button
+          type="button"
+          onClick={handleDelete}
+          disabled={isDeleting}
+          variant="danger"
+          size="md"
+        >
           {isDeleting ? "Deleting..." : "Delete"}
-        </button>
+        </Button>
       </div>
     </div>
   );

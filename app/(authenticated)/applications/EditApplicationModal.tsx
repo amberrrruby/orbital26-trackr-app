@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateApplication } from "@/app/actions/applications/update-application";
 import { Application } from "@/lib/generated/browser";
+import { Button } from "@/app/components/Button";
+import { Input, Textarea } from "@/app/components/Input";
+import styles from "./EditApplicationModal.module.css";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -43,46 +46,46 @@ export default function EditApplicationModal({
 
   return (
     <div>
-      <h2>Edit Application</h2>
-      <form action={handleSubmit}>
+      <div className={styles.modalHeader}>
+        <h2>Edit Application</h2>
+        <p>Update the details of your job application below.</p>
+      </div>
+
+      <form action={handleSubmit} className={styles.form}>
         {error && <p>{error}</p>}
 
         <input type="hidden" name="id" value={application.id} />
 
-        <div>
-          <label htmlFor="company">Company</label>
-          <input
-            id="company"
-            name="company"
-            type="text"
-            defaultValue={application.company}
-            required
-          />
-        </div>
+        <Input
+          label="Company"
+          id="company"
+          name="company"
+          type="text"
+          defaultValue={application.company}
+          required
+        />
 
-        <div>
-          <label htmlFor="role">Role</label>
-          <input
-            id="role"
-            name="role"
-            type="text"
-            defaultValue={application.role}
-            required
-          />
-        </div>
+        <Input
+          label="Role"
+          id="role"
+          name="role"
+          type="role"
+          defaultValue={application.role}
+          required
+        />
 
-        <div>
-          <label htmlFor="source">Source</label>
-          <input
-            id="source"
-            name="source"
-            type="text"
-            defaultValue={application.source ?? ""}
-          />
-        </div>
+        <Input
+          label="Source"
+          id="source"
+          name="source"
+          type="text"
+          defaultValue={application.source ?? ""}
+        />
 
-        <div>
-          <label htmlFor="status">Status</label>
+        <div className={styles.field}>
+          <label htmlFor="status" className={styles.label}>
+            Status
+          </label>
           <select
             id="status"
             name="status"
@@ -97,26 +100,23 @@ export default function EditApplicationModal({
           </select>
         </div>
 
-        <div>
-          <label htmlFor="dateApplied">Date Applied</label>
-          <input
-            id="dateApplied"
-            name="dateApplied"
-            type="date"
-            defaultValue={formatDateForInput(application.dateApplied)}
-          />
-        </div>
+        <Input
+          label="Date Applied"
+          id="dateApplied"
+          name="dateApplied"
+          type="date"
+          defaultValue={formatDateForInput(application.dateApplied)}
+        />
 
-        <div>
-          <label htmlFor="notes">Notes</label>
-          <textarea id="notes" name="notes" />
-        </div>
+        <Textarea label="Notes" id="notes" name="notes" />
 
-        <div>
-          <button type="submit">Save Changes</button>
-          <button type="button" onClick={onClose}>
+        <div className={styles.buttonRow}>
+          <Button type="button" variant="secondary" size="md" onClick={onClose}>
             Cancel
-          </button>
+          </Button>
+          <Button type="submit" variant="primary" size="md">
+            Save Changes
+          </Button>
         </div>
       </form>
     </div>

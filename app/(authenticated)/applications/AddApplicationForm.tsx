@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { createApplication } from "@/app/actions/applications/create-application";
+import styles from "./AddApplicationForm.module.css";
+import { Button } from "@/app/components/Button";
+import { Input, Textarea } from "@/app/components/Input";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -24,25 +27,16 @@ export default function AddApplicationForm() {
   }
 
   return (
-    <form action={handleSubmit}>
+    <form action={handleSubmit} className={styles.form}>
       {error && <p>{error}</p>}
 
-      <div>
-        <label htmlFor="company">Company</label>
-        <input id="company" name="company" type="text" required />
-      </div>
+      <Input label="Company" id="company" name="company" type="text" required />
 
-      <div>
-        <label htmlFor="role">Role</label>
-        <input id="role" name="role" type="text" required />
-      </div>
+      <Input label="Role" id="role" name="role" type="role" required />
 
-      <div>
-        <label htmlFor="source">Source</label>
-        <input id="source" name="source" type="text" />
-      </div>
+      <Input label="Source" id="source" name="source" type="text" />
 
-      <div>
+      <div className={styles.field}>
         <label htmlFor="status">Status</label>
         <select id="status" name="status" required defaultValue="APPLIED">
           {statusOptions.map((status) => (
@@ -53,18 +47,17 @@ export default function AddApplicationForm() {
         </select>
       </div>
 
-      <div>
-        <label htmlFor="dateApplied">Date Applied</label>
-        <input id="dateApplied" name="dateApplied" type="date" />
-      </div>
+      <Input
+        label="Date Applied"
+        id="dateApplied"
+        name="dateApplied"
+        type="date"
+      />
 
-      <div>
-        <label htmlFor="notes">Notes</label>
-        <textarea id="notes" name="notes" />
-      </div>
+      <Textarea label="Notes" id="notes" name="notes" />
 
-      <div>
-        <button type="submit">Create Application</button>
+      <div className={styles.createButton}>
+        <Button type="submit">Create Application</Button>
       </div>
     </form>
   );

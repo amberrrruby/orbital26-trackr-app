@@ -4,6 +4,9 @@ import { Application } from "@/lib/generated/browser";
 import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { useState } from "react";
+import { Button } from "@/app/components/Button";
+import tableStyles from "./ApplicationsTable.module.css";
+import modalStyles from "./EditApplicationModal.module.css";
 import {
   useReactTable,
   getCoreRowModel,
@@ -80,19 +83,23 @@ export default function ApplicationsTable({
       cell: ({ row }) => {
         const application = row.original;
         return (
-          <div>
-            <button
+          <div className={tableStyles.action}>
+            <Button
               type="button"
+              size="sm"
+              variant="outline"
               onClick={() => setEditingApplication(application)}
             >
               Edit
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              size="sm"
+              variant="danger"
               onClick={() => setDeletingApplication(application)}
             >
               Delete
-            </button>
+            </Button>
           </div>
         );
       },
@@ -116,7 +123,7 @@ export default function ApplicationsTable({
 
   return (
     <div>
-      <div>
+      <div className={tableStyles.filterRow}>
         <label>Filter by Status:</label>
         <select
           value={
@@ -140,7 +147,7 @@ export default function ApplicationsTable({
       </div>
 
       <table>
-        <thead>
+        <thead className={tableStyles.tableHead}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -169,10 +176,12 @@ export default function ApplicationsTable({
       </table>
 
       {editingApplication && (
-        <EditApplicationModal
-          application={editingApplication}
-          onClose={() => setEditingApplication(null)}
-        />
+        <div className={modalStyles.modal}>
+          <EditApplicationModal
+            application={editingApplication}
+            onClose={() => setEditingApplication(null)}
+          />
+        </div>
       )}
 
       {deletingApplication && (
