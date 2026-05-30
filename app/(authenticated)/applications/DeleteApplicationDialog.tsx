@@ -1,8 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteApplication } from "@/app/actions/applications/delete-application";
+import { deleteApplication } from "@/app/actions/applications";
 import { Application } from "@/lib/generated/browser";
 import { Button } from "@/app/components/Button";
 import styles from "./DeleteApplicationDialog.module.css";
@@ -16,7 +15,6 @@ export default function DeleteApplicationDialog({
   application,
   onClose,
 }: DeleteApplicationProps) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -25,13 +23,11 @@ export default function DeleteApplicationDialog({
     setIsDeleting(true);
 
     const result = await deleteApplication(application.id);
-    if (result?.error) {
-      setError(result.error);
+    if (!result.ok) {
+      setError("Something went wrong. Try again.");
       setIsDeleting(false);
       return;
     }
-
-    router.refresh();
     onClose();
   }
 

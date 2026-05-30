@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { createApplication } from "@/app/actions/applications/create-application";
+import { createApplication } from "@/app/actions/applications";
 import styles from "./AddApplicationForm.module.css";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
+import { redirect } from "next/navigation";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
   { label: "Applied", value: "APPLIED" },
-  { label: "OA/ Assessment", value: "OA_ASSESSMENT" },
+  { label: "OA / Assessment", value: "OA_ASSESSMENT" },
   { label: "Interview", value: "INTERVIEW" },
   { label: "Offer", value: "OFFER" },
   { label: "Rejected", value: "REJECTED" },
@@ -21,9 +22,22 @@ export default function AddApplicationForm() {
   async function handleSubmit(formData: FormData) {
     setError(null);
     const result = await createApplication(formData);
-    if (result?.error) {
-      setError(result.error);
+    if (!result.ok) {
+      if (result.error.type === "FAILURE") {
+        setError("Something went wrong. Try again.");
+        return;
+      }
+      if (result.error.type === "VALIDATION") {
+        setError(
+          `Invalid fields: ${result.error.param}: ${result.error.message}`,
+        );
+        return;
+      }
     }
+    redirect(`/applications`);
+
+    // When applications details page are done.
+    // redirect(`/applications/${result.value}`);
   }
 
   return (

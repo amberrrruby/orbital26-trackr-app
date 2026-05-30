@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { updateApplication } from "@/app/actions/applications/update-application";
-import { Application } from "@/lib/generated/browser";
+import { updateApplication } from "@/app/actions/applications";
+import { Application } from "@/lib/generated/client";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
 import styles from "./EditApplicationModal.module.css";
@@ -11,7 +10,7 @@ import styles from "./EditApplicationModal.module.css";
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
   { label: "Applied", value: "APPLIED" },
-  { label: "OA/ Assessment", value: "OA_ASSESSMENT" },
+  { label: "OA / Assessment", value: "OA_ASSESSMENT" },
   { label: "Interview", value: "INTERVIEW" },
   { label: "Offer", value: "OFFER" },
   { label: "Rejected", value: "REJECTED" },
@@ -30,17 +29,16 @@ export default function EditApplicationModal({
   application,
   onClose,
 }: EditApplicationProps) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const { id, company, role, source, status, dateApplied, notes } = application;
 
   async function handleSubmit(formData: FormData) {
     setError(null);
     const result = await updateApplication(formData);
-    if (result?.error) {
-      setError(result.error);
+    if (!result.ok) {
+      setError("Something went wrong. Try again.");
       return;
     }
-    router.refresh();
     onClose();
   }
 
@@ -54,14 +52,14 @@ export default function EditApplicationModal({
       <form action={handleSubmit} className={styles.form}>
         {error && <p>{error}</p>}
 
-        <input type="hidden" name="id" value={application.id} />
+        <input type="hidden" name="id" value={id} />
 
         <Input
           label="Company"
           id="company"
           name="company"
           type="text"
-          defaultValue={application.company}
+          defaultValue={company}
           required
         />
 
@@ -70,7 +68,7 @@ export default function EditApplicationModal({
           id="role"
           name="role"
           type="role"
-          defaultValue={application.role}
+          defaultValue={role}
           required
         />
 
@@ -79,22 +77,17 @@ export default function EditApplicationModal({
           id="source"
           name="source"
           type="text"
-          defaultValue={application.source ?? ""}
+          defaultValue={source ?? ""}
         />
 
         <div className={styles.field}>
           <label htmlFor="status" className={styles.label}>
             Status
           </label>
-          <select
-            id="status"
-            name="status"
-            required
-            defaultValue={application.status}
-          >
-            {statusOptions.map((status) => (
-              <option key={status.value} value={status.value}>
-                {status.label}
+          <select id="status" name="status" required defaultValue={status}>
+            {statusOptions.map((st) => (
+              <option key={st.value} value={st.value}>
+                {st.label}
               </option>
             ))}
           </select>
@@ -105,10 +98,15 @@ export default function EditApplicationModal({
           id="dateApplied"
           name="dateApplied"
           type="date"
-          defaultValue={formatDateForInput(application.dateApplied)}
+          defaultValue={dateApplied ? formatDateForInput(dateApplied) : ""}
         />
 
-        <Textarea label="Notes" id="notes" name="notes" />
+        <Textarea
+          label="Notes"
+          id="notes"
+          name="notes"
+          defaultValue={notes ?? ""}
+        />
 
         <div className={styles.buttonRow}>
           <Button type="button" variant="secondary" size="md" onClick={onClose}>

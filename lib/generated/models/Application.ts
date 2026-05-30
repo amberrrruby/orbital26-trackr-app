@@ -197,7 +197,7 @@ export type ApplicationGroupByOutputType = {
   role: string;
   source: string | null;
   status: $Enums.Status;
-  dateApplied: Date;
+  dateApplied: Date | null;
   notes: string | null;
   resumeUrl: string | null;
   tags: string[];
@@ -231,7 +231,11 @@ export type ApplicationWhereInput = {
   role?: Prisma.StringFilter<"Application"> | string;
   source?: Prisma.StringNullableFilter<"Application"> | string | null;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFilter<"Application"> | Date | string;
+  dateApplied?:
+    | Prisma.DateTimeNullableFilter<"Application">
+    | Date
+    | string
+    | null;
   notes?: Prisma.StringNullableFilter<"Application"> | string | null;
   resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
   tags?: Prisma.StringNullableListFilter<"Application">;
@@ -247,7 +251,7 @@ export type ApplicationOrderByWithRelationInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
-  dateApplied?: Prisma.SortOrder;
+  dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
   resumeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   tags?: Prisma.SortOrder;
@@ -267,7 +271,11 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<
     role?: Prisma.StringFilter<"Application"> | string;
     source?: Prisma.StringNullableFilter<"Application"> | string | null;
     status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
-    dateApplied?: Prisma.DateTimeFilter<"Application"> | Date | string;
+    dateApplied?:
+      | Prisma.DateTimeNullableFilter<"Application">
+      | Date
+      | string
+      | null;
     notes?: Prisma.StringNullableFilter<"Application"> | string | null;
     resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
     tags?: Prisma.StringNullableListFilter<"Application">;
@@ -285,7 +293,7 @@ export type ApplicationOrderByWithAggregationInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
-  dateApplied?: Prisma.SortOrder;
+  dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
   resumeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   tags?: Prisma.SortOrder;
@@ -314,9 +322,10 @@ export type ApplicationScalarWhereWithAggregatesInput = {
     | null;
   status?: Prisma.EnumStatusWithAggregatesFilter<"Application"> | $Enums.Status;
   dateApplied?:
-    | Prisma.DateTimeWithAggregatesFilter<"Application">
+    | Prisma.DateTimeNullableWithAggregatesFilter<"Application">
     | Date
-    | string;
+    | string
+    | null;
   notes?:
     | Prisma.StringNullableWithAggregatesFilter<"Application">
     | string
@@ -343,7 +352,7 @@ export type ApplicationCreateInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -358,7 +367,7 @@ export type ApplicationUncheckedCreateInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -373,7 +382,11 @@ export type ApplicationUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -388,7 +401,11 @@ export type ApplicationUncheckedUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -403,7 +420,7 @@ export type ApplicationCreateManyInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -418,7 +435,11 @@ export type ApplicationUpdateManyMutationInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -432,7 +453,11 @@ export type ApplicationUncheckedUpdateManyInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -620,6 +645,10 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status;
 };
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null;
+};
+
 export type ApplicationUpdatetagsInput = {
   set?: string[];
   push?: string | string[];
@@ -631,7 +660,7 @@ export type ApplicationCreateWithoutUserInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -645,7 +674,7 @@ export type ApplicationUncheckedCreateWithoutUserInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -709,7 +738,11 @@ export type ApplicationScalarWhereInput = {
   role?: Prisma.StringFilter<"Application"> | string;
   source?: Prisma.StringNullableFilter<"Application"> | string | null;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFilter<"Application"> | Date | string;
+  dateApplied?:
+    | Prisma.DateTimeNullableFilter<"Application">
+    | Date
+    | string
+    | null;
   notes?: Prisma.StringNullableFilter<"Application"> | string | null;
   resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
   tags?: Prisma.StringNullableListFilter<"Application">;
@@ -724,7 +757,7 @@ export type ApplicationCreateManyUserInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
-  dateApplied: Date | string;
+  dateApplied?: Date | string | null;
   notes?: string | null;
   resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
@@ -738,7 +771,11 @@ export type ApplicationUpdateWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -752,7 +789,11 @@ export type ApplicationUncheckedUpdateWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -766,7 +807,11 @@ export type ApplicationUncheckedUpdateManyWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
-  dateApplied?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
@@ -907,7 +952,7 @@ export type $ApplicationPayload<
       role: string;
       source: string | null;
       status: $Enums.Status;
-      dateApplied: Date;
+      dateApplied: Date | null;
       notes: string | null;
       resumeUrl: string | null;
       tags: string[];

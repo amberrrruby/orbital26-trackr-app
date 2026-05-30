@@ -1,11 +1,20 @@
 import Link from "next/link";
-import { getApplications } from "@/app/actions/applications/get-applications";
+import { getApplications } from "@/app/actions/applications";
 import ApplicationsTable from "./ApplicationsTable";
 import { Button } from "@/app/components/Button";
 import styles from "./page.module.css";
 
 export default async function ApplicationsPage() {
-  const applications = await getApplications();
+  const result = await getApplications();
+  // TODO: replace with proper error component
+  if (!result.ok) {
+    return (
+      <p>
+        [TEMPORARY ERROR COMPONENT] Something went wrong - refresh the page or
+        try again.
+      </p>
+    );
+  }
 
   return (
     <main className={styles.page}>
@@ -20,7 +29,7 @@ export default async function ApplicationsPage() {
         </Link>
       </section>
 
-      <ApplicationsTable applications={applications} />
+      <ApplicationsTable applications={result.value} />
     </main>
   );
 }

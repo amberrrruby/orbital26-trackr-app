@@ -52,7 +52,10 @@ export default function ApplicationsTable({
     {
       accessorKey: "dateApplied",
       header: "Date Applied",
-      cell: ({ row }) => row.original.dateApplied.toLocaleDateString(),
+      cell: ({ row }) =>
+        row.original.dateApplied
+          ? row.original.dateApplied.toLocaleDateString()
+          : "",
     },
     {
       accessorKey: "createdAt",

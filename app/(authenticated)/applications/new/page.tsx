@@ -7,7 +7,7 @@ export default function NewApplicationPage() {
   return (
     <main className={styles.page}>
       <Link href="/applications">
-        <Button>← Back to Applications</Button>
+        <Button>&lt;- Back to Applications</Button>
       </Link>
 
       <div className={styles.header}>
