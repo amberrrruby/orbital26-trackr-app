@@ -79,7 +79,7 @@
 
 .loginForm p {
   color: #dc2626;
-  font-size: 0.875rem;
+  font-size: var(--text-base);
   margin: 0;
 }
 
