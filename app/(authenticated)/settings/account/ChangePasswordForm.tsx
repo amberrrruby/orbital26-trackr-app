@@ -3,6 +3,8 @@
 import { changePassword } from "@/app/actions/settings";
 import styles from "../Settings.module.css";
 import { useState } from "react";
+import { Input } from "@/app/components/Input";
+import { Button } from "@/app/components/Button";
 
 export default function ChangePasswordForm() {
   const [errMsg, setErrMsg] = useState<string | null>(null);
@@ -25,13 +27,16 @@ export default function ChangePasswordForm() {
     <form action={handleSubmit} className={styles.form}>
       {errMsg && <div>{errMsg}</div>}
 
-      <label>New password</label>
+      <Input
+        label="New password"
+        name="password"
+        type="password"
+        required
+        minLength={8}
+      />
 
-      <input name="password" type="password" required minLength={8} />
-
-      <label>Confirm password</label>
-
-      <input
+      <Input
+        label="Confirm password"
         name="confirmPassword"
         type="password"
         required
@@ -54,7 +59,9 @@ export default function ChangePasswordForm() {
         }}
       />
 
-      <button type="submit">Update password</button>
+      <Button type="submit" className={styles.action}>
+        Update password
+      </Button>
     </form>
   );
 }

@@ -39,9 +39,9 @@ export default async function EditProfilePage({ searchParams }: Props) {
   }
 
   return (
-    <>
+    <main className={styles.page}>
       {successMessage && <div className={styles.toast}>{successMessage}</div>}
       <EditProfileForm userProfile={userProfile} />
-    </>
+    </main>
   );
 }

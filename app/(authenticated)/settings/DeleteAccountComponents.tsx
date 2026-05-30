@@ -3,15 +3,16 @@
 import { useState, useActionState, useEffect } from "react";
 import { deleteAccount } from "@/app/actions/settings";
 import styles from "./Settings.module.css";
+import { Button } from "@/app/components/Button";
 
 export default function DeleteAccountButton() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button className={styles.dangerButton} onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} variant="danger">
         Delete account
-      </button>
+      </Button>
 
       {open && <DeleteAccountModal onClose={() => setOpen(false)} />}
     </>
@@ -44,18 +45,14 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
         )}
 
         <form action={action}>
-          <button
-            type="submit"
-            className={styles.dangerButton}
-            disabled={isPending}
-          >
+          <Button type="submit" variant="danger" disabled={isPending}>
             {isPending ? "Deleting..." : "Yes, delete my account"}
-          </button>
+          </Button>
         </form>
 
-        <button onClick={onClose} disabled={isPending}>
+        <Button onClick={onClose} disabled={isPending} variant="secondary">
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

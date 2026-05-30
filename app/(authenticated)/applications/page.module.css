@@ -15,7 +15,7 @@
 .header p {
   margin-bottom: var(--space-1);
   color: var(--color-text-secondary);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
 }
 
 .addButton {
