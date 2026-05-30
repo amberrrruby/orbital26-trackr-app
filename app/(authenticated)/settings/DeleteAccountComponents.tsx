@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { deleteAccountAction } from "@/app/actions/settings/delete-account";
+import { deleteAccount } from "@/app/actions/settings";
 import styles from "./Settings.module.css";
 
 export default function DeleteAccountButton() {
@@ -21,7 +21,7 @@ export default function DeleteAccountButton() {
 // For now, no separation should be justified, since only the button above
 // can open this modal below
 function DeleteAccountModal({ onClose }: { onClose: () => void }) {
-  const [state, action, isPending] = useActionState(deleteAccountAction, null);
+  const [state, action, isPending] = useActionState(deleteAccount, null);
 
   // Close modal on successful deletion
   useEffect(() => {
@@ -37,7 +37,10 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
         <p>This action cannot be undone.</p>
 
         {state?.ok === false && (
-          <p className={styles.error}>{state.error.message}</p>
+          <p className={styles.error}>
+            Something went wrong. Please try again. Your account is not deleted
+            yet.
+          </p>
         )}
 
         <form action={action}>

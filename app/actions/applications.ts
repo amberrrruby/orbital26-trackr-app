@@ -9,6 +9,7 @@ import {
   EditApplicationSchema,
   GetApplicationsError,
   Result,
+  returnSchemaValidationError,
   UpdateApplicationError,
 } from "@/lib/types";
 import { Application } from "@/lib/generated/client";
@@ -22,24 +23,19 @@ export async function createApplication(
   const parseResult = ApplicationSchema.safeParse({
     company: formData.get("company"),
     role: formData.get("role"),
-    source: formData.get("company"),
+    source: formData.get("source"),
     status: formData.get("status"),
     dateApplied: formData.get("dateApplied") || undefined,
     notes: formData.get("notes"),
   });
 
   if (!parseResult.success) {
-    const first = parseResult.error.issues[0];
     return {
       ok: false,
-      error: {
-        type: "VALIDATION",
-        // IDK, see how does error messages get returned then we tweak
-        param: first.path.join("."),
-        message: first.message,
-      },
+      error: returnSchemaValidationError(parseResult),
     };
   }
+
   const { company, role, source, status, dateApplied, notes } =
     parseResult.data;
 
@@ -51,7 +47,7 @@ export async function createApplication(
         source: source ?? "",
         status,
         ...(dateApplied ? { dateApplied } : {}),
-        notes: notes || null,
+        notes: notes,
         userId,
       },
     });
@@ -93,14 +89,9 @@ export async function updateApplication(
   });
 
   if (!parseResult.success) {
-    const first = parseResult.error.issues[0];
     return {
       ok: false,
-      error: {
-        type: "VALIDATION",
-        param: first.path.join("."),
-        message: first.message,
-      },
+      error: returnSchemaValidationError(parseResult),
     };
   }
 
