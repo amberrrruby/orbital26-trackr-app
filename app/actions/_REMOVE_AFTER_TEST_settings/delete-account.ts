@@ -10,7 +10,7 @@ const supabaseAdmin = createClient(
   env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
-export async function deleteAccountAction(): Promise<
+export async function deleteAccount(): Promise<
   Result<void, DeleteAccountError>
 > {
   const res = await requireUser();
@@ -19,13 +19,11 @@ export async function deleteAccountAction(): Promise<
   }
   const { value: userId } = res;
 
-  // Replaced with DB cascade on delete
-  // await prisma.user.delete({ where: { id: userId } });
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
   if (error) {
-    return { ok: false, error: { type: "UNKNOWN", message: error.message } };
+    return { ok: false, error: { type: "FAILURE" } };
   }
 
-  redirect(`/login`);
+  redirect(`/`);
 }

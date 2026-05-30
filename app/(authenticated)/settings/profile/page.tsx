@@ -27,7 +27,6 @@ export default async function EditProfilePage({ searchParams }: Props) {
   });
 
   const { success } = await searchParams;
-
   const successMessage = getSuccessMessage(success);
 
   if (!userProfile) {
@@ -38,6 +37,7 @@ export default async function EditProfilePage({ searchParams }: Props) {
       `Invariant error: Authenticated user ID ${userId} does NOT have a User record in the public User DB.`,
     );
   }
+
   return (
     <>
       {successMessage && <div className={styles.toast}>{successMessage}</div>}

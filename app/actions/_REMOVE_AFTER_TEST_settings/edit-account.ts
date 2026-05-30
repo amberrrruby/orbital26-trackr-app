@@ -1,19 +1,30 @@
 "use server";
 
+import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
-import { EmailSchema, PasswordSchema } from "@/lib/types";
+import {
+  ChangeCredentialsError,
+  EmailSchema,
+  PasswordSchema,
+  Result,
+  returnSchemaValidationError,
+} from "@/lib/types";
 import { redirect } from "next/navigation";
 
-export async function changePasswordAction(formData: FormData) {
+export async function changePasswordAction(
+  formData: FormData,
+): Promise<Result<void, ChangeCredentialsError>> {
+  await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
   const parseResult = PasswordSchema.safeParse({
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
   });
   if (!parseResult.success) {
-    // Should make it a error message instead of a thrown error.
-    // UI issue - deferred for now...
-    throw new Error("Invalid form data");
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
   }
 
   const {
@@ -23,20 +34,26 @@ export async function changePasswordAction(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ password: password });
 
   if (error) {
-    throw new Error(error.message);
+    return { ok: false, error: { type: "FAILURE" } };
   }
 
   redirect(`/settings/account?success=password-updated`);
 }
 
-export async function changeEmailAction(formData: FormData) {
+export async function changeEmailAction(
+  formData: FormData,
+): Promise<Result<void, ChangeCredentialsError>> {
+  await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
   const parseResult = EmailSchema.safeParse({
     email: formData.get("email"),
   });
 
   if (!parseResult.success) {
-    throw new Error("Invalid form data");
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
   }
 
   const {
@@ -46,7 +63,7 @@ export async function changeEmailAction(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ email: email });
 
   if (error) {
-    throw new Error(error.message);
+    return { ok: false, error: { type: "FAILURE" } };
   }
 
   redirect(`/settings/account?success=email-updated`);
