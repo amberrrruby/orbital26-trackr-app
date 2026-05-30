@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { deleteAccount } from "@/app/actions/settings/delete-account";
+import { deleteAccount } from "@/app/actions/settings";
 import styles from "./Settings.module.css";
 
 export default function DeleteAccountButton() {
