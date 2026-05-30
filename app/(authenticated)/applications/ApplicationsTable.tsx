@@ -1,5 +1,12 @@
+"use client";
+
 import { Application } from "@/lib/generated/browser";
+import EditApplicationModal from "./EditApplicationModal";
+import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { useState } from "react";
+import { Button } from "@/app/components/Button";
+import tableStyles from "./ApplicationsTable.module.css";
+import modalStyles from "./EditApplicationModal.module.css";
 import {
   useReactTable,
   getCoreRowModel,
@@ -20,28 +27,40 @@ export default function ApplicationsTable({
 }: ApplicationsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [editingApplication, setEditingApplication] =
+    useState<Application | null>(null);
+  const [deletingApplication, setDeletingApplication] =
+    useState<Application | null>(null);
 
   const columns: ColumnDef<Application>[] = [
-    {
-      accessorKey: "role",
-      header: "Role",
-    },
     {
       accessorKey: "company",
       header: "Company",
     },
     {
-      accessorKey: "status",
-      header: "Status",
+      accessorKey: "role",
+      header: "Role",
     },
     {
       accessorKey: "source",
       header: "Source",
     },
     {
+      accessorKey: "status",
+      header: "Status",
+    },
+    {
+      accessorKey: "dateApplied",
+      header: "Date Applied",
+      cell: ({ row }) =>
+        row.original.dateApplied
+          ? row.original.dateApplied.toLocaleDateString()
+          : "",
+    },
+    {
       accessorKey: "createdAt",
       header: ({ column }) => (
-        <button onClick={() => column.toggleSorting()}>
+        <button onClick={column.getToggleSortingHandler()}>
           Created At
           {column.getIsSorted() === "asc" && " ↑"}
           {column.getIsSorted() === "desc" && " ↓"}
@@ -53,13 +72,40 @@ export default function ApplicationsTable({
     {
       accessorKey: "updatedAt",
       header: ({ column }) => (
-        <button onClick={() => column.toggleSorting()}>
+        <button onClick={column.getToggleSortingHandler()}>
           Updated At
           {column.getIsSorted() === "asc" && " ↑"}
           {column.getIsSorted() === "desc" && " ↓"}
         </button>
       ),
       cell: ({ row }) => row.original.updatedAt.toLocaleDateString(),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const application = row.original;
+        return (
+          <div className={tableStyles.action}>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setEditingApplication(application)}
+            >
+              Edit
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="danger"
+              onClick={() => setDeletingApplication(application)}
+            >
+              Delete
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -80,7 +126,7 @@ export default function ApplicationsTable({
 
   return (
     <div>
-      <div>
+      <div className={tableStyles.filterRow}>
         <label>Filter by Status:</label>
         <select
           value={
@@ -104,7 +150,7 @@ export default function ApplicationsTable({
       </div>
 
       <table>
-        <thead>
+        <thead className={tableStyles.tableHead}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -131,6 +177,22 @@ export default function ApplicationsTable({
           ))}
         </tbody>
       </table>
+
+      {editingApplication && (
+        <div className={modalStyles.modal}>
+          <EditApplicationModal
+            application={editingApplication}
+            onClose={() => setEditingApplication(null)}
+          />
+        </div>
+      )}
+
+      {deletingApplication && (
+        <DeleteApplicationDialog
+          application={deletingApplication}
+          onClose={() => setDeletingApplication(null)}
+        />
+      )}
     </div>
   );
 }

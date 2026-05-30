@@ -4,7 +4,49 @@ export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
 export type AppAuthError = { type: "UNAUTHORIZED"; message: "Unauthorized" };
 
-export type AppUnknownError = { type: "UNKNOWN"; message: string };
+export type ActionFailureError = { type: "FAILURE" };
+
+// Action-related errors
+
+export type ActionValidationError = {
+  type: "VALIDATION";
+  param: string;
+  message: string;
+};
+
+// Actions: Applications
+
+export type CreateApplicationError = ActionValidationError | ActionFailureError;
+
+export type GetApplicationsError = ActionFailureError;
+
+export type UpdateApplicationError = ActionValidationError | ActionFailureError;
+
+export type DeleteApplicationError = ActionFailureError;
+
+export enum Status {
+  WISHLIST = "WISHLIST",
+  APPLIED = "APPLIED",
+  OA_ASSESSMENT = "OA_ASSESSMENT",
+  INTERVIEW = "INTERVIEW",
+  OFFER = "OFFER",
+  REJECTED = "REJECTED",
+}
+
+export const ApplicationSchema = z.object({
+  company: z.string().min(1, "Company field is required"),
+  role: z.string().min(1, "Role field is required"),
+  source: z.string().default(""),
+  status: z.enum(Status).default(Status.APPLIED),
+  // possible to be passed in as null since date is picked through calendar pop-up, not text field
+  dateApplied: z.coerce.date().optional(),
+  notes: z.string().max(1000, "Notes too long").default(""),
+  // tags: z.array(z.string()).default([]),
+});
+
+export const EditApplicationSchema = ApplicationSchema.extend({
+  id: z.string().min(1, "Application ID is required"),
+});
 
 // Settings-related errors
 
@@ -12,11 +54,11 @@ export type AppUnknownError = { type: "UNKNOWN"; message: string };
 //     | ChangePasswordError
 //     | DeleteAccountError
 
-export type ChangePasswordError = AppAuthError | AppUnknownError;
+export type ChangePasswordError = AppAuthError;
 
-export type EditProfileError = AppAuthError | AppUnknownError;
+export type EditProfileError = AppAuthError;
 
-export type DeleteAccountError = AppAuthError | AppUnknownError;
+export type DeleteAccountError = AppAuthError;
 
 export const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),

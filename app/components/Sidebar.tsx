@@ -23,7 +23,7 @@ const COLLAPSED_KEY = "sidebar:collapsed";
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <IconDashboard /> },
-  { label: "Table", href: "/table", icon: <IconTable /> },
+  { label: "Table", href: "/applications", icon: <IconTable /> },
   { label: "Kanban", href: "/kanban", icon: <IconKanban />, disabled: true },
   {
     label: "Analytics",
