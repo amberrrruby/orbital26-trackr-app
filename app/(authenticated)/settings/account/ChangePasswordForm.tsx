@@ -1,11 +1,30 @@
 "use client";
 
-import { changePasswordAction } from "@/app/actions/settings/edit-account";
+import { changePassword } from "@/app/actions/settings";
 import styles from "../Settings.module.css";
+import { useState } from "react";
 
 export default function ChangePasswordForm() {
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    setErrMsg(null);
+    const result = await changePassword(formData);
+
+    if (!result.ok) {
+      const { error } = result;
+      if (error.type === "FAILURE") {
+        setErrMsg("Something went wrong, please refresh and try again.");
+        return;
+      }
+      setErrMsg(`${error.param}: ${error.message}`);
+    }
+  }
+
   return (
-    <form action={changePasswordAction} className={styles.form}>
+    <form action={handleSubmit} className={styles.form}>
+      {errMsg && <div>{errMsg}</div>}
+
       <label>New password</label>
 
       <input name="password" type="password" required minLength={8} />

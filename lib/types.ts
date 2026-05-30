@@ -1,12 +1,12 @@
-import z from "zod";
+import z, { ZodError } from "zod";
 
 export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
 export type AppAuthError = { type: "UNAUTHORIZED"; message: "Unauthorized" };
 
-export type ActionFailureError = { type: "FAILURE" };
-
 // Action-related errors
+
+export type ActionFailureError = { type: "FAILURE" };
 
 export type ActionValidationError = {
   type: "VALIDATION";
@@ -50,15 +50,11 @@ export const EditApplicationSchema = ApplicationSchema.extend({
 
 // Settings-related errors
 
-// export type SettingsError =
-//     | ChangePasswordError
-//     | DeleteAccountError
+export type ChangeCredentialsError = ActionValidationError | ActionFailureError;
 
-export type ChangePasswordError = AppAuthError;
+export type EditProfileError = ActionValidationError | ActionFailureError;
 
-export type EditProfileError = AppAuthError;
-
-export type DeleteAccountError = AppAuthError;
+export type DeleteAccountError = ActionFailureError;
 
 export const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -98,3 +94,16 @@ export const PasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export function returnSchemaValidationError(parseResult: {
+  success: false;
+  error: ZodError;
+}): ActionValidationError {
+  const first = parseResult.error.issues[0];
+  return {
+    type: "VALIDATION",
+    // IDK, see how does error messages get returned then we tweak
+    param: first.path.join("."),
+    message: first.message,
+  };
+}
