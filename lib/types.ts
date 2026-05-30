@@ -54,11 +54,11 @@ export const EditApplicationSchema = ApplicationSchema.extend({
 //     | ChangePasswordError
 //     | DeleteAccountError
 
-// export type ChangePasswordError = AppAuthError | AppUnknownError;
+export type ChangePasswordError = AppAuthError;
 
-// export type EditProfileError = AppAuthError | AppUnknownError;
+export type EditProfileError = AppAuthError;
 
-// export type DeleteAccountError = AppAuthError | AppUnknownError;
+export type DeleteAccountError = AppAuthError;
 
 export const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
