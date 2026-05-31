@@ -121,7 +121,7 @@ export default function ApplicationsTable({
   });
 
   if (applications.length == 0) {
-    return <p>No applications found.</p>;
+    return <p className={tableStyles.noApplications}>No applications found.</p>;
   }
 
   return (

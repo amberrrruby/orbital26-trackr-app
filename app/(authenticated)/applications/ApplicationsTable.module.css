@@ -1,3 +1,10 @@
+.noApplications {
+  font-size: var(--text-md);
+  color: var(--color-text-tertiary);
+  text-align: center;
+  margin-top: var(--space-24);
+}
+
 .action {
   display: flex;
   align-items: center;

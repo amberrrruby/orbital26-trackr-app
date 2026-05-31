@@ -23,6 +23,9 @@ afterEach(async () => {
   await prisma.application.deleteMany({
     where: { userId: env.TEST_USER_ID },
   });
+  await prisma.application.deleteMany({
+    where: { userId: "00000000-0000-0000-0000-000000000000" },
+  });
 });
 
 // Helper to build FormData

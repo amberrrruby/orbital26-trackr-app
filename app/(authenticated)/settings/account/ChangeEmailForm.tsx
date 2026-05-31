@@ -3,6 +3,8 @@
 import { useState } from "react";
 import styles from "../Settings.module.css";
 import { changeEmail } from "@/app/actions/settings";
+import { Input } from "@/app/components/Input";
+import { Button } from "@/app/components/Button";
 
 export default function ChangeEmailForm() {
   const [errMsg, setErrMsg] = useState<string | null>(null);
@@ -24,10 +26,11 @@ export default function ChangeEmailForm() {
   return (
     <form action={handleSubmit} className={styles.form}>
       {errMsg && <div>{errMsg}</div>}
-      <label>New email</label>
-      <input name="email" type="email" />
 
-      <button type="submit">Update email</button>
+      <Input label="New email" name="email" type="email" />
+      <Button type="submit" className={styles.action}>
+        Update email
+      </Button>
     </form>
   );
 }
