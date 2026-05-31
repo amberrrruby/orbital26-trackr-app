@@ -1,12 +1,21 @@
 "use client";
-import styles from "./LogoutButton.module.css";
+import { Button } from "@/app/components/Button";
+import { LuLogOut } from "react-icons/lu";
 
 export default function LogoutButton() {
   return (
     <form action="/actions/auth/logout" method="post">
-      <button type="submit" className={styles.logoutButton}>
-        Log out
-      </button>
+      <Button type="submit" variant="danger">
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "var(--space-2)",
+          }}
+        >
+          <LuLogOut /> Log out
+        </span>
+      </Button>
     </form>
   );
 }
