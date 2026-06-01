@@ -1,5 +1,8 @@
 "use client";
 import { forgotPasswordAction } from "@/app/actions/auth/handle-forgot-password";
+import { Input } from "@/app/components/Input";
+import { Button } from "@/app/components/Button";
+import styles from "./ForgotPasswordForm.module.css";
 
 type Props = {
   successMessage: string | null;
@@ -19,14 +22,13 @@ export default function ForgotPasswordForm({
   }
 
   return (
-    <>
-      {errorMessage && <p>{errorMessage}</p>}
+    <section className={styles.container}>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <h2>Enter your registered email address for a recovery link.</h2>
-      <form action={forgotPasswordAction}>
-        <input name="email" type="email" required />
-
-        <button type="submit">Send reset link</button>
+      <form action={forgotPasswordAction} className={styles.form}>
+        <Input name="email" type="email" required />
+        <Button type="submit">Send reset link</Button>
       </form>
-    </>
+    </section>
   );
 }

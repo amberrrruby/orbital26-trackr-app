@@ -1,10 +1,52 @@
-import z from "zod";
+import z, { ZodError } from "zod";
 
 export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
 export type AppAuthError = { type: "UNAUTHORIZED"; message: "Unauthorized" };
 
-export type AppUnknownError = { type: "UNKNOWN"; message: string };
+// Action-related errors
+
+export type ActionFailureError = { type: "FAILURE" };
+
+export type ActionValidationError = {
+  type: "VALIDATION";
+  param: string;
+  message: string;
+};
+
+// Actions: Applications
+
+export type CreateApplicationError = ActionValidationError | ActionFailureError;
+
+export type GetApplicationsError = ActionFailureError;
+
+export type UpdateApplicationError = ActionValidationError | ActionFailureError;
+
+export type DeleteApplicationError = ActionFailureError;
+
+export enum Status {
+  WISHLIST = "WISHLIST",
+  APPLIED = "APPLIED",
+  OA_ASSESSMENT = "OA_ASSESSMENT",
+  INTERVIEW = "INTERVIEW",
+  OFFER = "OFFER",
+  REJECTED = "REJECTED",
+}
+
+export const ApplicationSchema = z.object({
+  company: z.string().min(1, "Company field is required"),
+  role: z.string().min(1, "Role field is required"),
+  source: z.string().default(""),
+  status: z.enum(Status).default(Status.APPLIED),
+  // possible to be passed in as null since date is picked through calendar pop-up, not text field
+  dateApplied: z.coerce.date().optional(),
+  notes: z.string().max(1000, "Notes too long").default(""),
+  // tags: z.array(z.string()).default([]),
+});
+
+export const EditApplicationSchema = ApplicationSchema.extend({
+  id: z.string().min(1, "Application ID is required"),
+});
 
 // message hardcoded for enumeration protection
 export type AppOwnershipError = { type: "NOT_FOUND"; message: "Not found" };
@@ -88,15 +130,11 @@ export const UpdateResumeSchema = ResumeBaseSchema.extend({
 
 // Settings-related errors
 
-// export type SettingsError =
-//     | ChangePasswordError
-//     | DeleteAccountError
+export type ChangeCredentialsError = ActionValidationError | ActionFailureError;
 
-export type ChangePasswordError = AppAuthError | AppUnknownError;
+export type EditProfileError = ActionValidationError | ActionFailureError;
 
-export type EditProfileError = AppAuthError | AppUnknownError;
-
-export type DeleteAccountError = AppAuthError | AppUnknownError;
+export type DeleteAccountError = ActionFailureError;
 
 export const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -136,3 +174,16 @@ export const PasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export function returnSchemaValidationError(parseResult: {
+  success: false;
+  error: ZodError;
+}): ActionValidationError {
+  const first = parseResult.error.issues[0];
+  return {
+    type: "VALIDATION",
+    // IDK, see how does error messages get returned then we tweak
+    param: first.path.join("."),
+    message: first.message,
+  };
+}

@@ -31,13 +31,15 @@ export default async function AccountSettingsPage({ searchParams }: Props) {
   const successMessage = getSuccessMessage(success);
 
   return (
-    <>
+    <main className={styles.page}>
       {successMessage && <div className={styles.toast}>{successMessage}</div>}
 
-      <section>
+      <section className={styles.card}>
         <h1>Change Email</h1>
         <ChangeEmailForm />
+      </section>
 
+      <section className={styles.card}>
         <h1>Change Password</h1>
         {canChangePassword ? (
           <ChangePasswordForm />
@@ -48,10 +50,13 @@ export default async function AccountSettingsPage({ searchParams }: Props) {
         )}
       </section>
 
-      <section>
-        <h2>Danger zone</h2>
-        <DeleteAccountButton />
+      <section className={styles.card}>
+        <h1>Danger Zone</h1>
+        <p>Permanently delete your account and related data.</p>
+        <div className={styles.action}>
+          <DeleteAccountButton />
+        </div>
       </section>
-    </>
+    </main>
   );
 }

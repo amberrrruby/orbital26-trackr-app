@@ -7,6 +7,19 @@ import styles from "./Sidebar.module.css";
 import { User as DBUser } from "@/lib/generated/client";
 import { useTheme } from "next-themes";
 import { Tooltip } from "./Tooltip";
+import Image from "next/image";
+import {
+  LuLayoutGrid,
+  LuTable2,
+  LuSquareKanban,
+  LuChartNoAxesCombined,
+  LuBell,
+  LuFileText,
+  LuSettings,
+  LuSun,
+  LuMoon,
+  LuLogOut,
+} from "react-icons/lu";
 
 type Props = { children: React.ReactNode; user: DBUser };
 
@@ -22,22 +35,27 @@ type NavItem = {
 const COLLAPSED_KEY = "sidebar:collapsed";
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: <IconDashboard /> },
-  { label: "Table", href: "/table", icon: <IconTable /> },
-  { label: "Kanban", href: "/kanban", icon: <IconKanban />, disabled: true },
+  { label: "Dashboard", href: "/dashboard", icon: <LuLayoutGrid /> },
+  { label: "Table", href: "/applications", icon: <LuTable2 /> },
+  {
+    label: "Kanban",
+    href: "/kanban",
+    icon: <LuSquareKanban />,
+    disabled: true,
+  },
   {
     label: "Analytics",
     href: "/analytics",
-    icon: <IconAnalytics />,
+    icon: <LuChartNoAxesCombined />,
     disabled: true,
   },
   {
     label: "Reminders",
     href: "/reminders",
-    icon: <IconReminders />,
+    icon: <LuBell />,
     disabled: true,
   },
-  { label: "Resumes", href: "/resumes", icon: <IconResumes />, disabled: true },
+  { label: "Resumes", href: "/resumes", icon: <LuFileText />, disabled: true },
 ];
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -95,8 +113,13 @@ export default function Sidebar({ children, user }: Props) {
         {/* Top: Logo + collapse toggle */}
         <div className={styles.top}>
           <span className={styles.logo}>
-            <IconLogo />
-            {!collapsed && <span className={styles.logoText}>Appname</span>}
+            <Image
+              src="/trackr-logo.png"
+              alt="Trackr logo"
+              width={20}
+              height={20}
+            />
+            {!collapsed && <span className={styles.logoText}>Trackr</span>}
           </span>
           <button
             className={styles.collapseBtn}
@@ -196,7 +219,7 @@ export default function Sidebar({ children, user }: Props) {
                 role="menuitem"
                 onClick={() => setPopoverOpen(false)}
               >
-                <IconSettings /> Settings
+                <LuSettings /> Settings
               </Link>
 
               <div className={styles.popoverDivider} />
@@ -209,7 +232,7 @@ export default function Sidebar({ children, user }: Props) {
                   setTheme(resolvedTheme === "dark" ? "light" : "dark")
                 }
               >
-                {resolvedTheme === "dark" ? <IconSun /> : <IconMoon />}
+                {resolvedTheme === "dark" ? <LuSun /> : <LuMoon />}
                 {resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
               </button>
 
@@ -222,7 +245,7 @@ export default function Sidebar({ children, user }: Props) {
                   className={`${styles.popoverItem} ${styles.popoverLogout}`}
                   role="menuitem"
                 >
-                  <IconLogout /> Log out
+                  <LuLogOut /> Log out
                 </button>
               </form>
             </div>

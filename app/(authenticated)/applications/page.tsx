@@ -1,34 +1,35 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import type { Application } from "@/lib/generated/browser";
-import { getApplications } from "@/app/actions/applications/get-applications";
+import Link from "next/link";
+import { getApplications } from "@/app/actions/applications";
 import ApplicationsTable from "./ApplicationsTable";
+import { Button } from "@/app/components/Button";
+import styles from "./page.module.css";
 
-export default function ApplicationsPage() {
-  const [applications, setApplications] = useState<Application[]>([]);
-
-  // eliminate entirely?
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadApplications() {
-      const data = await getApplications();
-      setApplications(data);
-      setLoading(false);
-    }
-    loadApplications();
-  }, []);
+export default async function ApplicationsPage() {
+  const result = await getApplications();
+  // TODO: replace with proper error component
+  if (!result.ok) {
+    return (
+      <p>
+        [TEMPORARY ERROR COMPONENT] Something went wrong - refresh the page or
+        try again.
+      </p>
+    );
+  }
 
   return (
-    <main>
-      <h1>Applications</h1>
+    <main className={styles.page}>
+      <section className={styles.header}>
+        <h1>Applications</h1>
+        <p> Track and manage your applications.</p>
+      </section>
+      <hr />
+      <section className={styles.addButton}>
+        <Link href="/applications/new">
+          <Button type="button"> + Add Applications</Button>
+        </Link>
+      </section>
 
-      {loading ? (
-        <p>Applications loading...</p>
-      ) : (
-        <ApplicationsTable applications={applications} />
-      )}
+      <ApplicationsTable applications={result.value} />
     </main>
   );
 }

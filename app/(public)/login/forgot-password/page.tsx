@@ -1,4 +1,5 @@
 import ForgotPasswordForm from "./ForgotPasswordForm";
+import styles from "./ForgotPasswordForm.module.css";
 
 type Props = {
   searchParams: Promise<{
@@ -48,7 +49,7 @@ export default async function ForgotPasswordPage({ searchParams }: Props) {
 
   return (
     <div>
-      <p>{errorMessage}</p>
+      <p className={styles.error}>{errorMessage}</p>
 
       <a href="/login/forgot-password">[Request new reset link]</a>
     </div>
