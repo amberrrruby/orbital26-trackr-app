@@ -13,7 +13,7 @@ export default function ResumeCard({ resume }: Props) {
       href={`/resumes/${resume.id}`}
       className="group block rounded-xl border border-border hover:border-primary/40 hover:shadow-sm transition-all overflow-hidden"
     >
-      {/* Thumbnail */}
+      {/* Thumbnail. Will always use the fallback until we sort out thumbnail gen. */}
       <div className="aspect-[3/4] bg-muted relative overflow-hidden">
         {resume.thumbnailUrl ? (
           <Image
@@ -25,7 +25,6 @@ export default function ResumeCard({ resume }: Props) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            {/* placeholder. this component is from lucide-react which we don't? */}
             <FileText className="w-12 h-12 text-muted-foreground/40" />
           </div>
         )}

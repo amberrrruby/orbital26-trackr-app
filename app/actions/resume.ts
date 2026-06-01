@@ -1,10 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import {
-  requireApplicationOwnership,
-  requireUserOrRedirectLogin,
-} from "@/lib/auth";
+import { requireUserOrRedirectLogin } from "@/lib/auth";
 import {
   AddResumeError,
   ResumeSchema,
@@ -16,54 +13,36 @@ import {
   UpdateResumeError,
   UpdateResumeSchema,
   DeleteResumeError,
+  SortableField,
+  AggregateStats,
+  GetResumesParamsSchema,
+  OrderType,
+  returnSchemaValidationError,
+  GenerateThumbnailError,
 } from "@/lib/types";
 import { Application, Status } from "@/lib/generated/client";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
-export const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
-export type SortableField = (typeof SORTABLE_FIELDS)[number];
-export type AggregateStats = Record<Status, number> & { TOTAL: number };
-
 // TODO: RESUME
 export async function getResumes(
   orderKey: SortableField = "updatedAt",
-  order: "asc" | "desc" = "desc",
+  order: OrderType = "desc",
   pageNumber: number = 0,
   pageSize: number = 12,
 ): Promise<Result<{ resumes: Resume[]; totalCount: number }, GetResumesError>> {
   const user = await requireUserOrRedirectLogin();
 
-  // Verify orderKey is an existing, orderable key
-  if (!SORTABLE_FIELDS.includes(orderKey)) {
-    return {
-      ok: false,
-      error: {
-        type: "VALIDATION",
-        param: "orderKey",
-        message: `Invalid sort field ${orderKey}`,
-      },
-    };
-  }
-  // Simple verification for pageNumber pageEnd
-  if (pageNumber < 0) {
-    return {
-      ok: false,
-      error: {
-        type: "VALIDATION",
-        param: "pageNumber",
-        message: `Invalid pagination argument ${pageNumber}`,
-      },
-    };
-  }
+  const parseResult = GetResumesParamsSchema.safeParse({
+    orderKey,
+    order,
+    pageNumber,
+    pageSize,
+  });
 
-  if (pageSize < 1 || pageSize > 100) {
+  if (!parseResult.success) {
     return {
       ok: false,
-      error: {
-        type: "VALIDATION",
-        param: "pageSize",
-        message: `Invalid pagination argument ${pageSize}`,
-      },
+      error: returnSchemaValidationError(parseResult),
     };
   }
 
@@ -77,14 +56,11 @@ export async function getResumes(
       }),
       prisma.resume.count({ where: { userId: user } }),
     ])) as [Resume[], number];
-    return { resumes, totalCount };
-  } catch (err) {
+    return { ok: true, value: { resumes, totalCount } };
+  } catch {
     return {
       ok: false,
-      error: {
-        type: "DB",
-        message: `Failed to fetch resumes: ${err}`,
-      },
+      error: { type: "FAILURE" },
     };
   }
 }
@@ -92,10 +68,11 @@ export async function getResumes(
 export async function getAggregateStats(
   resumeId: string,
 ): Promise<Result<AggregateStats, GetAggregateStatsError>> {
+  const userId = await requireUserOrRedirectLogin();
   try {
     const groupedApplications = await prisma.application.groupBy({
       by: ["status"],
-      where: { resumeId },
+      where: { userId, resumeId },
       _count: { status: true },
     });
 
@@ -111,10 +88,10 @@ export async function getAggregateStats(
     const total = Object.values(counts).reduce((acc, n) => acc + n, 0);
 
     return { ok: true, value: { ...counts, TOTAL: total } };
-  } catch (err) {
+  } catch {
     return {
       ok: false,
-      error: { type: "DB", message: `Failed to fetch stats: ${err}` },
+      error: { type: "FAILURE" },
     };
   }
 }
@@ -123,17 +100,18 @@ export async function getTopKRecentApplications(
   resumeId: string,
   k: number = 3,
 ): Promise<Result<Application[], GetTopKRecentApplicationsError>> {
+  const userId = await requireUserOrRedirectLogin();
   try {
     const topKApplications = await prisma.application.findMany({
-      where: { resumeId },
+      where: { userId, resumeId },
       orderBy: { updatedAt: "desc" },
       take: k,
     });
     return { ok: true, value: topKApplications };
-  } catch (err) {
+  } catch {
     return {
       ok: false,
-      error: { type: "DB", message: `Failed to fetch stats: ${err}` },
+      error: { type: "FAILURE" },
     };
   }
 }
@@ -155,6 +133,7 @@ export async function uploadResumeFile(
       },
     };
   }
+
   // Note getPublicUrl is synchoronous no await, constructs URL locally without network calls.
   const { data: urlData } = supabase.storage
     .from("resumes")
@@ -165,13 +144,18 @@ export async function uploadResumeFile(
   };
 }
 
-// export async function generateThumbnail(fileUrl: string, userId: string): Promise<Result<string, GenerateThumbnailError>> {
-//     return {
-//         ok: true,
-//         value: "TEMPORARY"
-//     };
-// }
+export async function generateThumbnail(
+  _fileUrl: string,
+  _userId: string,
+): Promise<Result<string, GenerateThumbnailError>> {
+  // TEMPORARY
+  return {
+    ok: false,
+    error: { type: "FAILURE" },
+  };
+}
 
+// Form just provides the resume URL directly
 export async function addResume(
   formData: FormData,
 ): Promise<Result<string, AddResumeError>> {
@@ -180,40 +164,36 @@ export async function addResume(
     title: formData.get("title"),
     notes: formData.get("notes"),
     tags: formData.get("tags") ?? "",
-    file: formData.get("file"),
+    resumeUrl: formData.get("resumeUrl"),
+    fileType: formData.get("fileType"),
   });
   if (!parseResult.success) {
-    const first = parseResult.error.errors[0];
     return {
       ok: false,
-      error: {
-        type: "VALIDATION",
-        param: first.path[0] as string,
-        message: first.message,
-      },
+      error: returnSchemaValidationError(parseResult),
     };
   }
-  const { title, notes, tags, file } = parseResult.data;
-  const fileType = file.name.endsWith(".pdf") ? "PDF" : "DOCX";
+  const { title, notes, tags, resumeUrl, fileType } = parseResult.data;
 
-  // 1. Upload file
-  const resumeUrlResult = await uploadResumeFile(file, userId);
-  if (!resumeUrlResult.ok) {
-    return resumeUrlResult;
-  }
-  const resumeUrl = resumeUrlResult.value;
+  // 1. Upload file (should be handled by a component)
+  // const resumeUrlResult = await uploadResumeFile(file, userId);
+  // if (!resumeUrlResult.ok) {
+  //   return resumeUrlResult;
+  // }
+  // const resumeUrl = resumeUrlResult.value;
 
-  // 2. Generate thumbnail (CURRENTLY ONLY PDF)
+  // 2. Generate thumbnail (CURRENTLY DISABLED)
   let thumbnailPath: string | null = null;
   if (fileType === "PDF") {
     const thumbnailPathResult = await generateThumbnail(resumeUrl, userId);
     if (!thumbnailPathResult.ok) {
       // non-fatal - just null
       console.log(
-        `[NOTE] Error in thumbnail generation - err caught and nothing else. err: ${thumbnailPathResult.error.message}`,
+        `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
       );
+    } else {
+      thumbnailPath = thumbnailPathResult.value;
     }
-    thumbnailPath = thumbnailPathResult.value;
   }
 
   // 3. Write DB record
@@ -226,19 +206,21 @@ export async function addResume(
         tags,
         resumeUrl,
         fileType,
-        thumbnailPath,
+        thumbnailPath, // will always be null for now
+        // will always be "failed" for now
         thumbnailStatus:
-          fileType === "DOCX" || thumbnailPath ? "ready" : "failed",
+          fileType === "DOCX"
+            ? "ready"
+            : thumbnailPath !== null
+              ? "ready"
+              : "failed",
       },
     });
     return { ok: true, value: resume.id };
-  } catch (err) {
+  } catch {
     return {
       ok: false,
-      error: {
-        type: "DB",
-        message: `Failed to create resume record: ${err}`,
-      },
+      error: { type: "FAILURE" },
     };
   }
 }
@@ -246,57 +228,48 @@ export async function addResume(
 export async function updateResume(
   resumeId: string,
   formData: FormData,
-): Promise<Result<string, UpdateResumeError>> {
+): Promise<Result<void, UpdateResumeError>> {
   const userId = await requireUserOrRedirectLogin();
 
   const parseResult = UpdateResumeSchema.safeParse({
     title: formData.get("title"),
     notes: formData.get("notes"),
     tags: formData.get("tags") ?? "",
-    file: formData.get("file"),
+    resumeUrl: formData.get("resumeUrl") ?? undefined,
+    fileType: formData.get("fileType") ?? undefined,
   });
   if (!parseResult.success) {
-    const first = parseResult.error.errors[0];
     return {
       ok: false,
-      error: {
-        type: "VALIDATION",
-        param: first.path[0] as string,
-        message: first.message,
-      },
+      error: returnSchemaValidationError(parseResult),
     };
   }
 
-  const { title, notes, tags, file } = parseResult.data;
-
-  // Only re-upload if a new file was provided
-  let resumeUrl: string | undefined;
-  let thumbnailPath: string | null | undefined;
-  let fileType: string | undefined;
+  const { title, notes, tags, resumeUrl, fileType } = parseResult.data;
+  let thumbnailPath: string | null = null;
   let thumbnailStatus: string | undefined;
 
-  if (file) {
-    fileType = file.name.endsWith(".pdf") ? "PDF" : "DOCX";
-
-    const resumeUrlResult = await uploadResumeFile(file, userId);
-    if (!resumeUrlResult.ok) return resumeUrlResult;
-    resumeUrl = resumeUrlResult.value;
-
-    thumbnailPath = null;
+  if (resumeUrl !== undefined && fileType !== undefined) {
     if (fileType === "PDF") {
       const thumbnailResult = await generateThumbnail(resumeUrl, userId);
       if (!thumbnailResult.ok) {
         console.log(
-          `[NOTE] Thumbnail generation failed: ${thumbnailResult.error.message}`,
+          `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
         );
+      } else {
+        thumbnailPath = thumbnailResult.value;
       }
-      thumbnailPath = thumbnailResult.ok ? thumbnailResult.value : null;
     }
-    thumbnailStatus = fileType === "DOCX" || thumbnailPath ? "ready" : "failed";
+    thumbnailStatus =
+      fileType === "DOCX"
+        ? "ready"
+        : thumbnailPath !== null
+          ? "ready"
+          : "failed";
   }
 
   try {
-    const resume = await prisma.resume.update({
+    const result = await prisma.resume.updateMany({
       where: { id: resumeId, userId }, // userId guard prevents updating another user's resume
       data: {
         title,
@@ -304,15 +277,21 @@ export async function updateResume(
         tags,
         ...(resumeUrl !== undefined && { resumeUrl }),
         ...(fileType !== undefined && { fileType }),
-        ...(thumbnailPath !== undefined && { thumbnailPath }),
-        ...(thumbnailStatus !== undefined && { thumbnailStatus }),
+        ...(thumbnailStatus !== undefined && {
+          thumbnailPath,
+          thumbnailStatus,
+        }),
       },
     });
-    return { ok: true, value: resume.id };
-  } catch (err) {
+    if (result.count === 0) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+    // revalidatePath(`/applications`);
+    return { ok: true, value: undefined };
+  } catch {
     return {
       ok: false,
-      error: { type: "DB", message: `Failed to update resume: ${err}` },
+      error: { type: "FAILURE" },
     };
   }
 }
@@ -321,20 +300,22 @@ export async function deleteResume(
   resumeId: string,
 ): Promise<Result<void, DeleteResumeError>> {
   const userId = await requireUserOrRedirectLogin();
-  const res = await requireApplicationOwnership(resumeId, userId);
-  if (!res.ok) {
-    return res;
-  }
   try {
-    await prisma.resume.delete({ where: { id: resumeId } });
+    const { count } = await prisma.resume.deleteMany({
+      where: {
+        id: resumeId,
+        userId,
+      },
+    });
+    if (count === 0) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+    // revalidatePath(`/applications`);
     return { ok: true, value: undefined };
-  } catch (err) {
+  } catch {
     return {
       ok: false,
-      error: {
-        type: "DB",
-        message: `Failed to delete resume: ${err}`,
-      },
+      error: { type: "FAILURE" },
     };
   }
 }

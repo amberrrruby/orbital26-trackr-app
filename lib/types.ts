@@ -8,6 +8,8 @@ export type AppAuthError = { type: "UNAUTHORIZED"; message: "Unauthorized" };
 
 export type ActionFailureError = { type: "FAILURE" };
 
+export type AppUploadError = { type: "UPLOAD"; message: string };
+
 export type ActionValidationError = {
   type: "VALIDATION";
   param: string;
@@ -48,54 +50,67 @@ export const EditApplicationSchema = ApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
 });
 
-// message hardcoded for enumeration protection
-export type AppOwnershipError = { type: "NOT_FOUND"; message: "Not found" };
-
-export type AppDbError = { type: "DB"; message: string };
-
-export type AppUploadError = { type: "UPLOAD"; message: string };
-
-// Action-related errors
-
-export type ActionValidationError = {
-  type: "VALIDATION";
-  param: string;
-  message: string;
-};
-
 // Actions: Resumes
+
 export type GetResumesError =
-  | AppAuthError
-  | AppDbError
-  | ActionValidationError
-  | AppUnknownError;
+  | ActionValidationError // validating paging params
+  | ActionFailureError;
 
-export type GetAggregateStatsError = AppDbError;
+export type GetAggregateStatsError = ActionFailureError;
 
-export type GetTopKRecentApplicationsError = AppDbError;
+export type GetTopKRecentApplicationsError = ActionFailureError;
 
 export type AddResumeError =
   | ActionValidationError
-  | AppDbError
+  | ActionFailureError
   | AppUploadError;
 
 export type UpdateResumeError =
   | ActionValidationError
-  | AppDbError
+  | ActionFailureError
   | AppUploadError;
 
-export type DeleteResumeError = AppOwnershipError | AppDbError;
+export type DeleteResumeError = ActionFailureError;
+
+export type GenerateThumbnailError = ActionFailureError;
 
 // export type GenerateThumbnailError
 // TODO: resolve after thumbnail generation service is confirmed
 
-const ACCEPTED_FILE_TYPES = [
-  "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
-const MAX_FILE_SIZE_MB = 10;
+// const ACCEPTED_FILE_TYPES = [
+//   "application/pdf",
+//   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+// ];
+// const MAX_FILE_SIZE_MB = 10;
 
-const ResumeBaseSchema = z.object({
+// const ResumeFileSchema = z.object({
+//   file: z
+//     .instanceof(File)
+//     .refine((f) => f.size > 0, "File is required")
+//     .refine(
+//       (f) => f.size <= MAX_FILE_SIZE_MB * 1024 * 1024,
+//       `File must be under ${MAX_FILE_SIZE_MB} MB`,
+//     )
+//     .refine(
+//       (f) => ACCEPTED_FILE_TYPES.includes(f.type),
+//       "Only PDF or DOCX files are currently accepted",
+//     ),
+// });
+
+const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
+const ORDERS = ["asc", "desc"] as const;
+export type SortableField = (typeof SORTABLE_FIELDS)[number];
+export type OrderType = (typeof ORDERS)[number];
+export type AggregateStats = Record<Status, number> & { TOTAL: number };
+
+export const GetResumesParamsSchema = z.object({
+  orderKey: z.enum(SORTABLE_FIELDS).default("updatedAt"),
+  order: z.enum(ORDERS).default("desc"),
+  pageNumber: z.number().int().min(0).default(0),
+  pageSize: z.number().int().min(1).max(100).default(12),
+});
+
+export const ResumeSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title too long"),
   notes: z.string().max(1000, "Notes too long").optional(),
   tags: z.string().transform((val) =>
@@ -104,29 +119,14 @@ const ResumeBaseSchema = z.object({
       .map((t) => t.trim())
       .filter(Boolean),
   ),
+  resumeUrl: z.url("Invalid file URL"),
+  fileType: z.enum(["PDF", "DOCX"]),
 });
 
-const ResumeFileSchema = z.object({
-  file: z
-    .instanceof(File)
-    .refine((f) => f.size > 0, "File is required")
-    .refine(
-      (f) => f.size <= MAX_FILE_SIZE_MB * 1024 * 1024,
-      `File must be under ${MAX_FILE_SIZE_MB} MB`,
-    )
-    .refine(
-      (f) => ACCEPTED_FILE_TYPES.includes(f.type),
-      "Only PDF or DOCX files are currently accepted",
-    ),
+export const UpdateResumeSchema = ResumeSchema.extend({
+  resumeUrl: z.url().optional(),
+  fileType: z.enum(["PDF", "DOCX"]).optional(),
 });
-
-export const ResumeSchema = ResumeBaseSchema.extend(ResumeFileSchema.shape);
-
-export const UpdateResumeSchema = ResumeBaseSchema.extend({
-  file: ResumeFileSchema.shape.file.optional(),
-});
-
-// export type GetApplicationsError = AppAuthError | AppDbError | AppUnknownError;
 
 // Settings-related errors
 

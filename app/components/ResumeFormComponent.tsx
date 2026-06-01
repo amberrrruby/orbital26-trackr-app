@@ -1,6 +1,6 @@
 "use client";
 
-import { addResume } from "@/app/actions/resume";
+import { addResume, updateResume } from "@/app/actions/resume";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -25,7 +25,7 @@ export default function ResumeFormComponent({ resume, onCancel }: Props) {
         ? await updateResume(resume.id, formData)
         : await addResume(formData);
       if (!res.ok) {
-        setErrMsg(res.error.message);
+        setErrMsg("[LAZY] error received, destructure later");
         return;
       }
       if (isEditing) {
