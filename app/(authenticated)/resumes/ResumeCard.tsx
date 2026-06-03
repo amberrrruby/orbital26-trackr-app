@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { FileText } from "lucide-react";
+import { Resume } from "@/lib/generated/client";
 
 type Props = {
   resume: Resume;
@@ -15,7 +15,7 @@ export default function ResumeCard({ resume }: Props) {
     >
       {/* Thumbnail. Will always use the fallback until we sort out thumbnail gen. */}
       <div className="aspect-[3/4] bg-muted relative overflow-hidden">
-        {resume.thumbnailUrl ? (
+        {/* {resume.thumbnailUrl ? (
           <Image
             src={resume.thumbnailUrl}
             alt={resume.title}
@@ -27,7 +27,10 @@ export default function ResumeCard({ resume }: Props) {
           <div className="w-full h-full flex items-center justify-center">
             <FileText className="w-12 h-12 text-muted-foreground/40" />
           </div>
-        )}
+        )} */}
+        <div className="w-full h-full flex items-center justify-center">
+          <FileText className="w-12 h-12 text-muted-foreground/40" />
+        </div>
       </div>
 
       {/* Metadata */}
@@ -35,7 +38,7 @@ export default function ResumeCard({ resume }: Props) {
         <p className="font-medium text-sm leading-tight truncate">
           {resume.title}
         </p>
-        {resume.company && (
+        {/* {resume.company && (
           <p className="text-xs text-muted-foreground truncate">
             {resume.company}
           </p>
@@ -44,9 +47,9 @@ export default function ResumeCard({ resume }: Props) {
           <p className="text-xs text-muted-foreground truncate">
             {resume.position}
           </p>
-        )}
+        )} */}
         <p className="text-xs text-muted-foreground/60">
-          {formatDistanceToNow(new Date(resume.created_at), {
+          {formatDistanceToNow(new Date(resume.createdAt), {
             addSuffix: true,
           })}
         </p>

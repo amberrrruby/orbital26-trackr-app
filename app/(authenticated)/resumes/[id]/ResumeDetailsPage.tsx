@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ResumeDetailsComponent from "./ResumeDetails";
 import ResumeFormComponent from "@/app/components/ResumeFormComponent";
+import { Resume } from "@/lib/generated/client";
 
 type Props = { id: string };
 

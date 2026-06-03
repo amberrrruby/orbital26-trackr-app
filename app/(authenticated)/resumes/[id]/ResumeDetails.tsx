@@ -6,6 +6,7 @@ import {
   getTopKRecentApplications,
 } from "@/app/actions/resume";
 import ResumeDetailsClient from "./ResumeDetailsClient";
+import { Resume } from "@/lib/generated/client";
 
 type Props = {
   id: string;

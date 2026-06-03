@@ -97,8 +97,8 @@ export type GenerateThumbnailError = ActionFailureError;
 //     ),
 // });
 
-const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
-const ORDERS = ["asc", "desc"] as const;
+export const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
+export const ORDERS = ["asc", "desc"] as const;
 export type SortableField = (typeof SORTABLE_FIELDS)[number];
 export type OrderType = (typeof ORDERS)[number];
 export type AggregateStats = Record<Status, number> & { TOTAL: number };

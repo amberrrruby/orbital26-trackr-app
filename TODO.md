@@ -45,3 +45,5 @@ clicking outside modal:
 - no ux: click beyond modal to quit
 
 mini issue: filter-by-status none should also show message, but different
+
+Unify `FAILURE` error message instead of writing `"Something went wrong"` everywhere?

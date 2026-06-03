@@ -1,9 +1,9 @@
 import styles from "./ResumeDetails.module.css";
 import Link from "next/link";
-import Image from "next/image";
-import { AggregateStats, deleteResume } from "@/app/actions/resume";
-import { Application } from "@/lib/generated/client";
+import { deleteResume } from "@/app/actions/resume";
+import { Application, Resume } from "@/lib/generated/client";
 import {
+  AggregateStats,
   GetAggregateStatsError,
   GetTopKRecentApplicationsError,
   Result,
@@ -127,7 +127,7 @@ export default function ResumeDetailsClient({
         {/* Right column */}
         <div className={styles.right}>
           <div className={styles.thumbnailWrapper}>
-            {resume.thumbnailPath ? (
+            {/* {resume.thumbnailPath ? (
               <Image
                 src={resume.thumbnailPath}
                 alt={`Thumbnail for ${resume.title}`}
@@ -135,7 +135,8 @@ export default function ResumeDetailsClient({
               />
             ) : (
               <div className={styles.thumbnailPlaceholder} />
-            )}
+            )} */}
+            <div className={styles.thumbnailPlaceholder} />
           </div>
 
           <p className={styles.lastUpdated}>

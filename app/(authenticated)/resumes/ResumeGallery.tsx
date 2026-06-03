@@ -1,13 +1,11 @@
 "use client";
 
-import {
-  getResumes,
-  SORTABLE_FIELDS,
-  SortableField,
-} from "@/app/actions/resume";
+import { getResumes } from "@/app/actions/resume";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ResumeCard from "./ResumeCard";
 import { useInfiniteScroll } from "react-infinite-scroll-component";
+import { Resume } from "@/lib/generated/client";
+import { SORTABLE_FIELDS, SortableField } from "@/lib/types";
 
 type Props = {
   initialResumes: Resume[];
@@ -33,7 +31,7 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
 
     const res = await getResumes(orderKey, order, page * PAGE_SIZE, PAGE_SIZE);
     if (!res.ok) {
-      setErrMsg(`An error occurred while fetching: ${res.error.message}`);
+      setErrMsg(`Something went wrong. Please try again.`);
       return;
     }
     const {
@@ -48,7 +46,7 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
       setErrMsg(null);
       const res = await getResumes(orderKey, order, 0, PAGE_SIZE);
       if (!res.ok) {
-        setErrMsg(`An error occurred while fetching: ${res.error.message}`);
+        setErrMsg(`Something went wrong. Please try again.`);
         return;
       }
       const {

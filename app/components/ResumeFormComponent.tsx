@@ -1,12 +1,13 @@
 "use client";
 
 import { addResume, updateResume } from "@/app/actions/resume";
+import { Resume } from "@/lib/generated/client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 type Props = {
   resume?: Resume; // undefined: creation, otherwise: edit
-  onCancel: () => void;
+  onCancel?: () => void;
 };
 
 export default function ResumeFormComponent({ resume, onCancel }: Props) {
@@ -29,7 +30,7 @@ export default function ResumeFormComponent({ resume, onCancel }: Props) {
         return;
       }
       if (isEditing) {
-        onCancel();
+        onCancel!();
       } else {
         router.push(`/resumes/${res.value}`);
       }

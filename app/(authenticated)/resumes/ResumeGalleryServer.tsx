@@ -8,7 +8,12 @@ import { FileText } from "lucide-react";
 export default async function ResumeGalleryServer() {
   const res = await getResumes();
   if (!res.ok) {
-    return <ErrorDisplay errorMsg={res.error.message} icon={<FileText />} />;
+    return (
+      <ErrorDisplay
+        errorMsg={`Something went wrong. Please try again.`}
+        icon={<FileText />}
+      />
+    );
   }
   // TODO: might have other external components here, or else collapse to just one async component
   return (

@@ -20,7 +20,7 @@ import {
   returnSchemaValidationError,
   GenerateThumbnailError,
 } from "@/lib/types";
-import { Application, Status } from "@/lib/generated/client";
+import { Application, Resume, Status } from "@/lib/generated/client";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
 // TODO: RESUME
