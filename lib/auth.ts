@@ -51,3 +51,9 @@ export async function redirectIfAuthenticated(
     redirect(redirectTo);
   }
 }
+
+export async function sessionHasEmailLoginMethod(): Promise<boolean> {
+  const user = await requireUserObjectOrRedirectLogin();
+  const providers = user.identities?.map((i) => i.provider) ?? [];
+  return providers.includes("email");
+}

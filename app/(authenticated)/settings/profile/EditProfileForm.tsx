@@ -10,9 +10,8 @@ type Props = { userProfile: DBUser };
 
 export default function EditProfileForm({ userProfile }: Props) {
   const { name } = userProfile;
+  const snapshot = name;
 
-  // someName -> someNam -> someName would make this `true`.
-  // More of a UI / frontend issue to fix in a polish run.
   const [isDirty, setIsDirty] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
@@ -36,8 +35,10 @@ export default function EditProfileForm({ userProfile }: Props) {
 
       <Input
         label="Display name"
+        name="name"
         defaultValue={name ?? ""}
-        onChange={() => setIsDirty(true)}
+        placeholder="Enter a display name..."
+        onChange={(e) => setIsDirty(e.target.value.trim() !== snapshot)}
       />
 
       <Button

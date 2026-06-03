@@ -18,3 +18,18 @@ export const Status = {
 } as const;
 
 export type Status = (typeof Status)[keyof typeof Status];
+
+export const ReminderType = {
+  EVENT: "EVENT",
+  FOLLOW_UP: "FOLLOW_UP",
+} as const;
+
+export type ReminderType = (typeof ReminderType)[keyof typeof ReminderType];
+
+export const TimelineEventType = {
+  StatusUpdate: "StatusUpdate",
+  CustomEvent: "CustomEvent",
+} as const;
+
+export type TimelineEventType =
+  (typeof TimelineEventType)[keyof typeof TimelineEventType];

@@ -43,6 +43,7 @@ export type UserCountAggregateOutputType = {
   email: number;
   name: number;
   createdAt: number;
+  settings: number;
   _all: number;
 };
 
@@ -65,6 +66,7 @@ export type UserCountAggregateInputType = {
   email?: true;
   name?: true;
   createdAt?: true;
+  settings?: true;
   _all?: true;
 };
 
@@ -152,6 +154,7 @@ export type UserGroupByOutputType = {
   email: string;
   name: string | null;
   createdAt: Date;
+  settings: runtime.JsonValue | null;
   _count: UserCountAggregateOutputType | null;
   _min: UserMinAggregateOutputType | null;
   _max: UserMaxAggregateOutputType | null;
@@ -178,7 +181,9 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string;
   name?: Prisma.StringNullableFilter<"User"> | string | null;
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
+  settings?: Prisma.JsonNullableFilter<"User">;
   applications?: Prisma.ApplicationListRelationFilter;
+  resumes?: Prisma.ResumeListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -186,7 +191,9 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  settings?: Prisma.SortOrderInput | Prisma.SortOrder;
   applications?: Prisma.ApplicationOrderByRelationAggregateInput;
+  resumes?: Prisma.ResumeOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -198,7 +205,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     name?: Prisma.StringNullableFilter<"User"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
+    settings?: Prisma.JsonNullableFilter<"User">;
     applications?: Prisma.ApplicationListRelationFilter;
+    resumes?: Prisma.ResumeListRelationFilter;
   },
   "id" | "email"
 >;
@@ -208,6 +217,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  settings?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.UserCountOrderByAggregateInput;
   _max?: Prisma.UserMaxOrderByAggregateInput;
   _min?: Prisma.UserMinOrderByAggregateInput;
@@ -225,6 +235,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string;
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string;
+  settings?: Prisma.JsonNullableWithAggregatesFilter<"User">;
 };
 
 export type UserCreateInput = {
@@ -232,7 +243,9 @@ export type UserCreateInput = {
   email: string;
   name?: string | null;
   createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -240,7 +253,9 @@ export type UserUncheckedCreateInput = {
   email: string;
   name?: string | null;
   createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -248,7 +263,9 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -256,7 +273,9 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -264,6 +283,7 @@ export type UserCreateManyInput = {
   email: string;
   name?: string | null;
   createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
 };
 
 export type UserUpdateManyMutationInput = {
@@ -271,6 +291,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
 };
 
 export type UserUncheckedUpdateManyInput = {
@@ -278,6 +299,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
 };
 
 export type UserCountOrderByAggregateInput = {
@@ -285,6 +307,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  settings?: Prisma.SortOrder;
 };
 
 export type UserMaxOrderByAggregateInput = {
@@ -344,11 +367,39 @@ export type UserUpdateOneRequiredWithoutApplicationsNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutResumesInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutResumesInput,
+    Prisma.UserUncheckedCreateWithoutResumesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutResumesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutResumesInput,
+    Prisma.UserUncheckedCreateWithoutResumesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput;
+  upsert?: Prisma.UserUpsertWithoutResumesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutResumesInput,
+      Prisma.UserUpdateWithoutResumesInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutResumesInput
+  >;
+};
+
 export type UserCreateWithoutApplicationsInput = {
   id: string;
   email: string;
   name?: string | null;
   createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -356,6 +407,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   email: string;
   name?: string | null;
   createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -391,6 +444,8 @@ export type UserUpdateWithoutApplicationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -398,6 +453,72 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutResumesInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutResumesInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutResumesInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutResumesInput,
+    Prisma.UserUncheckedCreateWithoutResumesInput
+  >;
+};
+
+export type UserUpsertWithoutResumesInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutResumesInput,
+    Prisma.UserUncheckedUpdateWithoutResumesInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutResumesInput,
+    Prisma.UserUncheckedCreateWithoutResumesInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutResumesInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutResumesInput,
+    Prisma.UserUncheckedUpdateWithoutResumesInput
+  >;
+};
+
+export type UserUpdateWithoutResumesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutResumesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -406,6 +527,7 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
 
 export type UserCountOutputType = {
   applications: number;
+  resumes: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -413,6 +535,7 @@ export type UserCountOutputTypeSelect<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   applications?: boolean | UserCountOutputTypeCountApplicationsArgs;
+  resumes?: boolean | UserCountOutputTypeCountResumesArgs;
 };
 
 /**
@@ -438,6 +561,16 @@ export type UserCountOutputTypeCountApplicationsArgs<
   where?: Prisma.ApplicationWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResumesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ResumeWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -447,7 +580,9 @@ export type UserSelect<
     email?: boolean;
     name?: boolean;
     createdAt?: boolean;
+    settings?: boolean;
     applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>;
+    resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["user"]
@@ -462,6 +597,7 @@ export type UserSelectCreateManyAndReturn<
     email?: boolean;
     name?: boolean;
     createdAt?: boolean;
+    settings?: boolean;
   },
   ExtArgs["result"]["user"]
 >;
@@ -475,6 +611,7 @@ export type UserSelectUpdateManyAndReturn<
     email?: boolean;
     name?: boolean;
     createdAt?: boolean;
+    settings?: boolean;
   },
   ExtArgs["result"]["user"]
 >;
@@ -484,13 +621,14 @@ export type UserSelectScalar = {
   email?: boolean;
   name?: boolean;
   createdAt?: boolean;
+  settings?: boolean;
 };
 
 export type UserOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  "id" | "email" | "name" | "createdAt",
+  "id" | "email" | "name" | "createdAt" | "settings",
   ExtArgs["result"]["user"]
 >;
 export type UserInclude<
@@ -498,6 +636,7 @@ export type UserInclude<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>;
+  resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -516,6 +655,7 @@ export type $UserPayload<
   name: "User";
   objects: {
     applications: Prisma.$ApplicationPayload<ExtArgs>[];
+    resumes: Prisma.$ResumePayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -523,6 +663,7 @@ export type $UserPayload<
       email: string;
       name: string | null;
       createdAt: Date;
+      settings: runtime.JsonValue | null;
     },
     ExtArgs["result"]["user"]
   >;
@@ -1084,6 +1225,17 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  resumes<T extends Prisma.User$resumesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$resumesArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ResumePayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1130,6 +1282,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", "String">;
   readonly name: Prisma.FieldRef<"User", "String">;
   readonly createdAt: Prisma.FieldRef<"User", "DateTime">;
+  readonly settings: Prisma.FieldRef<"User", "Json">;
 }
 
 // Custom InputTypes
@@ -1604,6 +1757,35 @@ export type User$applicationsArgs<
   distinct?:
     | Prisma.ApplicationScalarFieldEnum
     | Prisma.ApplicationScalarFieldEnum[];
+};
+
+/**
+ * User.resumes
+ */
+export type User$resumesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Resume
+   */
+  select?: Prisma.ResumeSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Resume
+   */
+  omit?: Prisma.ResumeOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeInclude<ExtArgs> | null;
+  where?: Prisma.ResumeWhereInput;
+  orderBy?:
+    | Prisma.ResumeOrderByWithRelationInput
+    | Prisma.ResumeOrderByWithRelationInput[];
+  cursor?: Prisma.ResumeWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ResumeScalarFieldEnum | Prisma.ResumeScalarFieldEnum[];
 };
 
 /**

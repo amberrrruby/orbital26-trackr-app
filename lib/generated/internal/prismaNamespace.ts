@@ -414,6 +414,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never
 export const ModelName = {
   User: "User",
   Application: "Application",
+  Resume: "Resume",
+  Reminder: "Reminder",
+  TimelineEvent: "TimelineEvent",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -435,7 +438,12 @@ export type TypeMap<
     omit: GlobalOmitOptions;
   };
   meta: {
-    modelProps: "user" | "application";
+    modelProps:
+      | "user"
+      | "application"
+      | "resume"
+      | "reminder"
+      | "timelineEvent";
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -591,6 +599,234 @@ export type TypeMap<
         };
       };
     };
+    Resume: {
+      payload: Prisma.$ResumePayload<ExtArgs>;
+      fields: Prisma.ResumeFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.ResumeFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.ResumeFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        findFirst: {
+          args: Prisma.ResumeFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.ResumeFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        findMany: {
+          args: Prisma.ResumeFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[];
+        };
+        create: {
+          args: Prisma.ResumeCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        createMany: {
+          args: Prisma.ResumeCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.ResumeCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[];
+        };
+        delete: {
+          args: Prisma.ResumeDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        update: {
+          args: Prisma.ResumeUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        deleteMany: {
+          args: Prisma.ResumeDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.ResumeUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.ResumeUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[];
+        };
+        upsert: {
+          args: Prisma.ResumeUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>;
+        };
+        aggregate: {
+          args: Prisma.ResumeAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResume>;
+        };
+        groupBy: {
+          args: Prisma.ResumeGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ResumeGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.ResumeCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.ResumeCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    Reminder: {
+      payload: Prisma.$ReminderPayload<ExtArgs>;
+      fields: Prisma.ReminderFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.ReminderFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.ReminderFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        findFirst: {
+          args: Prisma.ReminderFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.ReminderFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        findMany: {
+          args: Prisma.ReminderFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[];
+        };
+        create: {
+          args: Prisma.ReminderCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        createMany: {
+          args: Prisma.ReminderCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.ReminderCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[];
+        };
+        delete: {
+          args: Prisma.ReminderDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        update: {
+          args: Prisma.ReminderUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        deleteMany: {
+          args: Prisma.ReminderDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.ReminderUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.ReminderUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>[];
+        };
+        upsert: {
+          args: Prisma.ReminderUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReminderPayload>;
+        };
+        aggregate: {
+          args: Prisma.ReminderAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReminder>;
+        };
+        groupBy: {
+          args: Prisma.ReminderGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ReminderGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.ReminderCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.ReminderCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    TimelineEvent: {
+      payload: Prisma.$TimelineEventPayload<ExtArgs>;
+      fields: Prisma.TimelineEventFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.TimelineEventFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.TimelineEventFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        findFirst: {
+          args: Prisma.TimelineEventFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.TimelineEventFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        findMany: {
+          args: Prisma.TimelineEventFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>[];
+        };
+        create: {
+          args: Prisma.TimelineEventCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        createMany: {
+          args: Prisma.TimelineEventCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.TimelineEventCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>[];
+        };
+        delete: {
+          args: Prisma.TimelineEventDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        update: {
+          args: Prisma.TimelineEventUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        deleteMany: {
+          args: Prisma.TimelineEventDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.TimelineEventUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.TimelineEventUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>[];
+        };
+        upsert: {
+          args: Prisma.TimelineEventUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimelineEventPayload>;
+        };
+        aggregate: {
+          args: Prisma.TimelineEventAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTimelineEvent>;
+        };
+        groupBy: {
+          args: Prisma.TimelineEventGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.TimelineEventGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.TimelineEventCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.TimelineEventCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -635,6 +871,7 @@ export const UserScalarFieldEnum = {
   email: "email",
   name: "name",
   createdAt: "createdAt",
+  settings: "settings",
 } as const;
 
 export type UserScalarFieldEnum =
@@ -646,17 +883,55 @@ export const ApplicationScalarFieldEnum = {
   role: "role",
   source: "source",
   status: "status",
+  interviewRound: "interviewRound",
   dateApplied: "dateApplied",
   notes: "notes",
-  resumeUrl: "resumeUrl",
   tags: "tags",
   createdAt: "createdAt",
   updatedAt: "updatedAt",
+  resumeId: "resumeId",
   userId: "userId",
 } as const;
 
 export type ApplicationScalarFieldEnum =
   (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum];
+
+export const ResumeScalarFieldEnum = {
+  id: "id",
+  title: "title",
+  tags: "tags",
+  notes: "notes",
+  resumeUrl: "resumeUrl",
+  fileType: "fileType",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  userId: "userId",
+} as const;
+
+export type ResumeScalarFieldEnum =
+  (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum];
+
+export const ReminderScalarFieldEnum = {
+  id: "id",
+  type: "type",
+  remindAt: "remindAt",
+  content: "content",
+  applicationId: "applicationId",
+} as const;
+
+export type ReminderScalarFieldEnum =
+  (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum];
+
+export const TimelineEventScalarFieldEnum = {
+  id: "id",
+  type: "type",
+  description: "description",
+  createdAt: "createdAt",
+  applicationId: "applicationId",
+} as const;
+
+export type TimelineEventScalarFieldEnum =
+  (typeof TimelineEventScalarFieldEnum)[keyof typeof TimelineEventScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",
@@ -665,12 +940,29 @@ export const SortOrder = {
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const;
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
+
 export const QueryMode = {
   default: "default",
   insensitive: "insensitive",
 } as const;
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode];
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const;
+
+export type JsonNullValueFilter =
+  (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 
 export const NullsOrder = {
   first: "first",
@@ -716,6 +1008,22 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<
 >;
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Json"
+>;
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "QueryMode"
+>;
+
+/**
  * Reference to a field of type 'Status'
  */
 export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -745,6 +1053,50 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   "Int[]"
+>;
+
+/**
+ * Reference to a field of type 'ReminderType'
+ */
+export type EnumReminderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "ReminderType"
+>;
+
+/**
+ * Reference to a field of type 'ReminderType[]'
+ */
+export type ListEnumReminderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "ReminderType[]"
+>;
+
+/**
+ * Reference to a field of type 'TimelineEventType'
+ */
+export type EnumTimelineEventTypeFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "TimelineEventType">;
+
+/**
+ * Reference to a field of type 'TimelineEventType[]'
+ */
+export type ListEnumTimelineEventTypeFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "TimelineEventType[]">;
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Float"
+>;
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Float[]"
 >;
 
 /**
@@ -867,6 +1219,9 @@ export type PrismaClientOptions = (
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit;
   application?: Prisma.ApplicationOmit;
+  resume?: Prisma.ResumeOmit;
+  reminder?: Prisma.ReminderOmit;
+  timelineEvent?: Prisma.TimelineEventOmit;
 };
 
 /* Types for Logging */

@@ -8,11 +8,18 @@ datasource db {
 }
 
 model User {
-  id           String        @id @db.Uuid
-  email        String        @unique
-  name         String?
-  createdAt    DateTime      @default(now())
-  applications Application[]
+  // FIELDS
+  id             String   @id @db.Uuid
+  email          String   @unique
+  name           String?
+  createdAt      DateTime @default(now())
+  settings       Json?
+
+  // 1:1 LINKS
+
+  // 1:MANY LINKS
+  applications   Application[]
+  resumes        Resume[]
 }
 
 enum Status {
@@ -25,17 +32,84 @@ enum Status {
 }
 
 model Application {
-  id          String   @id @default(cuid())
-  company     String
-  role        String
-  source      String?
-  status      Status   @default(APPLIED)
-  dateApplied DateTime?
-  notes       String?
-  resumeUrl   String?
-  tags        String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String   @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // FIELDS
+  id             String   @id @default(cuid())
+  company        String
+  role           String
+  source         String?
+  status         Status   @default(APPLIED)
+  interviewRound  Int?
+  dateApplied    DateTime?
+  notes          String?
+  tags           String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // 1:1 LINKS
+  resumeId       String?
+  resume         Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  userId         String   @db.Uuid
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 1:MANY LINKS
+  reminders      Reminder[]
+  timelineEvents TimelineEvent[]
+}
+
+model Resume {
+  // FIELDS
+  id             String   @id @default(cuid())
+  title          String
+  tags           String[]
+  notes          String?
+  resumeUrl      String
+  fileType       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // 1:1 LINKS
+  userId         String   @db.Uuid
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 1:MANY LINKS
+  applications   Application[]
+}
+
+enum ReminderType {
+  EVENT
+  FOLLOW_UP
+}
+
+model Reminder {
+  // FIELDS
+  id             String       @id @default(cuid())
+  type           ReminderType
+  remindAt       DateTime
+  content        String
+
+  // 1:1 LINKS
+  applicationId  String
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  // 1:MANY LINKS
+}
+
+enum TimelineEventType {
+  StatusUpdate
+  CustomEvent
+}
+
+model TimelineEvent {
+  // FIELDS
+  id             String            @id @default(cuid())
+  type           TimelineEventType
+  description    String
+  createdAt      DateTime
+
+  // 1:1 LINKS
+  applicationId  String
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  // 1:MANY LINKS
 }

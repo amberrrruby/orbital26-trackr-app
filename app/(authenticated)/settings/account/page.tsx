@@ -1,4 +1,4 @@
-import { requireUserObjectOrRedirectLogin } from "@/lib/auth";
+import { sessionHasEmailLoginMethod } from "@/lib/auth";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountButton from "../DeleteAccountComponents";
 import ChangeEmailForm from "./ChangeEmailForm";
@@ -22,12 +22,8 @@ function getSuccessMessage(success?: string): string | null {
 }
 
 export default async function AccountSettingsPage({ searchParams }: Props) {
-  const user = await requireUserObjectOrRedirectLogin();
-  const providers = user.identities?.map((i) => i.provider) ?? [];
-  const canChangePassword = providers.includes("email");
-
   const { success } = await searchParams;
-
+  const hasEmailLoginMethod = await sessionHasEmailLoginMethod();
   const successMessage = getSuccessMessage(success);
 
   return (
@@ -36,12 +32,18 @@ export default async function AccountSettingsPage({ searchParams }: Props) {
 
       <section className={styles.card}>
         <h1>Change Email</h1>
-        <ChangeEmailForm />
+        {hasEmailLoginMethod ? (
+          <ChangeEmailForm />
+        ) : (
+          <p>
+            <i>This account does not use an email.</i>
+          </p>
+        )}
       </section>
 
       <section className={styles.card}>
         <h1>Change Password</h1>
-        {canChangePassword ? (
+        {hasEmailLoginMethod ? (
           <ChangePasswordForm />
         ) : (
           <p>
