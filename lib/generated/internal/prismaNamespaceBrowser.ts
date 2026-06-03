@@ -56,6 +56,9 @@ export const AnyNull = runtime.AnyNull;
 export const ModelName = {
   User: "User",
   Application: "Application",
+  Resume: "Resume",
+  Reminder: "Reminder",
+  TimelineEvent: "TimelineEvent",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -79,6 +82,7 @@ export const UserScalarFieldEnum = {
   email: "email",
   name: "name",
   createdAt: "createdAt",
+  settings: "settings",
 } as const;
 
 export type UserScalarFieldEnum =
@@ -90,17 +94,55 @@ export const ApplicationScalarFieldEnum = {
   role: "role",
   source: "source",
   status: "status",
+  interviewRound: "interviewRound",
   dateApplied: "dateApplied",
   notes: "notes",
-  resumeUrl: "resumeUrl",
   tags: "tags",
   createdAt: "createdAt",
   updatedAt: "updatedAt",
+  resumeId: "resumeId",
   userId: "userId",
 } as const;
 
 export type ApplicationScalarFieldEnum =
   (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum];
+
+export const ResumeScalarFieldEnum = {
+  id: "id",
+  title: "title",
+  tags: "tags",
+  notes: "notes",
+  resumeUrl: "resumeUrl",
+  fileType: "fileType",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  userId: "userId",
+} as const;
+
+export type ResumeScalarFieldEnum =
+  (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum];
+
+export const ReminderScalarFieldEnum = {
+  id: "id",
+  type: "type",
+  remindAt: "remindAt",
+  content: "content",
+  applicationId: "applicationId",
+} as const;
+
+export type ReminderScalarFieldEnum =
+  (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum];
+
+export const TimelineEventScalarFieldEnum = {
+  id: "id",
+  type: "type",
+  description: "description",
+  createdAt: "createdAt",
+  applicationId: "applicationId",
+} as const;
+
+export type TimelineEventScalarFieldEnum =
+  (typeof TimelineEventScalarFieldEnum)[keyof typeof TimelineEventScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",
@@ -109,12 +151,29 @@ export const SortOrder = {
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const;
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
+
 export const QueryMode = {
   default: "default",
   insensitive: "insensitive",
 } as const;
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode];
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const;
+
+export type JsonNullValueFilter =
+  (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 
 export const NullsOrder = {
   first: "first",

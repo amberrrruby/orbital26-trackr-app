@@ -56,3 +56,18 @@ export type User = Prisma.UserModel;
  *
  */
 export type Application = Prisma.ApplicationModel;
+/**
+ * Model Resume
+ *
+ */
+export type Resume = Prisma.ResumeModel;
+/**
+ * Model Reminder
+ *
+ */
+export type Reminder = Prisma.ReminderModel;
+/**
+ * Model TimelineEvent
+ *
+ */
+export type TimelineEvent = Prisma.TimelineEventModel;

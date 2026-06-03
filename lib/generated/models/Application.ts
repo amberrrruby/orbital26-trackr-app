@@ -20,8 +20,18 @@ export type ApplicationModel =
 
 export type AggregateApplication = {
   _count: ApplicationCountAggregateOutputType | null;
+  _avg: ApplicationAvgAggregateOutputType | null;
+  _sum: ApplicationSumAggregateOutputType | null;
   _min: ApplicationMinAggregateOutputType | null;
   _max: ApplicationMaxAggregateOutputType | null;
+};
+
+export type ApplicationAvgAggregateOutputType = {
+  interviewRound: number | null;
+};
+
+export type ApplicationSumAggregateOutputType = {
+  interviewRound: number | null;
 };
 
 export type ApplicationMinAggregateOutputType = {
@@ -30,11 +40,12 @@ export type ApplicationMinAggregateOutputType = {
   role: string | null;
   source: string | null;
   status: $Enums.Status | null;
+  interviewRound: number | null;
   dateApplied: Date | null;
   notes: string | null;
-  resumeUrl: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  resumeId: string | null;
   userId: string | null;
 };
 
@@ -44,11 +55,12 @@ export type ApplicationMaxAggregateOutputType = {
   role: string | null;
   source: string | null;
   status: $Enums.Status | null;
+  interviewRound: number | null;
   dateApplied: Date | null;
   notes: string | null;
-  resumeUrl: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  resumeId: string | null;
   userId: string | null;
 };
 
@@ -58,14 +70,23 @@ export type ApplicationCountAggregateOutputType = {
   role: number;
   source: number;
   status: number;
+  interviewRound: number;
   dateApplied: number;
   notes: number;
-  resumeUrl: number;
   tags: number;
   createdAt: number;
   updatedAt: number;
+  resumeId: number;
   userId: number;
   _all: number;
+};
+
+export type ApplicationAvgAggregateInputType = {
+  interviewRound?: true;
+};
+
+export type ApplicationSumAggregateInputType = {
+  interviewRound?: true;
 };
 
 export type ApplicationMinAggregateInputType = {
@@ -74,11 +95,12 @@ export type ApplicationMinAggregateInputType = {
   role?: true;
   source?: true;
   status?: true;
+  interviewRound?: true;
   dateApplied?: true;
   notes?: true;
-  resumeUrl?: true;
   createdAt?: true;
   updatedAt?: true;
+  resumeId?: true;
   userId?: true;
 };
 
@@ -88,11 +110,12 @@ export type ApplicationMaxAggregateInputType = {
   role?: true;
   source?: true;
   status?: true;
+  interviewRound?: true;
   dateApplied?: true;
   notes?: true;
-  resumeUrl?: true;
   createdAt?: true;
   updatedAt?: true;
+  resumeId?: true;
   userId?: true;
 };
 
@@ -102,12 +125,13 @@ export type ApplicationCountAggregateInputType = {
   role?: true;
   source?: true;
   status?: true;
+  interviewRound?: true;
   dateApplied?: true;
   notes?: true;
-  resumeUrl?: true;
   tags?: true;
   createdAt?: true;
   updatedAt?: true;
+  resumeId?: true;
   userId?: true;
   _all?: true;
 };
@@ -155,6 +179,18 @@ export type ApplicationAggregateArgs<
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+   **/
+  _avg?: ApplicationAvgAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+   **/
+  _sum?: ApplicationSumAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
    **/
   _min?: ApplicationMinAggregateInputType;
@@ -187,6 +223,8 @@ export type ApplicationGroupByArgs<
   take?: number;
   skip?: number;
   _count?: ApplicationCountAggregateInputType | true;
+  _avg?: ApplicationAvgAggregateInputType;
+  _sum?: ApplicationSumAggregateInputType;
   _min?: ApplicationMinAggregateInputType;
   _max?: ApplicationMaxAggregateInputType;
 };
@@ -197,14 +235,17 @@ export type ApplicationGroupByOutputType = {
   role: string;
   source: string | null;
   status: $Enums.Status;
+  interviewRound: number | null;
   dateApplied: Date | null;
   notes: string | null;
-  resumeUrl: string | null;
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  resumeId: string | null;
   userId: string;
   _count: ApplicationCountAggregateOutputType | null;
+  _avg: ApplicationAvgAggregateOutputType | null;
+  _sum: ApplicationSumAggregateOutputType | null;
   _min: ApplicationMinAggregateOutputType | null;
   _max: ApplicationMaxAggregateOutputType | null;
 };
@@ -231,18 +272,25 @@ export type ApplicationWhereInput = {
   role?: Prisma.StringFilter<"Application"> | string;
   source?: Prisma.StringNullableFilter<"Application"> | string | null;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
+  interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
   dateApplied?:
     | Prisma.DateTimeNullableFilter<"Application">
     | Date
     | string
     | null;
   notes?: Prisma.StringNullableFilter<"Application"> | string | null;
-  resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
   tags?: Prisma.StringNullableListFilter<"Application">;
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
+  resumeId?: Prisma.StringNullableFilter<"Application"> | string | null;
   userId?: Prisma.UuidFilter<"Application"> | string;
+  resume?: Prisma.XOR<
+    Prisma.ResumeNullableScalarRelationFilter,
+    Prisma.ResumeWhereInput
+  > | null;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+  reminders?: Prisma.ReminderListRelationFilter;
+  timelineEvents?: Prisma.TimelineEventListRelationFilter;
 };
 
 export type ApplicationOrderByWithRelationInput = {
@@ -251,14 +299,18 @@ export type ApplicationOrderByWithRelationInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  interviewRound?: Prisma.SortOrderInput | Prisma.SortOrder;
   dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  resumeId?: Prisma.SortOrderInput | Prisma.SortOrder;
   userId?: Prisma.SortOrder;
+  resume?: Prisma.ResumeOrderByWithRelationInput;
   user?: Prisma.UserOrderByWithRelationInput;
+  reminders?: Prisma.ReminderOrderByRelationAggregateInput;
+  timelineEvents?: Prisma.TimelineEventOrderByRelationAggregateInput;
 };
 
 export type ApplicationWhereUniqueInput = Prisma.AtLeast<
@@ -271,18 +323,25 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<
     role?: Prisma.StringFilter<"Application"> | string;
     source?: Prisma.StringNullableFilter<"Application"> | string | null;
     status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
+    interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
     dateApplied?:
       | Prisma.DateTimeNullableFilter<"Application">
       | Date
       | string
       | null;
     notes?: Prisma.StringNullableFilter<"Application"> | string | null;
-    resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
     tags?: Prisma.StringNullableListFilter<"Application">;
     createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
+    resumeId?: Prisma.StringNullableFilter<"Application"> | string | null;
     userId?: Prisma.UuidFilter<"Application"> | string;
+    resume?: Prisma.XOR<
+      Prisma.ResumeNullableScalarRelationFilter,
+      Prisma.ResumeWhereInput
+    > | null;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+    reminders?: Prisma.ReminderListRelationFilter;
+    timelineEvents?: Prisma.TimelineEventListRelationFilter;
   },
   "id"
 >;
@@ -293,16 +352,19 @@ export type ApplicationOrderByWithAggregationInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  interviewRound?: Prisma.SortOrderInput | Prisma.SortOrder;
   dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  resumeId?: Prisma.SortOrderInput | Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   _count?: Prisma.ApplicationCountOrderByAggregateInput;
+  _avg?: Prisma.ApplicationAvgOrderByAggregateInput;
   _max?: Prisma.ApplicationMaxOrderByAggregateInput;
   _min?: Prisma.ApplicationMinOrderByAggregateInput;
+  _sum?: Prisma.ApplicationSumOrderByAggregateInput;
 };
 
 export type ApplicationScalarWhereWithAggregatesInput = {
@@ -321,16 +383,16 @@ export type ApplicationScalarWhereWithAggregatesInput = {
     | string
     | null;
   status?: Prisma.EnumStatusWithAggregatesFilter<"Application"> | $Enums.Status;
+  interviewRound?:
+    | Prisma.IntNullableWithAggregatesFilter<"Application">
+    | number
+    | null;
   dateApplied?:
     | Prisma.DateTimeNullableWithAggregatesFilter<"Application">
     | Date
     | string
     | null;
   notes?:
-    | Prisma.StringNullableWithAggregatesFilter<"Application">
-    | string
-    | null;
-  resumeUrl?:
     | Prisma.StringNullableWithAggregatesFilter<"Application">
     | string
     | null;
@@ -343,6 +405,10 @@ export type ApplicationScalarWhereWithAggregatesInput = {
     | Prisma.DateTimeWithAggregatesFilter<"Application">
     | Date
     | string;
+  resumeId?:
+    | Prisma.StringNullableWithAggregatesFilter<"Application">
+    | string
+    | null;
   userId?: Prisma.UuidWithAggregatesFilter<"Application"> | string;
 };
 
@@ -352,13 +418,16 @@ export type ApplicationCreateInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput;
   user: Prisma.UserCreateNestedOneWithoutApplicationsInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutApplicationInput;
 };
 
 export type ApplicationUncheckedCreateInput = {
@@ -367,13 +436,16 @@ export type ApplicationUncheckedCreateInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resumeId?: string | null;
   userId: string;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutApplicationInput;
 };
 
 export type ApplicationUpdateInput = {
@@ -382,17 +454,20 @@ export type ApplicationUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutApplicationNestedInput;
 };
 
 export type ApplicationUncheckedUpdateInput = {
@@ -401,17 +476,20 @@ export type ApplicationUncheckedUpdateInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutApplicationNestedInput;
 };
 
 export type ApplicationCreateManyInput = {
@@ -420,12 +498,13 @@ export type ApplicationCreateManyInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resumeId?: string | null;
   userId: string;
 };
 
@@ -435,13 +514,13 @@ export type ApplicationUpdateManyMutationInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -453,16 +532,17 @@ export type ApplicationUncheckedUpdateManyInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -490,13 +570,18 @@ export type ApplicationCountOrderByAggregateInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  interviewRound?: Prisma.SortOrder;
   dateApplied?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  resumeId?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
+};
+
+export type ApplicationAvgOrderByAggregateInput = {
+  interviewRound?: Prisma.SortOrder;
 };
 
 export type ApplicationMaxOrderByAggregateInput = {
@@ -505,11 +590,12 @@ export type ApplicationMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  interviewRound?: Prisma.SortOrder;
   dateApplied?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  resumeId?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
 };
 
@@ -519,12 +605,22 @@ export type ApplicationMinOrderByAggregateInput = {
   role?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  interviewRound?: Prisma.SortOrder;
   dateApplied?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  resumeId?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
+};
+
+export type ApplicationSumOrderByAggregateInput = {
+  interviewRound?: Prisma.SortOrder;
+};
+
+export type ApplicationScalarRelationFilter = {
+  is?: Prisma.ApplicationWhereInput;
+  isNot?: Prisma.ApplicationWhereInput;
 };
 
 export type ApplicationCreateNestedManyWithoutUserInput = {
@@ -645,6 +741,14 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status;
 };
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null;
+  increment?: number;
+  decrement?: number;
+  multiply?: number;
+  divide?: number;
+};
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null;
 };
@@ -654,18 +758,183 @@ export type ApplicationUpdatetagsInput = {
   push?: string | string[];
 };
 
+export type ApplicationCreateNestedManyWithoutResumeInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ApplicationCreateWithoutResumeInput,
+        Prisma.ApplicationUncheckedCreateWithoutResumeInput
+      >
+    | Prisma.ApplicationCreateWithoutResumeInput[]
+    | Prisma.ApplicationUncheckedCreateWithoutResumeInput[];
+  connectOrCreate?:
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput[];
+  createMany?: Prisma.ApplicationCreateManyResumeInputEnvelope;
+  connect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+};
+
+export type ApplicationUncheckedCreateNestedManyWithoutResumeInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ApplicationCreateWithoutResumeInput,
+        Prisma.ApplicationUncheckedCreateWithoutResumeInput
+      >
+    | Prisma.ApplicationCreateWithoutResumeInput[]
+    | Prisma.ApplicationUncheckedCreateWithoutResumeInput[];
+  connectOrCreate?:
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput[];
+  createMany?: Prisma.ApplicationCreateManyResumeInputEnvelope;
+  connect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+};
+
+export type ApplicationUpdateManyWithoutResumeNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ApplicationCreateWithoutResumeInput,
+        Prisma.ApplicationUncheckedCreateWithoutResumeInput
+      >
+    | Prisma.ApplicationCreateWithoutResumeInput[]
+    | Prisma.ApplicationUncheckedCreateWithoutResumeInput[];
+  connectOrCreate?:
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput[];
+  upsert?:
+    | Prisma.ApplicationUpsertWithWhereUniqueWithoutResumeInput
+    | Prisma.ApplicationUpsertWithWhereUniqueWithoutResumeInput[];
+  createMany?: Prisma.ApplicationCreateManyResumeInputEnvelope;
+  set?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  disconnect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  delete?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  connect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  update?:
+    | Prisma.ApplicationUpdateWithWhereUniqueWithoutResumeInput
+    | Prisma.ApplicationUpdateWithWhereUniqueWithoutResumeInput[];
+  updateMany?:
+    | Prisma.ApplicationUpdateManyWithWhereWithoutResumeInput
+    | Prisma.ApplicationUpdateManyWithWhereWithoutResumeInput[];
+  deleteMany?:
+    | Prisma.ApplicationScalarWhereInput
+    | Prisma.ApplicationScalarWhereInput[];
+};
+
+export type ApplicationUncheckedUpdateManyWithoutResumeNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ApplicationCreateWithoutResumeInput,
+        Prisma.ApplicationUncheckedCreateWithoutResumeInput
+      >
+    | Prisma.ApplicationCreateWithoutResumeInput[]
+    | Prisma.ApplicationUncheckedCreateWithoutResumeInput[];
+  connectOrCreate?:
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput
+    | Prisma.ApplicationCreateOrConnectWithoutResumeInput[];
+  upsert?:
+    | Prisma.ApplicationUpsertWithWhereUniqueWithoutResumeInput
+    | Prisma.ApplicationUpsertWithWhereUniqueWithoutResumeInput[];
+  createMany?: Prisma.ApplicationCreateManyResumeInputEnvelope;
+  set?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  disconnect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  delete?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  connect?:
+    | Prisma.ApplicationWhereUniqueInput
+    | Prisma.ApplicationWhereUniqueInput[];
+  update?:
+    | Prisma.ApplicationUpdateWithWhereUniqueWithoutResumeInput
+    | Prisma.ApplicationUpdateWithWhereUniqueWithoutResumeInput[];
+  updateMany?:
+    | Prisma.ApplicationUpdateManyWithWhereWithoutResumeInput
+    | Prisma.ApplicationUpdateManyWithWhereWithoutResumeInput[];
+  deleteMany?:
+    | Prisma.ApplicationScalarWhereInput
+    | Prisma.ApplicationScalarWhereInput[];
+};
+
+export type ApplicationCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedCreateWithoutRemindersInput
+  >;
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutRemindersInput;
+  connect?: Prisma.ApplicationWhereUniqueInput;
+};
+
+export type ApplicationUpdateOneRequiredWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedCreateWithoutRemindersInput
+  >;
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutRemindersInput;
+  upsert?: Prisma.ApplicationUpsertWithoutRemindersInput;
+  connect?: Prisma.ApplicationWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ApplicationUpdateToOneWithWhereWithoutRemindersInput,
+      Prisma.ApplicationUpdateWithoutRemindersInput
+    >,
+    Prisma.ApplicationUncheckedUpdateWithoutRemindersInput
+  >;
+};
+
+export type ApplicationCreateNestedOneWithoutTimelineEventsInput = {
+  create?: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedCreateWithoutTimelineEventsInput
+  >;
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTimelineEventsInput;
+  connect?: Prisma.ApplicationWhereUniqueInput;
+};
+
+export type ApplicationUpdateOneRequiredWithoutTimelineEventsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedCreateWithoutTimelineEventsInput
+  >;
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTimelineEventsInput;
+  upsert?: Prisma.ApplicationUpsertWithoutTimelineEventsInput;
+  connect?: Prisma.ApplicationWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ApplicationUpdateToOneWithWhereWithoutTimelineEventsInput,
+      Prisma.ApplicationUpdateWithoutTimelineEventsInput
+    >,
+    Prisma.ApplicationUncheckedUpdateWithoutTimelineEventsInput
+  >;
+};
+
 export type ApplicationCreateWithoutUserInput = {
   id?: string;
   company: string;
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutApplicationInput;
 };
 
 export type ApplicationUncheckedCreateWithoutUserInput = {
@@ -674,12 +943,15 @@ export type ApplicationUncheckedCreateWithoutUserInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resumeId?: string | null;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutApplicationInput;
 };
 
 export type ApplicationCreateOrConnectWithoutUserInput = {
@@ -738,17 +1010,303 @@ export type ApplicationScalarWhereInput = {
   role?: Prisma.StringFilter<"Application"> | string;
   source?: Prisma.StringNullableFilter<"Application"> | string | null;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
+  interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
   dateApplied?:
     | Prisma.DateTimeNullableFilter<"Application">
     | Date
     | string
     | null;
   notes?: Prisma.StringNullableFilter<"Application"> | string | null;
-  resumeUrl?: Prisma.StringNullableFilter<"Application"> | string | null;
   tags?: Prisma.StringNullableListFilter<"Application">;
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string;
+  resumeId?: Prisma.StringNullableFilter<"Application"> | string | null;
   userId?: Prisma.UuidFilter<"Application"> | string;
+};
+
+export type ApplicationCreateWithoutResumeInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  user: Prisma.UserCreateNestedOneWithoutApplicationsInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationUncheckedCreateWithoutResumeInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  userId: string;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutApplicationInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationCreateOrConnectWithoutResumeInput = {
+  where: Prisma.ApplicationWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutResumeInput,
+    Prisma.ApplicationUncheckedCreateWithoutResumeInput
+  >;
+};
+
+export type ApplicationCreateManyResumeInputEnvelope = {
+  data:
+    | Prisma.ApplicationCreateManyResumeInput
+    | Prisma.ApplicationCreateManyResumeInput[];
+  skipDuplicates?: boolean;
+};
+
+export type ApplicationUpsertWithWhereUniqueWithoutResumeInput = {
+  where: Prisma.ApplicationWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutResumeInput,
+    Prisma.ApplicationUncheckedUpdateWithoutResumeInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutResumeInput,
+    Prisma.ApplicationUncheckedCreateWithoutResumeInput
+  >;
+};
+
+export type ApplicationUpdateWithWhereUniqueWithoutResumeInput = {
+  where: Prisma.ApplicationWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutResumeInput,
+    Prisma.ApplicationUncheckedUpdateWithoutResumeInput
+  >;
+};
+
+export type ApplicationUpdateManyWithWhereWithoutResumeInput = {
+  where: Prisma.ApplicationScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.ApplicationUpdateManyMutationInput,
+    Prisma.ApplicationUncheckedUpdateManyWithoutResumeInput
+  >;
+};
+
+export type ApplicationCreateWithoutRemindersInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput;
+  user: Prisma.UserCreateNestedOneWithoutApplicationsInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationUncheckedCreateWithoutRemindersInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  resumeId?: string | null;
+  userId: string;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.ApplicationWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedCreateWithoutRemindersInput
+  >;
+};
+
+export type ApplicationUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedUpdateWithoutRemindersInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedCreateWithoutRemindersInput
+  >;
+  where?: Prisma.ApplicationWhereInput;
+};
+
+export type ApplicationUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.ApplicationWhereInput;
+  data: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutRemindersInput,
+    Prisma.ApplicationUncheckedUpdateWithoutRemindersInput
+  >;
+};
+
+export type ApplicationUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput;
+  user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutApplicationNestedInput;
+};
+
+export type ApplicationUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutApplicationNestedInput;
+};
+
+export type ApplicationCreateWithoutTimelineEventsInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput;
+  user: Prisma.UserCreateNestedOneWithoutApplicationsInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationUncheckedCreateWithoutTimelineEventsInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  resumeId?: string | null;
+  userId: string;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutApplicationInput;
+};
+
+export type ApplicationCreateOrConnectWithoutTimelineEventsInput = {
+  where: Prisma.ApplicationWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedCreateWithoutTimelineEventsInput
+  >;
+};
+
+export type ApplicationUpsertWithoutTimelineEventsInput = {
+  update: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedUpdateWithoutTimelineEventsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ApplicationCreateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedCreateWithoutTimelineEventsInput
+  >;
+  where?: Prisma.ApplicationWhereInput;
+};
+
+export type ApplicationUpdateToOneWithWhereWithoutTimelineEventsInput = {
+  where?: Prisma.ApplicationWhereInput;
+  data: Prisma.XOR<
+    Prisma.ApplicationUpdateWithoutTimelineEventsInput,
+    Prisma.ApplicationUncheckedUpdateWithoutTimelineEventsInput
+  >;
+};
+
+export type ApplicationUpdateWithoutTimelineEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput;
+  user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutApplicationNestedInput;
+};
+
+export type ApplicationUncheckedUpdateWithoutTimelineEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutApplicationNestedInput;
 };
 
 export type ApplicationCreateManyUserInput = {
@@ -757,12 +1315,13 @@ export type ApplicationCreateManyUserInput = {
   role: string;
   source?: string | null;
   status?: $Enums.Status;
+  interviewRound?: number | null;
   dateApplied?: Date | string | null;
   notes?: string | null;
-  resumeUrl?: string | null;
   tags?: Prisma.ApplicationCreatetagsInput | string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  resumeId?: string | null;
 };
 
 export type ApplicationUpdateWithoutUserInput = {
@@ -771,16 +1330,19 @@ export type ApplicationUpdateWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutApplicationNestedInput;
 };
 
 export type ApplicationUncheckedUpdateWithoutUserInput = {
@@ -789,16 +1351,19 @@ export type ApplicationUncheckedUpdateWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutApplicationNestedInput;
 };
 
 export type ApplicationUncheckedUpdateManyWithoutUserInput = {
@@ -807,16 +1372,143 @@ export type ApplicationUncheckedUpdateManyWithoutUserInput = {
   role?: Prisma.StringFieldUpdateOperationsInput | string;
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
     | null;
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   tags?: Prisma.ApplicationUpdatetagsInput | string[];
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+};
+
+export type ApplicationCreateManyResumeInput = {
+  id?: string;
+  company: string;
+  role: string;
+  source?: string | null;
+  status?: $Enums.Status;
+  interviewRound?: number | null;
+  dateApplied?: Date | string | null;
+  notes?: string | null;
+  tags?: Prisma.ApplicationCreatetagsInput | string[];
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  userId: string;
+};
+
+export type ApplicationUpdateWithoutResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutApplicationNestedInput;
+};
+
+export type ApplicationUncheckedUpdateWithoutResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutApplicationNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutApplicationNestedInput;
+};
+
+export type ApplicationUncheckedUpdateManyWithoutResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company?: Prisma.StringFieldUpdateOperationsInput | string;
+  role?: Prisma.StringFieldUpdateOperationsInput | string;
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
+  interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  dateApplied?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  tags?: Prisma.ApplicationUpdatetagsInput | string[];
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+
+/**
+ * Count Type ApplicationCountOutputType
+ */
+
+export type ApplicationCountOutputType = {
+  reminders: number;
+  timelineEvents: number;
+};
+
+export type ApplicationCountOutputTypeSelect<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  reminders?: boolean | ApplicationCountOutputTypeCountRemindersArgs;
+  timelineEvents?: boolean | ApplicationCountOutputTypeCountTimelineEventsArgs;
+};
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeDefaultArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ApplicationCountOutputType
+   */
+  select?: Prisma.ApplicationCountOutputTypeSelect<ExtArgs> | null;
+};
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeCountRemindersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ReminderWhereInput;
+};
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeCountTimelineEventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.TimelineEventWhereInput;
 };
 
 export type ApplicationSelect<
@@ -829,14 +1521,19 @@ export type ApplicationSelect<
     role?: boolean;
     source?: boolean;
     status?: boolean;
+    interviewRound?: boolean;
     dateApplied?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
     tags?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    resumeId?: boolean;
     userId?: boolean;
+    resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    reminders?: boolean | Prisma.Application$remindersArgs<ExtArgs>;
+    timelineEvents?: boolean | Prisma.Application$timelineEventsArgs<ExtArgs>;
+    _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["application"]
 >;
@@ -851,13 +1548,15 @@ export type ApplicationSelectCreateManyAndReturn<
     role?: boolean;
     source?: boolean;
     status?: boolean;
+    interviewRound?: boolean;
     dateApplied?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
     tags?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    resumeId?: boolean;
     userId?: boolean;
+    resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["application"]
@@ -873,13 +1572,15 @@ export type ApplicationSelectUpdateManyAndReturn<
     role?: boolean;
     source?: boolean;
     status?: boolean;
+    interviewRound?: boolean;
     dateApplied?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
     tags?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    resumeId?: boolean;
     userId?: boolean;
+    resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["application"]
@@ -891,12 +1592,13 @@ export type ApplicationSelectScalar = {
   role?: boolean;
   source?: boolean;
   status?: boolean;
+  interviewRound?: boolean;
   dateApplied?: boolean;
   notes?: boolean;
-  resumeUrl?: boolean;
   tags?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  resumeId?: boolean;
   userId?: boolean;
 };
 
@@ -909,12 +1611,13 @@ export type ApplicationOmit<
   | "role"
   | "source"
   | "status"
+  | "interviewRound"
   | "dateApplied"
   | "notes"
-  | "resumeUrl"
   | "tags"
   | "createdAt"
   | "updatedAt"
+  | "resumeId"
   | "userId",
   ExtArgs["result"]["application"]
 >;
@@ -922,18 +1625,24 @@ export type ApplicationInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
+  resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+  reminders?: boolean | Prisma.Application$remindersArgs<ExtArgs>;
+  timelineEvents?: boolean | Prisma.Application$timelineEventsArgs<ExtArgs>;
+  _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type ApplicationIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
+  resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 export type ApplicationIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
+  resume?: boolean | Prisma.Application$resumeArgs<ExtArgs>;
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 
@@ -943,7 +1652,10 @@ export type $ApplicationPayload<
 > = {
   name: "Application";
   objects: {
+    resume: Prisma.$ResumePayload<ExtArgs> | null;
     user: Prisma.$UserPayload<ExtArgs>;
+    reminders: Prisma.$ReminderPayload<ExtArgs>[];
+    timelineEvents: Prisma.$TimelineEventPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -952,12 +1664,13 @@ export type $ApplicationPayload<
       role: string;
       source: string | null;
       status: $Enums.Status;
+      interviewRound: number | null;
       dateApplied: Date | null;
       notes: string | null;
-      resumeUrl: string | null;
       tags: string[];
       createdAt: Date;
       updatedAt: Date;
+      resumeId: string | null;
       userId: string;
     },
     ExtArgs["result"]["application"]
@@ -1512,6 +2225,19 @@ export interface Prisma__ApplicationClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise";
+  resume<T extends Prisma.Application$resumeArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Application$resumeArgs<ExtArgs>>,
+  ): Prisma.Prisma__ResumeClient<
+    runtime.Types.Result.GetResult<
+      Prisma.$ResumePayload<ExtArgs>,
+      T,
+      "findUniqueOrThrow",
+      GlobalOmitOptions
+    > | null,
+    null,
+    ExtArgs,
+    GlobalOmitOptions
+  >;
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>,
   ): Prisma.Prisma__UserClient<
@@ -1525,6 +2251,28 @@ export interface Prisma__ApplicationClient<
     Null,
     ExtArgs,
     GlobalOmitOptions
+  >;
+  reminders<T extends Prisma.Application$remindersArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Application$remindersArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ReminderPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  timelineEvents<T extends Prisma.Application$timelineEventsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Application$timelineEventsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$TimelineEventPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
   >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1573,12 +2321,13 @@ export interface ApplicationFieldRefs {
   readonly role: Prisma.FieldRef<"Application", "String">;
   readonly source: Prisma.FieldRef<"Application", "String">;
   readonly status: Prisma.FieldRef<"Application", "Status">;
+  readonly interviewRound: Prisma.FieldRef<"Application", "Int">;
   readonly dateApplied: Prisma.FieldRef<"Application", "DateTime">;
   readonly notes: Prisma.FieldRef<"Application", "String">;
-  readonly resumeUrl: Prisma.FieldRef<"Application", "String">;
   readonly tags: Prisma.FieldRef<"Application", "String[]">;
   readonly createdAt: Prisma.FieldRef<"Application", "DateTime">;
   readonly updatedAt: Prisma.FieldRef<"Application", "DateTime">;
+  readonly resumeId: Prisma.FieldRef<"Application", "String">;
   readonly userId: Prisma.FieldRef<"Application", "String">;
 }
 
@@ -2049,6 +2798,88 @@ export type ApplicationDeleteManyArgs<
    * Limit how many Applications to delete.
    */
   limit?: number;
+};
+
+/**
+ * Application.resume
+ */
+export type Application$resumeArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Resume
+   */
+  select?: Prisma.ResumeSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Resume
+   */
+  omit?: Prisma.ResumeOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeInclude<ExtArgs> | null;
+  where?: Prisma.ResumeWhereInput;
+};
+
+/**
+ * Application.reminders
+ */
+export type Application$remindersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null;
+  where?: Prisma.ReminderWhereInput;
+  orderBy?:
+    | Prisma.ReminderOrderByWithRelationInput
+    | Prisma.ReminderOrderByWithRelationInput[];
+  cursor?: Prisma.ReminderWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[];
+};
+
+/**
+ * Application.timelineEvents
+ */
+export type Application$timelineEventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the TimelineEvent
+   */
+  select?: Prisma.TimelineEventSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the TimelineEvent
+   */
+  omit?: Prisma.TimelineEventOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TimelineEventInclude<ExtArgs> | null;
+  where?: Prisma.TimelineEventWhereInput;
+  orderBy?:
+    | Prisma.TimelineEventOrderByWithRelationInput
+    | Prisma.TimelineEventOrderByWithRelationInput[];
+  cursor?: Prisma.TimelineEventWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.TimelineEventScalarFieldEnum
+    | Prisma.TimelineEventScalarFieldEnum[];
 };
 
 /**

@@ -1,7 +1,10 @@
 "use server";
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
-import { requireUserOrRedirectLogin } from "@/lib/auth";
+import {
+  requireUserOrRedirectLogin,
+  sessionHasEmailLoginMethod,
+} from "@/lib/auth";
 import {
   ChangeCredentialsError,
   DeleteAccountError,
@@ -40,6 +43,10 @@ export async function changePassword(
 ): Promise<Result<void, ChangeCredentialsError>> {
   await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
+  const hasEmailLoginMethod = await sessionHasEmailLoginMethod();
+  if (!hasEmailLoginMethod) {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
   const parseResult = PasswordSchema.safeParse({
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
@@ -69,6 +76,10 @@ export async function changeEmail(
 ): Promise<Result<void, ChangeCredentialsError>> {
   await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
+  const hasEmailLoginMethod = await sessionHasEmailLoginMethod();
+  if (!hasEmailLoginMethod) {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
   const parseResult = EmailSchema.safeParse({
     email: formData.get("email"),
   });
