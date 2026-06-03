@@ -20,6 +20,8 @@ model User {
   // 1:MANY LINKS
   applications   Application[]
   resumes        Resume[]
+  reminders      Reminder[]
+  timelineEvents TimelineEvent[]
 }
 
 enum Status {
@@ -92,6 +94,9 @@ model Reminder {
   applicationId  String
   application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
+  userId         String   @db.Uuid
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade) // for reminders page
+
   // 1:MANY LINKS
 }
 
@@ -110,6 +115,9 @@ model TimelineEvent {
   // 1:1 LINKS
   applicationId  String
   application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  userId         String   @db.Uuid
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade) // maybe? we can remove this later if not needed
 
   // 1:MANY LINKS
 }

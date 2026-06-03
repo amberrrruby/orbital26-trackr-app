@@ -30,6 +30,7 @@ export type TimelineEventMinAggregateOutputType = {
   description: string | null;
   createdAt: Date | null;
   applicationId: string | null;
+  userId: string | null;
 };
 
 export type TimelineEventMaxAggregateOutputType = {
@@ -38,6 +39,7 @@ export type TimelineEventMaxAggregateOutputType = {
   description: string | null;
   createdAt: Date | null;
   applicationId: string | null;
+  userId: string | null;
 };
 
 export type TimelineEventCountAggregateOutputType = {
@@ -46,6 +48,7 @@ export type TimelineEventCountAggregateOutputType = {
   description: number;
   createdAt: number;
   applicationId: number;
+  userId: number;
   _all: number;
 };
 
@@ -55,6 +58,7 @@ export type TimelineEventMinAggregateInputType = {
   description?: true;
   createdAt?: true;
   applicationId?: true;
+  userId?: true;
 };
 
 export type TimelineEventMaxAggregateInputType = {
@@ -63,6 +67,7 @@ export type TimelineEventMaxAggregateInputType = {
   description?: true;
   createdAt?: true;
   applicationId?: true;
+  userId?: true;
 };
 
 export type TimelineEventCountAggregateInputType = {
@@ -71,6 +76,7 @@ export type TimelineEventCountAggregateInputType = {
   description?: true;
   createdAt?: true;
   applicationId?: true;
+  userId?: true;
   _all?: true;
 };
 
@@ -163,6 +169,7 @@ export type TimelineEventGroupByOutputType = {
   description: string;
   createdAt: Date;
   applicationId: string;
+  userId: string;
   _count: TimelineEventCountAggregateOutputType | null;
   _min: TimelineEventMinAggregateOutputType | null;
   _max: TimelineEventMaxAggregateOutputType | null;
@@ -193,10 +200,12 @@ export type TimelineEventWhereInput = {
   description?: Prisma.StringFilter<"TimelineEvent"> | string;
   createdAt?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
   applicationId?: Prisma.StringFilter<"TimelineEvent"> | string;
+  userId?: Prisma.UuidFilter<"TimelineEvent"> | string;
   application?: Prisma.XOR<
     Prisma.ApplicationScalarRelationFilter,
     Prisma.ApplicationWhereInput
   >;
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
 };
 
 export type TimelineEventOrderByWithRelationInput = {
@@ -205,7 +214,9 @@ export type TimelineEventOrderByWithRelationInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   applicationId?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
   application?: Prisma.ApplicationOrderByWithRelationInput;
+  user?: Prisma.UserOrderByWithRelationInput;
 };
 
 export type TimelineEventWhereUniqueInput = Prisma.AtLeast<
@@ -220,10 +231,12 @@ export type TimelineEventWhereUniqueInput = Prisma.AtLeast<
     description?: Prisma.StringFilter<"TimelineEvent"> | string;
     createdAt?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
     applicationId?: Prisma.StringFilter<"TimelineEvent"> | string;
+    userId?: Prisma.UuidFilter<"TimelineEvent"> | string;
     application?: Prisma.XOR<
       Prisma.ApplicationScalarRelationFilter,
       Prisma.ApplicationWhereInput
     >;
+    user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   },
   "id"
 >;
@@ -234,6 +247,7 @@ export type TimelineEventOrderByWithAggregationInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   applicationId?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
   _count?: Prisma.TimelineEventCountOrderByAggregateInput;
   _max?: Prisma.TimelineEventMaxOrderByAggregateInput;
   _min?: Prisma.TimelineEventMinOrderByAggregateInput;
@@ -257,6 +271,7 @@ export type TimelineEventScalarWhereWithAggregatesInput = {
     | Date
     | string;
   applicationId?: Prisma.StringWithAggregatesFilter<"TimelineEvent"> | string;
+  userId?: Prisma.UuidWithAggregatesFilter<"TimelineEvent"> | string;
 };
 
 export type TimelineEventCreateInput = {
@@ -265,6 +280,7 @@ export type TimelineEventCreateInput = {
   description: string;
   createdAt: Date | string;
   application: Prisma.ApplicationCreateNestedOneWithoutTimelineEventsInput;
+  user: Prisma.UserCreateNestedOneWithoutTimelineEventsInput;
 };
 
 export type TimelineEventUncheckedCreateInput = {
@@ -273,6 +289,7 @@ export type TimelineEventUncheckedCreateInput = {
   description: string;
   createdAt: Date | string;
   applicationId: string;
+  userId: string;
 };
 
 export type TimelineEventUpdateInput = {
@@ -283,6 +300,7 @@ export type TimelineEventUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   application?: Prisma.ApplicationUpdateOneRequiredWithoutTimelineEventsNestedInput;
+  user?: Prisma.UserUpdateOneRequiredWithoutTimelineEventsNestedInput;
 };
 
 export type TimelineEventUncheckedUpdateInput = {
@@ -293,6 +311,7 @@ export type TimelineEventUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type TimelineEventCreateManyInput = {
@@ -301,6 +320,7 @@ export type TimelineEventCreateManyInput = {
   description: string;
   createdAt: Date | string;
   applicationId: string;
+  userId: string;
 };
 
 export type TimelineEventUpdateManyMutationInput = {
@@ -320,6 +340,7 @@ export type TimelineEventUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type TimelineEventListRelationFilter = {
@@ -338,6 +359,7 @@ export type TimelineEventCountOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   applicationId?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
 };
 
 export type TimelineEventMaxOrderByAggregateInput = {
@@ -346,6 +368,7 @@ export type TimelineEventMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   applicationId?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
 };
 
 export type TimelineEventMinOrderByAggregateInput = {
@@ -354,6 +377,117 @@ export type TimelineEventMinOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   applicationId?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
+};
+
+export type TimelineEventCreateNestedManyWithoutUserInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.TimelineEventCreateWithoutUserInput,
+        Prisma.TimelineEventUncheckedCreateWithoutUserInput
+      >
+    | Prisma.TimelineEventCreateWithoutUserInput[]
+    | Prisma.TimelineEventUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput[];
+  createMany?: Prisma.TimelineEventCreateManyUserInputEnvelope;
+  connect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+};
+
+export type TimelineEventUncheckedCreateNestedManyWithoutUserInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.TimelineEventCreateWithoutUserInput,
+        Prisma.TimelineEventUncheckedCreateWithoutUserInput
+      >
+    | Prisma.TimelineEventCreateWithoutUserInput[]
+    | Prisma.TimelineEventUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput[];
+  createMany?: Prisma.TimelineEventCreateManyUserInputEnvelope;
+  connect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+};
+
+export type TimelineEventUpdateManyWithoutUserNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.TimelineEventCreateWithoutUserInput,
+        Prisma.TimelineEventUncheckedCreateWithoutUserInput
+      >
+    | Prisma.TimelineEventCreateWithoutUserInput[]
+    | Prisma.TimelineEventUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput[];
+  upsert?:
+    | Prisma.TimelineEventUpsertWithWhereUniqueWithoutUserInput
+    | Prisma.TimelineEventUpsertWithWhereUniqueWithoutUserInput[];
+  createMany?: Prisma.TimelineEventCreateManyUserInputEnvelope;
+  set?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  disconnect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  delete?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  connect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  update?:
+    | Prisma.TimelineEventUpdateWithWhereUniqueWithoutUserInput
+    | Prisma.TimelineEventUpdateWithWhereUniqueWithoutUserInput[];
+  updateMany?:
+    | Prisma.TimelineEventUpdateManyWithWhereWithoutUserInput
+    | Prisma.TimelineEventUpdateManyWithWhereWithoutUserInput[];
+  deleteMany?:
+    | Prisma.TimelineEventScalarWhereInput
+    | Prisma.TimelineEventScalarWhereInput[];
+};
+
+export type TimelineEventUncheckedUpdateManyWithoutUserNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.TimelineEventCreateWithoutUserInput,
+        Prisma.TimelineEventUncheckedCreateWithoutUserInput
+      >
+    | Prisma.TimelineEventCreateWithoutUserInput[]
+    | Prisma.TimelineEventUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput
+    | Prisma.TimelineEventCreateOrConnectWithoutUserInput[];
+  upsert?:
+    | Prisma.TimelineEventUpsertWithWhereUniqueWithoutUserInput
+    | Prisma.TimelineEventUpsertWithWhereUniqueWithoutUserInput[];
+  createMany?: Prisma.TimelineEventCreateManyUserInputEnvelope;
+  set?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  disconnect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  delete?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  connect?:
+    | Prisma.TimelineEventWhereUniqueInput
+    | Prisma.TimelineEventWhereUniqueInput[];
+  update?:
+    | Prisma.TimelineEventUpdateWithWhereUniqueWithoutUserInput
+    | Prisma.TimelineEventUpdateWithWhereUniqueWithoutUserInput[];
+  updateMany?:
+    | Prisma.TimelineEventUpdateManyWithWhereWithoutUserInput
+    | Prisma.TimelineEventUpdateManyWithWhereWithoutUserInput[];
+  deleteMany?:
+    | Prisma.TimelineEventScalarWhereInput
+    | Prisma.TimelineEventScalarWhereInput[];
 };
 
 export type TimelineEventCreateNestedManyWithoutApplicationInput = {
@@ -470,11 +604,89 @@ export type EnumTimelineEventTypeFieldUpdateOperationsInput = {
   set?: $Enums.TimelineEventType;
 };
 
+export type TimelineEventCreateWithoutUserInput = {
+  id?: string;
+  type: $Enums.TimelineEventType;
+  description: string;
+  createdAt: Date | string;
+  application: Prisma.ApplicationCreateNestedOneWithoutTimelineEventsInput;
+};
+
+export type TimelineEventUncheckedCreateWithoutUserInput = {
+  id?: string;
+  type: $Enums.TimelineEventType;
+  description: string;
+  createdAt: Date | string;
+  applicationId: string;
+};
+
+export type TimelineEventCreateOrConnectWithoutUserInput = {
+  where: Prisma.TimelineEventWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.TimelineEventCreateWithoutUserInput,
+    Prisma.TimelineEventUncheckedCreateWithoutUserInput
+  >;
+};
+
+export type TimelineEventCreateManyUserInputEnvelope = {
+  data:
+    | Prisma.TimelineEventCreateManyUserInput
+    | Prisma.TimelineEventCreateManyUserInput[];
+  skipDuplicates?: boolean;
+};
+
+export type TimelineEventUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.TimelineEventWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.TimelineEventUpdateWithoutUserInput,
+    Prisma.TimelineEventUncheckedUpdateWithoutUserInput
+  >;
+  create: Prisma.XOR<
+    Prisma.TimelineEventCreateWithoutUserInput,
+    Prisma.TimelineEventUncheckedCreateWithoutUserInput
+  >;
+};
+
+export type TimelineEventUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.TimelineEventWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.TimelineEventUpdateWithoutUserInput,
+    Prisma.TimelineEventUncheckedUpdateWithoutUserInput
+  >;
+};
+
+export type TimelineEventUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.TimelineEventScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.TimelineEventUpdateManyMutationInput,
+    Prisma.TimelineEventUncheckedUpdateManyWithoutUserInput
+  >;
+};
+
+export type TimelineEventScalarWhereInput = {
+  AND?:
+    | Prisma.TimelineEventScalarWhereInput
+    | Prisma.TimelineEventScalarWhereInput[];
+  OR?: Prisma.TimelineEventScalarWhereInput[];
+  NOT?:
+    | Prisma.TimelineEventScalarWhereInput
+    | Prisma.TimelineEventScalarWhereInput[];
+  id?: Prisma.StringFilter<"TimelineEvent"> | string;
+  type?:
+    | Prisma.EnumTimelineEventTypeFilter<"TimelineEvent">
+    | $Enums.TimelineEventType;
+  description?: Prisma.StringFilter<"TimelineEvent"> | string;
+  createdAt?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
+  applicationId?: Prisma.StringFilter<"TimelineEvent"> | string;
+  userId?: Prisma.UuidFilter<"TimelineEvent"> | string;
+};
+
 export type TimelineEventCreateWithoutApplicationInput = {
   id?: string;
   type: $Enums.TimelineEventType;
   description: string;
   createdAt: Date | string;
+  user: Prisma.UserCreateNestedOneWithoutTimelineEventsInput;
 };
 
 export type TimelineEventUncheckedCreateWithoutApplicationInput = {
@@ -482,6 +694,7 @@ export type TimelineEventUncheckedCreateWithoutApplicationInput = {
   type: $Enums.TimelineEventType;
   description: string;
   createdAt: Date | string;
+  userId: string;
 };
 
 export type TimelineEventCreateOrConnectWithoutApplicationInput = {
@@ -527,21 +740,42 @@ export type TimelineEventUpdateManyWithWhereWithoutApplicationInput = {
   >;
 };
 
-export type TimelineEventScalarWhereInput = {
-  AND?:
-    | Prisma.TimelineEventScalarWhereInput
-    | Prisma.TimelineEventScalarWhereInput[];
-  OR?: Prisma.TimelineEventScalarWhereInput[];
-  NOT?:
-    | Prisma.TimelineEventScalarWhereInput
-    | Prisma.TimelineEventScalarWhereInput[];
-  id?: Prisma.StringFilter<"TimelineEvent"> | string;
+export type TimelineEventCreateManyUserInput = {
+  id?: string;
+  type: $Enums.TimelineEventType;
+  description: string;
+  createdAt: Date | string;
+  applicationId: string;
+};
+
+export type TimelineEventUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
   type?:
-    | Prisma.EnumTimelineEventTypeFilter<"TimelineEvent">
+    | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
-  description?: Prisma.StringFilter<"TimelineEvent"> | string;
-  createdAt?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
-  applicationId?: Prisma.StringFilter<"TimelineEvent"> | string;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  application?: Prisma.ApplicationUpdateOneRequiredWithoutTimelineEventsNestedInput;
+};
+
+export type TimelineEventUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  type?:
+    | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
+    | $Enums.TimelineEventType;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+
+export type TimelineEventUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  type?:
+    | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
+    | $Enums.TimelineEventType;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type TimelineEventCreateManyApplicationInput = {
@@ -549,6 +783,7 @@ export type TimelineEventCreateManyApplicationInput = {
   type: $Enums.TimelineEventType;
   description: string;
   createdAt: Date | string;
+  userId: string;
 };
 
 export type TimelineEventUpdateWithoutApplicationInput = {
@@ -558,6 +793,7 @@ export type TimelineEventUpdateWithoutApplicationInput = {
     | $Enums.TimelineEventType;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  user?: Prisma.UserUpdateOneRequiredWithoutTimelineEventsNestedInput;
 };
 
 export type TimelineEventUncheckedUpdateWithoutApplicationInput = {
@@ -567,6 +803,7 @@ export type TimelineEventUncheckedUpdateWithoutApplicationInput = {
     | $Enums.TimelineEventType;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type TimelineEventUncheckedUpdateManyWithoutApplicationInput = {
@@ -576,6 +813,7 @@ export type TimelineEventUncheckedUpdateManyWithoutApplicationInput = {
     | $Enums.TimelineEventType;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type TimelineEventSelect<
@@ -588,7 +826,9 @@ export type TimelineEventSelect<
     description?: boolean;
     createdAt?: boolean;
     applicationId?: boolean;
+    userId?: boolean;
     application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["timelineEvent"]
 >;
@@ -603,7 +843,9 @@ export type TimelineEventSelectCreateManyAndReturn<
     description?: boolean;
     createdAt?: boolean;
     applicationId?: boolean;
+    userId?: boolean;
     application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["timelineEvent"]
 >;
@@ -618,7 +860,9 @@ export type TimelineEventSelectUpdateManyAndReturn<
     description?: boolean;
     createdAt?: boolean;
     applicationId?: boolean;
+    userId?: boolean;
     application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["timelineEvent"]
 >;
@@ -629,13 +873,14 @@ export type TimelineEventSelectScalar = {
   description?: boolean;
   createdAt?: boolean;
   applicationId?: boolean;
+  userId?: boolean;
 };
 
 export type TimelineEventOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  "id" | "type" | "description" | "createdAt" | "applicationId",
+  "id" | "type" | "description" | "createdAt" | "applicationId" | "userId",
   ExtArgs["result"]["timelineEvent"]
 >;
 export type TimelineEventInclude<
@@ -643,18 +888,21 @@ export type TimelineEventInclude<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 export type TimelineEventIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 export type TimelineEventIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 
 export type $TimelineEventPayload<
@@ -664,6 +912,7 @@ export type $TimelineEventPayload<
   name: "TimelineEvent";
   objects: {
     application: Prisma.$ApplicationPayload<ExtArgs>;
+    user: Prisma.$UserPayload<ExtArgs>;
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -672,6 +921,7 @@ export type $TimelineEventPayload<
       description: string;
       createdAt: Date;
       applicationId: string;
+      userId: string;
     },
     ExtArgs["result"]["timelineEvent"]
   >;
@@ -1245,6 +1495,20 @@ export interface Prisma__TimelineEventClient<
     ExtArgs,
     GlobalOmitOptions
   >;
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>,
+  ): Prisma.Prisma__UserClient<
+    | runtime.Types.Result.GetResult<
+        Prisma.$UserPayload<ExtArgs>,
+        T,
+        "findUniqueOrThrow",
+        GlobalOmitOptions
+      >
+    | Null,
+    Null,
+    ExtArgs,
+    GlobalOmitOptions
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1292,6 +1556,7 @@ export interface TimelineEventFieldRefs {
   readonly description: Prisma.FieldRef<"TimelineEvent", "String">;
   readonly createdAt: Prisma.FieldRef<"TimelineEvent", "DateTime">;
   readonly applicationId: Prisma.FieldRef<"TimelineEvent", "String">;
+  readonly userId: Prisma.FieldRef<"TimelineEvent", "String">;
 }
 
 // Custom InputTypes

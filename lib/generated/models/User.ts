@@ -184,6 +184,8 @@ export type UserWhereInput = {
   settings?: Prisma.JsonNullableFilter<"User">;
   applications?: Prisma.ApplicationListRelationFilter;
   resumes?: Prisma.ResumeListRelationFilter;
+  reminders?: Prisma.ReminderListRelationFilter;
+  timelineEvents?: Prisma.TimelineEventListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -194,6 +196,8 @@ export type UserOrderByWithRelationInput = {
   settings?: Prisma.SortOrderInput | Prisma.SortOrder;
   applications?: Prisma.ApplicationOrderByRelationAggregateInput;
   resumes?: Prisma.ResumeOrderByRelationAggregateInput;
+  reminders?: Prisma.ReminderOrderByRelationAggregateInput;
+  timelineEvents?: Prisma.TimelineEventOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -208,6 +212,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     settings?: Prisma.JsonNullableFilter<"User">;
     applications?: Prisma.ApplicationListRelationFilter;
     resumes?: Prisma.ResumeListRelationFilter;
+    reminders?: Prisma.ReminderListRelationFilter;
+    timelineEvents?: Prisma.TimelineEventListRelationFilter;
   },
   "id" | "email"
 >;
@@ -246,6 +252,8 @@ export type UserCreateInput = {
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -256,6 +264,8 @@ export type UserUncheckedCreateInput = {
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -266,6 +276,8 @@ export type UserUpdateInput = {
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -276,6 +288,8 @@ export type UserUncheckedUpdateInput = {
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -393,6 +407,58 @@ export type UserUpdateOneRequiredWithoutResumesNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutRemindersInput,
+    Prisma.UserUncheckedCreateWithoutRemindersInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRemindersInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutRemindersInput,
+    Prisma.UserUncheckedCreateWithoutRemindersInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRemindersInput;
+  upsert?: Prisma.UserUpsertWithoutRemindersInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutRemindersInput,
+      Prisma.UserUpdateWithoutRemindersInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutRemindersInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutTimelineEventsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedCreateWithoutTimelineEventsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTimelineEventsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutTimelineEventsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedCreateWithoutTimelineEventsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTimelineEventsInput;
+  upsert?: Prisma.UserUpsertWithoutTimelineEventsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutTimelineEventsInput,
+      Prisma.UserUpdateWithoutTimelineEventsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutTimelineEventsInput
+  >;
+};
+
 export type UserCreateWithoutApplicationsInput = {
   id: string;
   email: string;
@@ -400,6 +466,8 @@ export type UserCreateWithoutApplicationsInput = {
   createdAt?: Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -409,6 +477,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   createdAt?: Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -446,6 +516,8 @@ export type UserUpdateWithoutApplicationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -455,6 +527,8 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutResumesInput = {
@@ -464,6 +538,8 @@ export type UserCreateWithoutResumesInput = {
   createdAt?: Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutResumesInput = {
@@ -473,6 +549,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   createdAt?: Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutResumesInput = {
@@ -510,6 +588,8 @@ export type UserUpdateWithoutResumesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutResumesInput = {
@@ -519,6 +599,152 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutRemindersInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutRemindersInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutRemindersInput,
+    Prisma.UserUncheckedCreateWithoutRemindersInput
+  >;
+};
+
+export type UserUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutRemindersInput,
+    Prisma.UserUncheckedUpdateWithoutRemindersInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutRemindersInput,
+    Prisma.UserUncheckedCreateWithoutRemindersInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutRemindersInput,
+    Prisma.UserUncheckedUpdateWithoutRemindersInput
+  >;
+};
+
+export type UserUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
+  timelineEvents?: Prisma.TimelineEventUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutTimelineEventsInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutTimelineEventsInput = {
+  id: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput;
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput;
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutTimelineEventsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedCreateWithoutTimelineEventsInput
+  >;
+};
+
+export type UserUpsertWithoutTimelineEventsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedUpdateWithoutTimelineEventsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedCreateWithoutTimelineEventsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutTimelineEventsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutTimelineEventsInput,
+    Prisma.UserUncheckedUpdateWithoutTimelineEventsInput
+  >;
+};
+
+export type UserUpdateWithoutTimelineEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutTimelineEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput;
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput;
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -528,6 +754,8 @@ export type UserUncheckedUpdateWithoutResumesInput = {
 export type UserCountOutputType = {
   applications: number;
   resumes: number;
+  reminders: number;
+  timelineEvents: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -536,6 +764,8 @@ export type UserCountOutputTypeSelect<
 > = {
   applications?: boolean | UserCountOutputTypeCountApplicationsArgs;
   resumes?: boolean | UserCountOutputTypeCountResumesArgs;
+  reminders?: boolean | UserCountOutputTypeCountRemindersArgs;
+  timelineEvents?: boolean | UserCountOutputTypeCountTimelineEventsArgs;
 };
 
 /**
@@ -571,6 +801,26 @@ export type UserCountOutputTypeCountResumesArgs<
   where?: Prisma.ResumeWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRemindersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ReminderWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTimelineEventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.TimelineEventWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -583,6 +833,8 @@ export type UserSelect<
     settings?: boolean;
     applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>;
     resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>;
+    reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>;
+    timelineEvents?: boolean | Prisma.User$timelineEventsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["user"]
@@ -637,6 +889,8 @@ export type UserInclude<
 > = {
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>;
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>;
+  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>;
+  timelineEvents?: boolean | Prisma.User$timelineEventsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -656,6 +910,8 @@ export type $UserPayload<
   objects: {
     applications: Prisma.$ApplicationPayload<ExtArgs>[];
     resumes: Prisma.$ResumePayload<ExtArgs>[];
+    reminders: Prisma.$ReminderPayload<ExtArgs>[];
+    timelineEvents: Prisma.$TimelineEventPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1236,6 +1492,28 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  reminders<T extends Prisma.User$remindersArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$remindersArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ReminderPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  timelineEvents<T extends Prisma.User$timelineEventsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$timelineEventsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$TimelineEventPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1786,6 +2064,66 @@ export type User$resumesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.ResumeScalarFieldEnum | Prisma.ResumeScalarFieldEnum[];
+};
+
+/**
+ * User.reminders
+ */
+export type User$remindersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null;
+  where?: Prisma.ReminderWhereInput;
+  orderBy?:
+    | Prisma.ReminderOrderByWithRelationInput
+    | Prisma.ReminderOrderByWithRelationInput[];
+  cursor?: Prisma.ReminderWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[];
+};
+
+/**
+ * User.timelineEvents
+ */
+export type User$timelineEventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the TimelineEvent
+   */
+  select?: Prisma.TimelineEventSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the TimelineEvent
+   */
+  omit?: Prisma.TimelineEventOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TimelineEventInclude<ExtArgs> | null;
+  where?: Prisma.TimelineEventWhereInput;
+  orderBy?:
+    | Prisma.TimelineEventOrderByWithRelationInput
+    | Prisma.TimelineEventOrderByWithRelationInput[];
+  cursor?: Prisma.TimelineEventWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.TimelineEventScalarFieldEnum
+    | Prisma.TimelineEventScalarFieldEnum[];
 };
 
 /**
