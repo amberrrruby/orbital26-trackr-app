@@ -14,6 +14,12 @@ export type ActionValidationError = {
   message: string;
 };
 
+// Types and constants for pagination
+const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
+const ORDERS = ["asc", "desc"] as const;
+export type SortableField = (typeof SORTABLE_FIELDS)[number];
+export type OrderType = (typeof ORDERS)[number];
+
 // Actions: Applications
 
 export type CreateApplicationError = ActionValidationError | ActionFailureError;
@@ -46,6 +52,43 @@ export const ApplicationSchema = z.object({
 
 export const EditApplicationSchema = ApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
+});
+
+// Actions: Reminders
+
+const REMINDER_TYPE = ["EVENT", "FOLLOW_UP"] as const;
+
+export type GetRemindersError =
+  | ActionValidationError // validating paging params
+  | ActionFailureError;
+
+export type AddReminderError = ActionValidationError | ActionFailureError;
+
+export type UpdateReminderError = ActionValidationError | ActionFailureError;
+
+export type DeleteReminderError = ActionFailureError;
+
+export const ReminderSchema = z.object({
+  applicationId: z.cuid2("Empty or invalid Application CUID."),
+  type: z.enum(REMINDER_TYPE, "A reminder type is required"),
+  remindAt: z.iso.date("Remind date is required"),
+  content: z
+    .string()
+    .min(1, "Content is required")
+    .max(1000, "Content too long"),
+});
+
+export const EditReminderSchema = ReminderSchema.pick({
+  type: true,
+  remindAt: true,
+  content: true,
+});
+
+export const GetRemindersParamsSchema = z.object({
+  orderKey: z.enum(SORTABLE_FIELDS).default("updatedAt"),
+  order: z.enum(ORDERS).default("desc"),
+  pageNumber: z.number().int().min(0).default(0),
+  pageSize: z.number().int().min(1).max(100).default(12),
 });
 
 // Settings-related errors
