@@ -1,5 +1,3 @@
-"use server";
-
 import { getResumes } from "@/app/actions/resume";
 import ResumeGallery from "./ResumeGallery";
 import ErrorDisplay from "@/app/components/ErrorDisplay";

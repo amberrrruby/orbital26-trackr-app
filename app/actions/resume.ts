@@ -5,7 +5,6 @@ import { requireUserOrRedirectLogin } from "@/lib/auth";
 import {
   AddResumeError,
   ResumeSchema,
-  AppUploadError,
   GetAggregateStatsError,
   GetResumesError,
   GetTopKRecentApplicationsError,
@@ -21,9 +20,8 @@ import {
   GenerateThumbnailError,
 } from "@/lib/types";
 import { Application, Resume, Status } from "@/lib/generated/client";
-import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 
-// TODO: RESUME
 export async function getResumes(
   orderKey: SortableField = "updatedAt",
   order: OrderType = "desc",
@@ -116,34 +114,6 @@ export async function getTopKRecentApplications(
   }
 }
 
-export async function uploadResumeFile(
-  file: File,
-  userId: string,
-): Promise<Result<string, AppUploadError>> {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase.storage
-    .from("resumes")
-    .upload(`${userId}/${Date.now()}-${file.name}`, file); // unique filename!
-  if (error) {
-    return {
-      ok: false,
-      error: {
-        type: "UPLOAD",
-        message: error.message,
-      },
-    };
-  }
-
-  // Note getPublicUrl is synchoronous no await, constructs URL locally without network calls.
-  const { data: urlData } = supabase.storage
-    .from("resumes")
-    .getPublicUrl(data.path);
-  return {
-    ok: true,
-    value: urlData.publicUrl,
-  };
-}
-
 export async function generateThumbnail(
   _fileUrl: string,
   _userId: string,
@@ -164,7 +134,7 @@ export async function addResume(
     title: formData.get("title"),
     notes: formData.get("notes"),
     tags: formData.get("tags") ?? "",
-    resumeUrl: formData.get("resumeUrl"),
+    filePath: formData.get("filePath"),
     fileType: formData.get("fileType"),
   });
   if (!parseResult.success) {
@@ -173,7 +143,7 @@ export async function addResume(
       error: returnSchemaValidationError(parseResult),
     };
   }
-  const { title, notes, tags, resumeUrl, fileType } = parseResult.data;
+  const { title, notes, tags, filePath, fileType } = parseResult.data;
 
   // 1. Upload file (should be handled by a component)
   // const resumeUrlResult = await uploadResumeFile(file, userId);
@@ -183,18 +153,22 @@ export async function addResume(
   // const resumeUrl = resumeUrlResult.value;
 
   // 2. Generate thumbnail (CURRENTLY DISABLED)
-  let thumbnailPath: string | null = null;
-  if (fileType === "PDF") {
-    const thumbnailPathResult = await generateThumbnail(resumeUrl, userId);
-    if (!thumbnailPathResult.ok) {
-      // non-fatal - just null
-      console.log(
-        `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
-      );
-    } else {
-      thumbnailPath = thumbnailPathResult.value;
-    }
-  }
+  // let thumbnailPath: string | null = null;
+  const thumbnailPath: string = "DUMMY"; // i forgor to do String? in schema :wilted_rose:
+  // if (fileType === "pdf") {
+
+  //   TODO: resumeUrl to be changed with getting a signedUrl
+
+  //   const thumbnailPathResult = await generateThumbnail(resumeUrl, userId);
+  //   if (!thumbnailPathResult.ok) {
+  //     // non-fatal - just null
+  //     console.log(
+  //       `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
+  //     );
+  //   } else {
+  //     thumbnailPath = thumbnailPathResult.value;
+  //   }
+  // }
 
   // 3. Write DB record
   try {
@@ -204,16 +178,16 @@ export async function addResume(
         title,
         notes,
         tags,
-        resumeUrl,
+        filePath,
         fileType,
-        thumbnailPath, // will always be null for now
+        thumbnailPath, // will always be "DUMMY" for now
         // will always be "failed" for now
-        thumbnailStatus:
-          fileType === "DOCX"
-            ? "ready"
-            : thumbnailPath !== null
-              ? "ready"
-              : "failed",
+        thumbnailStatus: "failed",
+        // fileType === "docx"
+        //   ? "ready"
+        //   : thumbnailPath !== null
+        //     ? "ready"
+        //     : "failed",
       },
     });
     return { ok: true, value: resume.id };
@@ -235,7 +209,7 @@ export async function updateResume(
     title: formData.get("title"),
     notes: formData.get("notes"),
     tags: formData.get("tags") ?? "",
-    resumeUrl: formData.get("resumeUrl") ?? undefined,
+    filePath: formData.get("filePath") ?? undefined,
     fileType: formData.get("fileType") ?? undefined,
   });
   if (!parseResult.success) {
@@ -245,28 +219,34 @@ export async function updateResume(
     };
   }
 
-  const { title, notes, tags, resumeUrl, fileType } = parseResult.data;
-  let thumbnailPath: string | null = null;
-  let thumbnailStatus: string | undefined;
+  const { title, notes, tags, filePath, fileType } = parseResult.data;
 
-  if (resumeUrl !== undefined && fileType !== undefined) {
-    if (fileType === "PDF") {
-      const thumbnailResult = await generateThumbnail(resumeUrl, userId);
-      if (!thumbnailResult.ok) {
-        console.log(
-          `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
-        );
-      } else {
-        thumbnailPath = thumbnailResult.value;
-      }
-    }
-    thumbnailStatus =
-      fileType === "DOCX"
-        ? "ready"
-        : thumbnailPath !== null
-          ? "ready"
-          : "failed";
-  }
+  const thumbnailPath: string = "DUMMY"; // i forgor
+  const thumbnailStatus: string = "failed";
+
+  // let thumbnailPath: string | null = null;
+  // let thumbnailStatus: string | undefined;
+
+  // TODO: resumeUrl to be changed with getting a signedUrl
+
+  // if (resumeUrl !== undefined && fileType !== undefined) {
+  //   if (fileType === "pdf") {
+  //     const thumbnailResult = await generateThumbnail(resumeUrl, userId);
+  //     if (!thumbnailResult.ok) {
+  //       console.log(
+  //         `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
+  //       );
+  //     } else {
+  //       thumbnailPath = thumbnailResult.value;
+  //     }
+  //   }
+  //   thumbnailStatus =
+  //     fileType === "docx"
+  //       ? "ready"
+  //       : thumbnailPath !== null
+  //         ? "ready"
+  //         : "failed";
+  // }
 
   try {
     const result = await prisma.resume.updateMany({
@@ -275,7 +255,7 @@ export async function updateResume(
         title,
         notes,
         tags,
-        ...(resumeUrl !== undefined && { resumeUrl }),
+        ...(filePath !== undefined && { filePath }),
         ...(fileType !== undefined && { fileType }),
         ...(thumbnailStatus !== undefined && {
           thumbnailPath,
@@ -298,9 +278,19 @@ export async function updateResume(
 
 export async function deleteResume(
   resumeId: string,
+  filePath: string,
 ): Promise<Result<void, DeleteResumeError>> {
   const userId = await requireUserOrRedirectLogin();
+  const supabase = await createSupabaseServerClient();
   try {
+    const { error: storageError } = await supabase.storage
+      .from("resumes")
+      .remove([filePath]);
+
+    if (storageError) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
     const { count } = await prisma.resume.deleteMany({
       where: {
         id: resumeId,

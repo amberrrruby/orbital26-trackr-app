@@ -1,53 +1,55 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+// import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import styles from "./FileUpload.module.css";
+import {
+  ACCEPTED_EXTENSIONS,
+  ACCEPTED_MIME,
+  MAX_SIZE_BYTES,
+  MAX_SIZE_MB,
+} from "@/lib/types";
+
+/* Refactored to provide uploading decisions to the user of this component. Previously: just uploads to buckets. Downside: can't handle retry-uploads ("I uploaded the wrong one, retry again") gracefully - just adds multiple useless files to bucket. */
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type UploadedFile = {
-  url: string; // signed URL
-  type: "pdf" | "docx";
-  name: string;
-  size: number;
-};
+// type UploadedFile = {
+//   url: string; // signed URL
+//   type: "pdf" | "docx";
+//   name: string;
+//   size: number;
+//   path: string,
+// };
 
 type FileUploadProps = {
-  bucket: string; // Supabase Storage bucket name
-  folder?: string; // optional path prefix inside bucket
-  signedUrlExpiry?: number; // seconds, default 3600 (1 hour)
-  onUpload?: (file: UploadedFile) => void;
+  // bucket: string; // Supabase Storage bucket name
+  // folder?: string; // optional path prefix inside bucket
+  // signedUrlExpiry?: number; // seconds, default 3600 (1 hour)
+  // onUpload?: (file: UploadedFile) => void;
+  onFileSelect?: (file: File) => void;
   onError?: (message: string) => void;
+  isUploading?: boolean;
 };
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const ACCEPTED_MIME: Record<string, "pdf" | "docx"> = {
-  "application/pdf": "pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-    "docx",
-};
-
-const ACCEPTED_EXTENSIONS = ".pdf,.docx";
-const MAX_SIZE_MB = 10;
-const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function FileUpload({
-  bucket,
-  folder,
-  signedUrlExpiry = 3600,
-  onUpload,
+  // bucket,
+  // folder,
+  // signedUrlExpiry = 3600,
+  // onUpload,
+  onFileSelect,
   onError,
+  isUploading = false,
 }: FileUploadProps) {
-  const supabase = createSupabaseBrowserClient();
+  // const supabase = createSupabaseBrowserClient();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dragging, setDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploaded, setUploaded] = useState<UploadedFile | null>(null);
+  // const [uploading, setUploading] = useState(false);
+  // const [uploaded, setUploaded] = useState<UploadedFile | null>(null);
+  const [selected, setSelected] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function validate(file: File): string | null {
@@ -58,57 +60,68 @@ export function FileUpload({
     return null;
   }
 
-  async function upload(file: File) {
+  // async function upload(file: File) {
+  //   const validationError = validate(file);
+  //   if (validationError) {
+  //     setError(validationError);
+  //     onError?.(validationError);
+  //     return;
+  //   }
+
+  //   setError(null);
+  //   setUploading(true);
+
+  //   try {
+  //     const ext = ACCEPTED_MIME[file.type];
+  //     const path = [folder, `${crypto.randomUUID()}.${ext}`]
+  //       .filter(Boolean)
+  //       .join("/");
+
+  //     const { error: uploadError } = await supabase.storage
+  //       .from(bucket)
+  //       .upload(path, file, { contentType: file.type, upsert: false });
+
+  //     if (uploadError) throw new Error(uploadError.message);
+
+  //     const { data: signedData, error: signedError } = await supabase.storage
+  //       .from(bucket)
+  //       .createSignedUrl(path, signedUrlExpiry);
+
+  //     if (signedError || !signedData?.signedUrl)
+  //       throw new Error("Failed to generate signed URL.");
+
+  //     const result: UploadedFile = {
+  //       url: signedData.signedUrl,
+  //       type: ext,
+  //       name: file.name,
+  //       size: file.size,
+  //       path,
+  //     };
+
+  //     setUploaded(result);
+  //     onUpload?.(result);
+  //   } catch (err) {
+  //     const msg = err instanceof Error ? err.message : "Upload failed.";
+  //     setError(msg);
+  //     onError?.(msg);
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // }
+
+  function handleFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    // upload(files[0]);
+    const file = files[0];
     const validationError = validate(file);
     if (validationError) {
       setError(validationError);
       onError?.(validationError);
       return;
     }
-
     setError(null);
-    setUploading(true);
-
-    try {
-      const ext = ACCEPTED_MIME[file.type];
-      const path = [folder, `${crypto.randomUUID()}.${ext}`]
-        .filter(Boolean)
-        .join("/");
-
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(path, file, { contentType: file.type, upsert: false });
-
-      if (uploadError) throw new Error(uploadError.message);
-
-      const { data: signedData, error: signedError } = await supabase.storage
-        .from(bucket)
-        .createSignedUrl(path, signedUrlExpiry);
-
-      if (signedError || !signedData?.signedUrl)
-        throw new Error("Failed to generate signed URL.");
-
-      const result: UploadedFile = {
-        url: signedData.signedUrl,
-        type: ext,
-        name: file.name,
-        size: file.size,
-      };
-
-      setUploaded(result);
-      onUpload?.(result);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Upload failed.";
-      setError(msg);
-      onError?.(msg);
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  function handleFiles(files: FileList | null) {
-    if (!files || files.length === 0) return;
-    upload(files[0]);
+    setSelected(file);
+    onFileSelect?.(file);
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -118,22 +131,25 @@ export function FileUpload({
   }
 
   function handleReset() {
-    setUploaded(null);
+    // setUploaded(null);
+    setSelected(null);
     setError(null);
     if (inputRef.current) inputRef.current.value = "";
   }
 
   // ── Uploaded state ──────────────────────────────────────────────────────────
-  if (uploaded) {
+  // if (uploaded) {
+  if (selected) {
+    const type = ACCEPTED_MIME[selected.type];
     return (
       <div className={styles.uploaded}>
         <span className={styles.uploadedIcon}>
-          <FileIcon type={uploaded.type} />
+          <FileIcon type={type} />
         </span>
         <div className={styles.uploadedMeta}>
-          <span className={styles.uploadedName}>{uploaded.name}</span>
+          <span className={styles.uploadedName}>{selected.name}</span>
           <span className={styles.uploadedSize}>
-            {formatSize(uploaded.size)}
+            {formatSize(selected.size)}
           </span>
         </div>
         <button
@@ -141,6 +157,7 @@ export function FileUpload({
           className={styles.removeBtn}
           onClick={handleReset}
           aria-label="Remove file"
+          disabled={isUploading}
         >
           <IconClose />
         </button>
@@ -155,7 +172,7 @@ export function FileUpload({
         className={[
           styles.dropzone,
           dragging ? styles.dragging : "",
-          uploading ? styles.uploading : "",
+          isUploading ? styles.uploading : "",
           error ? styles.hasError : "",
         ]
           .filter(Boolean)
@@ -166,7 +183,7 @@ export function FileUpload({
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        onClick={() => !uploading && inputRef.current?.click()}
+        onClick={() => !isUploading && inputRef.current?.click()}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
@@ -178,15 +195,15 @@ export function FileUpload({
           accept={ACCEPTED_EXTENSIONS}
           className={styles.hiddenInput}
           onChange={(e) => handleFiles(e.target.files)}
-          disabled={uploading}
+          disabled={isUploading}
         />
 
-        {uploading ? (
+        {isUploading ? (
           <div className={styles.loadingState}>
             <span className={styles.spinner}>
               <SpinnerIcon />
             </span>
-            <span className={styles.hint}>Uploading…</span>
+            <span className={styles.hint}>Uploading...</span>
           </div>
         ) : (
           <div className={styles.idleState}>

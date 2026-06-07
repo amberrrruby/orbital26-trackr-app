@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ResumeDetailsPage from "./ResumeDetailsPage";
+import ResumeDetailsComponent from "./ResumeDetails";
 
 type Props = {
   params: Promise<{
@@ -7,12 +7,12 @@ type Props = {
   }>;
 };
 
-export default async function Page({ params }: Props) {
+export default async function ResumeDetailsPage({ params }: Props) {
   const { id } = await params;
 
   return (
     <Suspense>
-      <ResumeDetailsPage id={id} />
+      <ResumeDetailsComponent id={id} />
     </Suspense>
   );
 }

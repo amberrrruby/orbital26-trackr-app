@@ -85,7 +85,7 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
         {SORTABLE_FIELDS.map((key) => (
           <button key={key} onClick={() => handleOrderChange(key)}>
             {key === "updatedAt" ? "Updated At" : "Created At"}
-            {orderKey === key && (order === "desc" ? " (Asc)" : " (Desc)")}
+            {orderKey === key && (order === "desc" ? " (Desc)" : " (Asc)")}
           </button>
         ))}
       </div>

@@ -1,9 +1,11 @@
 import ResumeFormComponent from "@/app/components/ResumeFormComponent";
+import { requireUserOrRedirectLogin } from "@/lib/auth";
 
-export default function AddNewResumePage() {
+export default async function AddNewResumePage() {
+  const userId = await requireUserOrRedirectLogin();
   return (
     <>
-      <ResumeFormComponent />
+      <ResumeFormComponent userId={userId} />
     </>
   );
 }

@@ -9,15 +9,21 @@ type Props = { id: string };
 
 export default function ResumeDetailsPage({ id }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [resume, setResume] = useState<Resume | null>(null);
+  const [resume, setResume] = useState<Resume | undefined>(undefined);
+  const [signedUrl, setSignedUrl] = useState<string | undefined>(undefined);
 
   return isEditing && resume ? (
-    <ResumeFormComponent resume={resume} onCancel={() => setIsEditing(false)} />
+    <ResumeFormComponent
+      resume={resume}
+      signedUrl={signedUrl}
+      onCancel={() => setIsEditing(false)}
+    />
   ) : (
     <ResumeDetailsComponent
       id={id}
-      onEdit={(r) => {
-        setResume(r);
+      onEdit={(resu, sUrl) => {
+        setResume(resu);
+        setSignedUrl(sUrl);
         setIsEditing(true);
       }}
     />

@@ -16,6 +16,18 @@ export type ActionValidationError = {
   message: string;
 };
 
+// FileUpload component constants
+
+export const ACCEPTED_MIME: Record<string, "pdf" | "docx"> = {
+  "application/pdf": "pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "docx",
+};
+
+export const ACCEPTED_EXTENSIONS = ".pdf,.docx";
+export const MAX_SIZE_MB = 10;
+export const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
 // Actions: Applications
 
 export type CreateApplicationError = ActionValidationError | ActionFailureError;
@@ -119,13 +131,13 @@ export const ResumeSchema = z.object({
       .map((t) => t.trim())
       .filter(Boolean),
   ),
-  resumeUrl: z.url("Invalid file URL"),
-  fileType: z.enum(["PDF", "DOCX"]),
+  filePath: z.string().min(1, "File path is required"),
+  fileType: z.enum(["pdf", "docx"]),
 });
 
 export const UpdateResumeSchema = ResumeSchema.extend({
-  resumeUrl: z.url().optional(),
-  fileType: z.enum(["PDF", "DOCX"]).optional(),
+  filePath: z.string().min(1, "File path is required").optional(),
+  fileType: z.enum(["pdf", "docx"]).optional(),
 });
 
 // Settings-related errors

@@ -47,3 +47,9 @@ clicking outside modal:
 mini issue: filter-by-status none should also show message, but different
 
 Unify `FAILURE` error message instead of writing `"Something went wrong"` everywhere?
+
+Add resume page: "comma separated" text is larger than "tags" text - fix
+
+Resume display notes: better formatting for `\n`
+
+Edit resume action: handle delete previous file

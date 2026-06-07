@@ -4,23 +4,69 @@ import { addResume, updateResume } from "@/app/actions/resume";
 import { Resume } from "@/lib/generated/client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { FileUpload } from "./FileUpload";
+import { ACCEPTED_MIME } from "@/lib/types";
+import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
 type Props = {
+  userId?: string;
+
   resume?: Resume; // undefined: creation, otherwise: edit
-  onCancel?: () => void;
+  signedUrl?: string;
 };
 
-export default function ResumeFormComponent({ resume, onCancel }: Props) {
+export default function ResumeFormComponent({
+  userId,
+  resume,
+  signedUrl,
+}: Props) {
   const isEditing = !!resume;
   const router = useRouter();
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [filePath, setFilePath] = useState(resume?.filePath ?? "");
+  const [fileType, setFileType] = useState(resume?.fileType ?? "");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
     setErrMsg(null);
 
-    const formData = new FormData(e.currentTarget);
+    let resolvedFilePath = resume?.filePath ?? "";
+    let resolvedFileType = resume?.fileType ?? "";
+
+    if (pendingFile) {
+      const ext = ACCEPTED_MIME[pendingFile.type];
+      const path = `files/${userId}/${crypto.randomUUID()}.${ext}`;
+      const supabase = createSupabaseBrowserClient();
+
+      const { error: uploadError } = await supabase.storage
+        .from("resumes")
+        .upload(path, pendingFile, { contentType: pendingFile.type });
+
+      if (uploadError) {
+        setErrMsg("File upload failed. Please try again.");
+        return;
+      }
+
+      if (isEditing && resume.filePath) {
+        await supabase.storage.from("resumes").remove([resume.filePath]);
+      }
+
+      resolvedFilePath = path;
+      resolvedFileType = ext.toLowerCase();
+      setFilePath(resolvedFilePath);
+      setFileType(resolvedFileType);
+    } else if (!isEditing) {
+      setErrMsg("Please select a file.");
+      return;
+    }
+
+    formData.set("filePath", resolvedFilePath);
+    formData.set("fileType", resolvedFileType);
+
     startTransition(async () => {
       const res = isEditing
         ? await updateResume(resume.id, formData)
@@ -29,11 +75,9 @@ export default function ResumeFormComponent({ resume, onCancel }: Props) {
         setErrMsg("[LAZY] error received, destructure later");
         return;
       }
-      if (isEditing) {
-        onCancel!();
-      } else {
-        router.push(`/resumes/${res.value}`);
-      }
+      router.push(
+        isEditing ? `/resumes/${resume.id}` : `/resumes/${res.value}`,
+      );
     });
   }
 
@@ -57,16 +101,22 @@ export default function ResumeFormComponent({ resume, onCancel }: Props) {
           {isEditing
             ? "Replace file (PDF or DOCX)"
             : "Resume file (PDF or DOCX)"}
+          {isEditing && signedUrl && resume?.fileType && (
+            <div>
+              <span>Current file: {fileType.toUpperCase()}</span>
+              <a href={signedUrl} target="_blank" rel="noopener noreferrer">
+                View current file
+              </a>
+            </div>
+          )}
         </label>
-        {/* replace with file upload component */}
-        <input
-          id="file"
-          name="file"
-          type="file"
-          accept=".pdf,.docx"
-          required={!isEditing}
+        <FileUpload
+          onFileSelect={(file) => setPendingFile(file)}
+          onError={(msg) => setErrMsg(msg)}
+          isUploading={isPending}
         />
-        {isEditing && <span>Skip to keep current file</span>}
+        <input type="hidden" name="filePath" value={filePath} />
+        <input type="hidden" name="fileType" value={fileType} />
       </div>
 
       <div>
@@ -97,7 +147,11 @@ export default function ResumeFormComponent({ resume, onCancel }: Props) {
 
       <div>
         {isEditing && (
-          <button type="button" onClick={onCancel} disabled={isPending}>
+          <button
+            type="button"
+            onClick={() => router.push(`/resumes/${resume.id}`)}
+            disabled={isPending}
+          >
             Cancel
           </button>
         )}

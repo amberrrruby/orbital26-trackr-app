@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./ResumeDetails.module.css";
 import Link from "next/link";
 import { deleteResume } from "@/app/actions/resume";
@@ -9,24 +11,24 @@ import {
   Result,
 } from "@/lib/types";
 import { useState, useTransition } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Modal } from "@/app/components/Modal";
 
 type Props = {
   resume: Resume;
+  signedUrl: string | undefined;
   statsResult: Result<AggregateStats, GetAggregateStatsError>;
   recentApplicationsResult: Result<
     Application[],
     GetTopKRecentApplicationsError
   >;
-  onEdit: (resume: Resume) => void;
 };
 
 export default function ResumeDetailsClient({
   resume,
+  signedUrl,
   statsResult,
   recentApplicationsResult,
-  onEdit,
 }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteErrMsg, setDeleteErrMsg] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function ResumeDetailsClient({
 
   function handleDelete() {
     startDeleteTransition(async () => {
-      const res = await deleteResume(resume.id);
+      const res = await deleteResume(resume.id, resume.filePath);
       if (!res.ok) {
         setDeleteErrMsg("Failed to delete resume.");
         setShowDeleteModal(false);
@@ -44,9 +46,12 @@ export default function ResumeDetailsClient({
       router.push("/resumes");
     });
   }
+
   return (
     <main className={styles.page}>
-      <button onClick={() => onEdit(resume)}>[Edit]</button>
+      <Link href={`/resumes/${resume.id}/edit`}>
+        <button>[Edit]</button>
+      </Link>
       <button onClick={() => setShowDeleteModal(true)}>[Delete]</button>
       {deleteErrMsg && <p>{deleteErrMsg}</p>}
 
@@ -94,7 +99,9 @@ export default function ResumeDetailsClient({
 
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Notes</h2>
-            <p className={styles.notes}>{resume.notes ?? "No notes added."}</p>
+            <p className={styles.notes}>
+              {resume.notes?.trim() || "No notes added."}
+            </p>
           </section>
 
           <section className={styles.section}>
@@ -115,12 +122,12 @@ export default function ResumeDetailsClient({
                 ))}
               </ul>
             )}
-            <Link
+            {/* <Link
               href={`/applications?resumeId=${resume.id}`}
               className={styles.viewAll}
             >
               [View all -&lt;]
-            </Link>
+            </Link> */}
           </section>
         </div>
 
@@ -145,14 +152,18 @@ export default function ResumeDetailsClient({
             </em>
           </p>
 
-          <a
-            href={resume.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.fileLink}
-          >
-            {resume.title}.{resume.fileType.toLowerCase()}
-          </a>
+          {signedUrl ? (
+            <a
+              href={signedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.fileLink}
+            >
+              {resume.title}.{resume.fileType.toLowerCase()}
+            </a>
+          ) : (
+            <p>Failed to generate signed URL. Please refresh and try again.</p>
+          )}
 
           <section className={styles.statsPanel}>
             <h2 className={styles.sectionTitle}>Stats</h2>

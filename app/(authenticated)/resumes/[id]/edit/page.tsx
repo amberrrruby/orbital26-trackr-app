@@ -1,18 +1,19 @@
 import ErrorDisplay from "@/app/components/ErrorDisplay";
+import ResumeFormComponent from "@/app/components/ResumeFormComponent";
+import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { FileText } from "lucide-react";
-import {
-  getAggregateStats,
-  getTopKRecentApplications,
-} from "@/app/actions/resume";
-import ResumeDetailsClient from "./ResumeDetailsClient";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
+import { FileText } from "lucide-react";
 
 type Props = {
-  id: string;
+  params: Promise<{
+    id: string;
+  }>;
 };
 
-export default async function ResumeDetailsComponent({ id }: Props) {
+export default async function EditResumeDetailPage({ params }: Props) {
+  const { id } = await params;
+  const userId = await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
   const resume = await prisma.resume.findUnique({
     where: { id },
@@ -30,19 +31,11 @@ export default async function ResumeDetailsComponent({ id }: Props) {
 
   const signedUrl = data?.signedUrl ?? undefined;
 
-  const statsResult = await getAggregateStats(resume.id);
-
-  const recentApplicationsResult = await getTopKRecentApplications(
-    resume.id,
-    3,
-  );
-
   return (
-    <ResumeDetailsClient
+    <ResumeFormComponent
+      userId={userId}
       resume={resume}
       signedUrl={signedUrl}
-      statsResult={statsResult}
-      recentApplicationsResult={recentApplicationsResult}
     />
   );
 }

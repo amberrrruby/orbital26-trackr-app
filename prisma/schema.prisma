@@ -65,10 +65,12 @@ model Resume {
   title          String
   tags           String[]
   notes          String?
-  resumeUrl      String
+  filePath       String
   fileType       String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  thumbnailPath  String
+  thumbnailStatus  String // maybe an enum soon
 
   // 1:1 LINKS
   userId         String   @db.Uuid
