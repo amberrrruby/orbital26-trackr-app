@@ -19,12 +19,14 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
+const OTHER_USER_ID = "00000000-0000-0000-0000-000000000000";
+
 afterEach(async () => {
   await prisma.application.deleteMany({
     where: { userId: env.TEST_USER_ID },
   });
   await prisma.application.deleteMany({
-    where: { userId: "00000000-0000-0000-0000-000000000000" },
+    where: { userId: OTHER_USER_ID },
   });
 });
 
@@ -93,7 +95,7 @@ describe("Applications", () => {
           ...validApplicationFields,
           source: "",
           notes: null,
-          userId: "00000000-0000-0000-0000-000000000000",
+          userId: OTHER_USER_ID,
         },
       });
 
@@ -134,7 +136,7 @@ describe("Applications", () => {
       const result = await updateApplication(
         makeFormData({
           ...validApplicationFields,
-          id: "00000000-0000-0000-0000-000000000000",
+          id: OTHER_USER_ID,
         }),
       );
       expect(result.ok).toBe(false);
@@ -172,9 +174,7 @@ describe("Applications", () => {
     });
 
     it("returns FAILURE when application does not belong to the user", async () => {
-      const result = await deleteApplication(
-        "00000000-0000-0000-0000-000000000000",
-      );
+      const result = await deleteApplication(OTHER_USER_ID);
       expect(result.ok).toBe(false);
       if (!result.ok) {
         expect(result.error.type).toBe("FAILURE");

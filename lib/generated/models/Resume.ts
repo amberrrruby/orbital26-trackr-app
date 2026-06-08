@@ -28,10 +28,12 @@ export type ResumeMinAggregateOutputType = {
   id: string | null;
   title: string | null;
   notes: string | null;
-  resumeUrl: string | null;
+  filePath: string | null;
   fileType: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  thumbnailPath: string | null;
+  thumbnailStatus: string | null;
   userId: string | null;
 };
 
@@ -39,10 +41,12 @@ export type ResumeMaxAggregateOutputType = {
   id: string | null;
   title: string | null;
   notes: string | null;
-  resumeUrl: string | null;
+  filePath: string | null;
   fileType: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  thumbnailPath: string | null;
+  thumbnailStatus: string | null;
   userId: string | null;
 };
 
@@ -51,10 +55,12 @@ export type ResumeCountAggregateOutputType = {
   title: number;
   tags: number;
   notes: number;
-  resumeUrl: number;
+  filePath: number;
   fileType: number;
   createdAt: number;
   updatedAt: number;
+  thumbnailPath: number;
+  thumbnailStatus: number;
   userId: number;
   _all: number;
 };
@@ -63,10 +69,12 @@ export type ResumeMinAggregateInputType = {
   id?: true;
   title?: true;
   notes?: true;
-  resumeUrl?: true;
+  filePath?: true;
   fileType?: true;
   createdAt?: true;
   updatedAt?: true;
+  thumbnailPath?: true;
+  thumbnailStatus?: true;
   userId?: true;
 };
 
@@ -74,10 +82,12 @@ export type ResumeMaxAggregateInputType = {
   id?: true;
   title?: true;
   notes?: true;
-  resumeUrl?: true;
+  filePath?: true;
   fileType?: true;
   createdAt?: true;
   updatedAt?: true;
+  thumbnailPath?: true;
+  thumbnailStatus?: true;
   userId?: true;
 };
 
@@ -86,10 +96,12 @@ export type ResumeCountAggregateInputType = {
   title?: true;
   tags?: true;
   notes?: true;
-  resumeUrl?: true;
+  filePath?: true;
   fileType?: true;
   createdAt?: true;
   updatedAt?: true;
+  thumbnailPath?: true;
+  thumbnailStatus?: true;
   userId?: true;
   _all?: true;
 };
@@ -178,10 +190,12 @@ export type ResumeGroupByOutputType = {
   title: string;
   tags: string[];
   notes: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt: Date;
   updatedAt: Date;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   userId: string;
   _count: ResumeCountAggregateOutputType | null;
   _min: ResumeMinAggregateOutputType | null;
@@ -209,10 +223,12 @@ export type ResumeWhereInput = {
   title?: Prisma.StringFilter<"Resume"> | string;
   tags?: Prisma.StringNullableListFilter<"Resume">;
   notes?: Prisma.StringNullableFilter<"Resume"> | string | null;
-  resumeUrl?: Prisma.StringFilter<"Resume"> | string;
+  filePath?: Prisma.StringFilter<"Resume"> | string;
   fileType?: Prisma.StringFilter<"Resume"> | string;
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
+  thumbnailPath?: Prisma.StringFilter<"Resume"> | string;
+  thumbnailStatus?: Prisma.StringFilter<"Resume"> | string;
   userId?: Prisma.UuidFilter<"Resume"> | string;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   applications?: Prisma.ApplicationListRelationFilter;
@@ -223,10 +239,12 @@ export type ResumeOrderByWithRelationInput = {
   title?: Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
+  filePath?: Prisma.SortOrder;
   fileType?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  thumbnailPath?: Prisma.SortOrder;
+  thumbnailStatus?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   user?: Prisma.UserOrderByWithRelationInput;
   applications?: Prisma.ApplicationOrderByRelationAggregateInput;
@@ -241,10 +259,12 @@ export type ResumeWhereUniqueInput = Prisma.AtLeast<
     title?: Prisma.StringFilter<"Resume"> | string;
     tags?: Prisma.StringNullableListFilter<"Resume">;
     notes?: Prisma.StringNullableFilter<"Resume"> | string | null;
-    resumeUrl?: Prisma.StringFilter<"Resume"> | string;
+    filePath?: Prisma.StringFilter<"Resume"> | string;
     fileType?: Prisma.StringFilter<"Resume"> | string;
     createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
+    thumbnailPath?: Prisma.StringFilter<"Resume"> | string;
+    thumbnailStatus?: Prisma.StringFilter<"Resume"> | string;
     userId?: Prisma.UuidFilter<"Resume"> | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     applications?: Prisma.ApplicationListRelationFilter;
@@ -257,10 +277,12 @@ export type ResumeOrderByWithAggregationInput = {
   title?: Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   notes?: Prisma.SortOrderInput | Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
+  filePath?: Prisma.SortOrder;
   fileType?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  thumbnailPath?: Prisma.SortOrder;
+  thumbnailStatus?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   _count?: Prisma.ResumeCountOrderByAggregateInput;
   _max?: Prisma.ResumeMaxOrderByAggregateInput;
@@ -279,10 +301,12 @@ export type ResumeScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
   tags?: Prisma.StringNullableListFilter<"Resume">;
   notes?: Prisma.StringNullableWithAggregatesFilter<"Resume"> | string | null;
-  resumeUrl?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
+  filePath?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
   fileType?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string;
+  thumbnailPath?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
+  thumbnailStatus?: Prisma.StringWithAggregatesFilter<"Resume"> | string;
   userId?: Prisma.UuidWithAggregatesFilter<"Resume"> | string;
 };
 
@@ -291,10 +315,12 @@ export type ResumeCreateInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   user: Prisma.UserCreateNestedOneWithoutResumesInput;
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput;
 };
@@ -304,10 +330,12 @@ export type ResumeUncheckedCreateInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   userId: string;
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput;
 };
@@ -317,10 +345,12 @@ export type ResumeUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput;
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput;
 };
@@ -330,10 +360,12 @@ export type ResumeUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput;
 };
@@ -343,10 +375,12 @@ export type ResumeCreateManyInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   userId: string;
 };
 
@@ -355,10 +389,12 @@ export type ResumeUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 export type ResumeUncheckedUpdateManyInput = {
@@ -366,10 +402,12 @@ export type ResumeUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -393,10 +431,12 @@ export type ResumeCountOrderByAggregateInput = {
   title?: Prisma.SortOrder;
   tags?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
+  filePath?: Prisma.SortOrder;
   fileType?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  thumbnailPath?: Prisma.SortOrder;
+  thumbnailStatus?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
 };
 
@@ -404,10 +444,12 @@ export type ResumeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   title?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
+  filePath?: Prisma.SortOrder;
   fileType?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  thumbnailPath?: Prisma.SortOrder;
+  thumbnailStatus?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
 };
 
@@ -415,10 +457,12 @@ export type ResumeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   title?: Prisma.SortOrder;
   notes?: Prisma.SortOrder;
-  resumeUrl?: Prisma.SortOrder;
+  filePath?: Prisma.SortOrder;
   fileType?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  thumbnailPath?: Prisma.SortOrder;
+  thumbnailStatus?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
 };
 
@@ -550,10 +594,12 @@ export type ResumeCreateWithoutUserInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput;
 };
 
@@ -562,10 +608,12 @@ export type ResumeUncheckedCreateWithoutUserInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput;
 };
 
@@ -618,10 +666,12 @@ export type ResumeScalarWhereInput = {
   title?: Prisma.StringFilter<"Resume"> | string;
   tags?: Prisma.StringNullableListFilter<"Resume">;
   notes?: Prisma.StringNullableFilter<"Resume"> | string | null;
-  resumeUrl?: Prisma.StringFilter<"Resume"> | string;
+  filePath?: Prisma.StringFilter<"Resume"> | string;
   fileType?: Prisma.StringFilter<"Resume"> | string;
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string;
+  thumbnailPath?: Prisma.StringFilter<"Resume"> | string;
+  thumbnailStatus?: Prisma.StringFilter<"Resume"> | string;
   userId?: Prisma.UuidFilter<"Resume"> | string;
 };
 
@@ -630,10 +680,12 @@ export type ResumeCreateWithoutApplicationsInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   user: Prisma.UserCreateNestedOneWithoutResumesInput;
 };
 
@@ -642,10 +694,12 @@ export type ResumeUncheckedCreateWithoutApplicationsInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
   userId: string;
 };
 
@@ -682,10 +736,12 @@ export type ResumeUpdateWithoutApplicationsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput;
 };
 
@@ -694,10 +750,12 @@ export type ResumeUncheckedUpdateWithoutApplicationsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
@@ -706,10 +764,12 @@ export type ResumeCreateManyUserInput = {
   title: string;
   tags?: Prisma.ResumeCreatetagsInput | string[];
   notes?: string | null;
-  resumeUrl: string;
+  filePath: string;
   fileType: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  thumbnailPath: string;
+  thumbnailStatus: string;
 };
 
 export type ResumeUpdateWithoutUserInput = {
@@ -717,10 +777,12 @@ export type ResumeUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput;
 };
 
@@ -729,10 +791,12 @@ export type ResumeUncheckedUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput;
 };
 
@@ -741,10 +805,12 @@ export type ResumeUncheckedUpdateManyWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string;
   tags?: Prisma.ResumeUpdatetagsInput | string[];
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  resumeUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string;
   fileType?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  thumbnailPath?: Prisma.StringFieldUpdateOperationsInput | string;
+  thumbnailStatus?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 
 /**
@@ -794,10 +860,12 @@ export type ResumeSelect<
     title?: boolean;
     tags?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
+    filePath?: boolean;
     fileType?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    thumbnailPath?: boolean;
+    thumbnailStatus?: boolean;
     userId?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     applications?: boolean | Prisma.Resume$applicationsArgs<ExtArgs>;
@@ -815,10 +883,12 @@ export type ResumeSelectCreateManyAndReturn<
     title?: boolean;
     tags?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
+    filePath?: boolean;
     fileType?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    thumbnailPath?: boolean;
+    thumbnailStatus?: boolean;
     userId?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
@@ -834,10 +904,12 @@ export type ResumeSelectUpdateManyAndReturn<
     title?: boolean;
     tags?: boolean;
     notes?: boolean;
-    resumeUrl?: boolean;
+    filePath?: boolean;
     fileType?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    thumbnailPath?: boolean;
+    thumbnailStatus?: boolean;
     userId?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
@@ -849,10 +921,12 @@ export type ResumeSelectScalar = {
   title?: boolean;
   tags?: boolean;
   notes?: boolean;
-  resumeUrl?: boolean;
+  filePath?: boolean;
   fileType?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  thumbnailPath?: boolean;
+  thumbnailStatus?: boolean;
   userId?: boolean;
 };
 
@@ -864,10 +938,12 @@ export type ResumeOmit<
   | "title"
   | "tags"
   | "notes"
-  | "resumeUrl"
+  | "filePath"
   | "fileType"
   | "createdAt"
   | "updatedAt"
+  | "thumbnailPath"
+  | "thumbnailStatus"
   | "userId",
   ExtArgs["result"]["resume"]
 >;
@@ -907,10 +983,12 @@ export type $ResumePayload<
       title: string;
       tags: string[];
       notes: string | null;
-      resumeUrl: string;
+      filePath: string;
       fileType: string;
       createdAt: Date;
       updatedAt: Date;
+      thumbnailPath: string;
+      thumbnailStatus: string;
       userId: string;
     },
     ExtArgs["result"]["resume"]
@@ -1533,10 +1611,12 @@ export interface ResumeFieldRefs {
   readonly title: Prisma.FieldRef<"Resume", "String">;
   readonly tags: Prisma.FieldRef<"Resume", "String[]">;
   readonly notes: Prisma.FieldRef<"Resume", "String">;
-  readonly resumeUrl: Prisma.FieldRef<"Resume", "String">;
+  readonly filePath: Prisma.FieldRef<"Resume", "String">;
   readonly fileType: Prisma.FieldRef<"Resume", "String">;
   readonly createdAt: Prisma.FieldRef<"Resume", "DateTime">;
   readonly updatedAt: Prisma.FieldRef<"Resume", "DateTime">;
+  readonly thumbnailPath: Prisma.FieldRef<"Resume", "String">;
+  readonly thumbnailStatus: Prisma.FieldRef<"Resume", "String">;
   readonly userId: Prisma.FieldRef<"Resume", "String">;
 }
 

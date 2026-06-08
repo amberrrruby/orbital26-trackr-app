@@ -8,17 +8,25 @@ export type AppAuthError = { type: "UNAUTHORIZED"; message: "Unauthorized" };
 
 export type ActionFailureError = { type: "FAILURE" };
 
+export type AppUploadError = { type: "UPLOAD"; message: string };
+
 export type ActionValidationError = {
   type: "VALIDATION";
   param: string;
   message: string;
 };
 
-// Types and constants for pagination
-const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
-const ORDERS = ["asc", "desc"] as const;
-export type SortableField = (typeof SORTABLE_FIELDS)[number];
-export type OrderType = (typeof ORDERS)[number];
+// FileUpload component constants
+
+export const ACCEPTED_MIME: Record<string, "pdf" | "docx"> = {
+  "application/pdf": "pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "docx",
+};
+
+export const ACCEPTED_EXTENSIONS = ".pdf,.docx";
+export const MAX_SIZE_MB = 10;
+export const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 // Actions: Applications
 
@@ -54,6 +62,82 @@ export const EditApplicationSchema = ApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
 });
 
+// Actions: Resumes
+
+export type GetResumesError =
+  | ActionValidationError // validating paging params
+  | ActionFailureError;
+
+export type GetAggregateStatsError = ActionFailureError;
+
+export type GetTopKRecentApplicationsError = ActionFailureError;
+
+export type AddResumeError = // TODO: naming convention: add -> create
+  ActionValidationError | ActionFailureError | AppUploadError;
+
+export type UpdateResumeError =
+  | ActionValidationError
+  | ActionFailureError
+  | AppUploadError;
+
+export type DeleteResumeError = ActionFailureError;
+
+export type GenerateThumbnailError = ActionFailureError;
+
+// export type GenerateThumbnailError
+// TODO: resolve after thumbnail generation service is confirmed
+
+// const ACCEPTED_FILE_TYPES = [
+//   "application/pdf",
+//   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+// ];
+// const MAX_FILE_SIZE_MB = 10;
+
+// const ResumeFileSchema = z.object({
+//   file: z
+//     .instanceof(File)
+//     .refine((f) => f.size > 0, "File is required")
+//     .refine(
+//       (f) => f.size <= MAX_FILE_SIZE_MB * 1024 * 1024,
+//       `File must be under ${MAX_FILE_SIZE_MB} MB`,
+//     )
+//     .refine(
+//       (f) => ACCEPTED_FILE_TYPES.includes(f.type),
+//       "Only PDF or DOCX files are currently accepted",
+//     ),
+// });
+
+export const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
+export const ORDERS = ["asc", "desc"] as const;
+export type SortableField = (typeof SORTABLE_FIELDS)[number];
+export type OrderType = (typeof ORDERS)[number];
+export type AggregateStats = Record<Status, number> & { TOTAL: number };
+
+export const GetResumesParamsSchema = z.object({
+  orderKey: z.enum(SORTABLE_FIELDS).default("updatedAt"),
+  order: z.enum(ORDERS).default("desc"),
+  pageNumber: z.number().int().min(0).default(0),
+  pageSize: z.number().int().min(1).max(100).default(12),
+});
+
+export const ResumeSchema = z.object({
+  title: z.string().min(1, "Title is required").max(100, "Title too long"),
+  notes: z.string().max(1000, "Notes too long").optional(),
+  tags: z.string().transform((val) =>
+    val
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+  ),
+  filePath: z.string().min(1, "File path is required"),
+  fileType: z.enum(["pdf", "docx"]),
+});
+
+export const UpdateResumeSchema = ResumeSchema.extend({
+  filePath: z.string().min(1, "File path is required").optional(),
+  fileType: z.enum(["pdf", "docx"]).optional(),
+});
+
 // Actions: Reminders
 
 const REMINDER_TYPE = ["EVENT", "FOLLOW_UP"] as const;
@@ -85,6 +169,7 @@ export const EditReminderSchema = ReminderSchema.pick({
 });
 
 export const GetRemindersParamsSchema = z.object({
+  // may need or may not need, copypasta for now
   orderKey: z.enum(SORTABLE_FIELDS).default("updatedAt"),
   order: z.enum(ORDERS).default("desc"),
   pageNumber: z.number().int().min(0).default(0),
