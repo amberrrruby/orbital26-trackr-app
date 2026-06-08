@@ -1,0 +1,171 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* ── Drop zone ───────────────────────────────────────────────── */
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-inset);
+  padding: var(--space-8) var(--space-6);
+  cursor: pointer;
+  transition:
+    border-color var(--ease-fast),
+    background var(--ease-fast);
+  outline: none;
+}
+
+.dropzone:hover:not(.uploading) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.dropzone:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dragging {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.uploading {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.hasError {
+  border-color: var(--color-danger);
+  background: var(--color-danger-subtle);
+}
+
+/* ── Hidden input ────────────────────────────────────────────── */
+
+.hiddenInput {
+  display: none;
+}
+
+/* ── Idle state ──────────────────────────────────────────────── */
+
+.idleState,
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.uploadIcon {
+  color: var(--color-text-tertiary);
+  display: flex;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* ── Spinner ─────────────────────────────────────────────────── */
+
+.spinner {
+  color: var(--color-accent);
+  display: flex;
+}
+
+.spinnerSvg {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Uploaded state ──────────────────────────────────────────── */
+
+.uploaded {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-subtle);
+}
+
+.uploadedIcon {
+  color: var(--color-accent);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.uploadedMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.uploadedName {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uploadedSize {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  transition:
+    background var(--ease-fast),
+    color var(--ease-fast);
+}
+
+.removeBtn:hover {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+/* ── Error ───────────────────────────────────────────────────── */
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+}

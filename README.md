@@ -13,7 +13,7 @@ some.user@test.mail
 S0M3testP@$$W0RD
 ```
 
-Todo: `layout.tsx`:
+- `layout.tsx`:
 
 ```typescript
 export const metadata: Metadata = {

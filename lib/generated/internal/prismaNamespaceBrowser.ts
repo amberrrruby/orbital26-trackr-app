@@ -112,10 +112,12 @@ export const ResumeScalarFieldEnum = {
   title: "title",
   tags: "tags",
   notes: "notes",
-  resumeUrl: "resumeUrl",
+  filePath: "filePath",
   fileType: "fileType",
   createdAt: "createdAt",
   updatedAt: "updatedAt",
+  thumbnailPath: "thumbnailPath",
+  thumbnailStatus: "thumbnailStatus",
   userId: "userId",
 } as const;
 
