@@ -125,8 +125,8 @@ export async function generateThumbnail(
   };
 }
 
-// Form just provides the resume URL directly
-export async function addResume(
+// Form provides file path to bucket storage, then a signed URL is generated, expires in 1 hour
+export async function createResume(
   formData: FormData,
 ): Promise<Result<string, AddResumeError>> {
   const userId = await requireUserOrRedirectLogin();
@@ -279,12 +279,13 @@ export async function updateResume(
 export async function deleteResume(
   resumeId: string,
   filePath: string,
+  _bucket: string = "resumes", // only change for tests, in actual use this should just be "resumes" which is the default.
 ): Promise<Result<void, DeleteResumeError>> {
   const userId = await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
   try {
     const { error: storageError } = await supabase.storage
-      .from("resumes")
+      .from(_bucket)
       .remove([filePath]);
 
     if (storageError) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { addResume, updateResume } from "@/app/actions/resume";
+import { createResume, updateResume } from "@/app/actions/resume";
 import { Resume } from "@/lib/generated/client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -70,7 +70,7 @@ export default function ResumeFormComponent({
     startTransition(async () => {
       const res = isEditing
         ? await updateResume(resume.id, formData)
-        : await addResume(formData);
+        : await createResume(formData);
       if (!res.ok) {
         setErrMsg("[LAZY] error received, destructure later");
         return;
