@@ -153,7 +153,7 @@ export type UpdateReminderError = ActionValidationError | ActionFailureError;
 export type DeleteReminderError = ActionFailureError;
 
 export const ReminderSchema = z.object({
-  applicationId: z.cuid2("Empty or invalid Application CUID."),
+  applicationId: z.cuid2("Application ID is required"),
   type: z.enum(REMINDER_TYPE, "A reminder type is required"),
   remindAt: z.iso.date("Remind date is required"),
   content: z
@@ -169,11 +169,9 @@ export const EditReminderSchema = ReminderSchema.pick({
 });
 
 export const GetRemindersParamsSchema = z.object({
-  // may need or may not need, copypasta for now
-  orderKey: z.enum(SORTABLE_FIELDS).default("updatedAt"),
-  order: z.enum(ORDERS).default("desc"),
   pageNumber: z.number().int().min(0).default(0),
   pageSize: z.number().int().min(1).max(100).default(12),
+  group: z.enum(["today", "upcoming", "overdue", "all"]),
 });
 
 // Settings-related errors

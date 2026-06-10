@@ -89,7 +89,7 @@ model Reminder {
   // FIELDS
   id             String       @id @default(cuid())
   type           ReminderType
-  remindAt       DateTime
+  remindAt       Date
   content        String
 
   // 1:1 LINKS

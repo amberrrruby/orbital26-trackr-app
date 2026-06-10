@@ -28,10 +28,7 @@ export default function ResumeFormComponent({
   const [filePath, setFilePath] = useState(resume?.filePath ?? "");
   const [fileType, setFileType] = useState(resume?.fileType ?? "");
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
+  async function handleSubmit(formData: FormData) {
     setErrMsg(null);
 
     let resolvedFilePath = resume?.filePath ?? "";
@@ -72,7 +69,7 @@ export default function ResumeFormComponent({
         ? await updateResume(resume.id, formData)
         : await createResume(formData);
       if (!res.ok) {
-        setErrMsg("[LAZY] error received, destructure later");
+        setErrMsg("Something went wrong. Please try again.");
         return;
       }
       router.push(
@@ -82,7 +79,7 @@ export default function ResumeFormComponent({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={handleSubmit}>
       <div>
         <label htmlFor="title">Title</label>
         <input
