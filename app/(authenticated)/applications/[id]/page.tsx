@@ -21,7 +21,7 @@ export default async function ApplicationDetailsPage({
     return (
       <main className={styles.page}>
         <Link href="/applications">
-          <Button>← Back to Applications</Button>
+          <Button>Back to Applications</Button>
         </Link>
 
         <h1>Application Details</h1>

@@ -5,7 +5,7 @@ export default function ApplicationNotFound() {
   return (
     <main>
       <Link href="/applications">
-        <Button>← Back to Applications</Button>
+        <Button>Back to Applications</Button>
       </Link>
 
       <h1>Application not found</h1>

@@ -74,7 +74,7 @@ export const EditApplicationSchema = ApplicationSchema.extend({
 });
 
 export const ApplicationIdSchema = z.object({
-  id: z.string().min(1, "Application ID is required"),
+  id: z.cuid2("Application ID is required"),
 });
 
 // Actions: Resumes
