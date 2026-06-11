@@ -1,7 +1,7 @@
 import Link from "next/link.js";
 import AddApplicationForm from "../AddApplicationForm";
 import { Button } from "@/app/components/Button";
-import styles from "./page.tsx.module.css";
+import styles from "./page.module.css";
 
 export default function NewApplicationPage() {
   return (

@@ -1,4 +1,5 @@
 import z, { ZodError } from "zod";
+import { Prisma } from "@/lib/generated/client";
 
 export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
@@ -34,6 +35,16 @@ export type CreateApplicationError = ActionValidationError | ActionFailureError;
 
 export type GetApplicationsError = ActionFailureError;
 
+export type GetApplicationByIdError =
+  | ActionValidationError
+  | ActionFailureError;
+
+export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
+  include: {
+    resume: true;
+  };
+}>;
+
 export type UpdateApplicationError = ActionValidationError | ActionFailureError;
 
 export type DeleteApplicationError = ActionFailureError;
@@ -60,6 +71,10 @@ export const ApplicationSchema = z.object({
 
 export const EditApplicationSchema = ApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
+});
+
+export const ApplicationIdSchema = z.object({
+  id: z.cuid2("Application ID is required"),
 });
 
 // Actions: Resumes

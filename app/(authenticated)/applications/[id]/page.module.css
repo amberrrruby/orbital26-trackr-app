@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--content-max-w);
+  padding: var(--content-padding);
+}
+
+.header {
+  margin-bottom: var(--space-4);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

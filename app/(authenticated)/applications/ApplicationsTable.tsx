@@ -5,6 +5,7 @@ import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { useState } from "react";
 import { Button } from "@/app/components/Button";
+import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
 import modalStyles from "./EditApplicationModal.module.css";
 import {
@@ -87,6 +88,12 @@ export default function ApplicationsTable({
         const application = row.original;
         return (
           <div className={tableStyles.action}>
+            <Link href={`/applications/${application.id}`}>
+              <Button type="button" size="sm" variant="primary">
+                Details
+              </Button>
+            </Link>
+
             <Button
               type="button"
               size="sm"

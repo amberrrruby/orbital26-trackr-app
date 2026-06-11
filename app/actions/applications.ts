@@ -3,14 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserOrRedirectLogin } from "@/lib/auth";
 import {
+  ApplicationIdSchema,
   ApplicationSchema,
   CreateApplicationError,
   DeleteApplicationError,
   EditApplicationSchema,
   GetApplicationsError,
+  GetApplicationByIdError,
   Result,
   returnSchemaValidationError,
   UpdateApplicationError,
+  ApplicationWithDetails,
 } from "@/lib/types";
 import { Application } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
@@ -68,6 +71,36 @@ export async function getApplications(): Promise<
       orderBy: { createdAt: "desc" },
     });
     return { ok: true, value: applications };
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
+}
+
+export async function getApplicationById(
+  id: string,
+): Promise<Result<ApplicationWithDetails | null, GetApplicationByIdError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  const parseResult = ApplicationIdSchema.safeParse({ id });
+
+  if (!parseResult.success) {
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
+  }
+
+  try {
+    const application = await prisma.application.findFirst({
+      where: {
+        id: parseResult.data.id,
+        userId,
+      },
+      include: {
+        resume: true,
+      },
+    });
+    return { ok: true, value: application };
   } catch {
     return { ok: false, error: { type: "FAILURE" } };
   }
