@@ -156,6 +156,12 @@ export const UpdateResumeSchema = ResumeSchema.extend({
 // Actions: Reminders
 
 const REMINDER_TYPE = ["EVENT", "FOLLOW_UP"] as const;
+const SOURCE_KEY = [
+  "DATE_APPLIED",
+  "OA_ASSESSMENT_DATE",
+  "INTERVIEW_DATE",
+  "OFFER_EXPIRY_DATE",
+] as const;
 
 export type GetRemindersError =
   | ActionValidationError // validating paging params
@@ -168,19 +174,24 @@ export type UpdateReminderError = ActionValidationError | ActionFailureError;
 export type DeleteReminderError = ActionFailureError;
 
 export const ReminderSchema = z.object({
-  applicationId: z.cuid2("Application ID is required"),
+  applicationId: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z.cuid2().nullable().optional(),
+  ),
   type: z.enum(REMINDER_TYPE, "A reminder type is required"),
   remindAt: z.iso.date("Remind date is required"),
+  offsetDays: z.preprocess(
+    (v) => (v === "" || v === null ? undefined : v),
+    z.coerce.number().int().positive().optional(),
+  ),
+  source: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.enum(SOURCE_KEY).optional(),
+  ),
   content: z
     .string()
     .min(1, "Content is required")
     .max(1000, "Content too long"),
-});
-
-export const EditReminderSchema = ReminderSchema.pick({
-  type: true,
-  remindAt: true,
-  content: true,
 });
 
 export const GetRemindersParamsSchema = z.object({
@@ -188,6 +199,12 @@ export const GetRemindersParamsSchema = z.object({
   pageSize: z.number().int().min(1).max(100).default(12),
   group: z.enum(["today", "upcoming", "overdue", "all"]),
 });
+
+export type ReminderWithApplication = Prisma.ReminderGetPayload<{
+  include: {
+    application: true;
+  };
+}>;
 
 // Settings-related errors
 

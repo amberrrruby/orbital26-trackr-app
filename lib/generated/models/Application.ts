@@ -618,6 +618,11 @@ export type ApplicationSumOrderByAggregateInput = {
   interviewRound?: Prisma.SortOrder;
 };
 
+export type ApplicationNullableScalarRelationFilter = {
+  is?: Prisma.ApplicationWhereInput | null;
+  isNot?: Prisma.ApplicationWhereInput | null;
+};
+
 export type ApplicationScalarRelationFilter = {
   is?: Prisma.ApplicationWhereInput;
   isNot?: Prisma.ApplicationWhereInput;
@@ -877,13 +882,15 @@ export type ApplicationCreateNestedOneWithoutRemindersInput = {
   connect?: Prisma.ApplicationWhereUniqueInput;
 };
 
-export type ApplicationUpdateOneRequiredWithoutRemindersNestedInput = {
+export type ApplicationUpdateOneWithoutRemindersNestedInput = {
   create?: Prisma.XOR<
     Prisma.ApplicationCreateWithoutRemindersInput,
     Prisma.ApplicationUncheckedCreateWithoutRemindersInput
   >;
   connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutRemindersInput;
   upsert?: Prisma.ApplicationUpsertWithoutRemindersInput;
+  disconnect?: Prisma.ApplicationWhereInput | boolean;
+  delete?: Prisma.ApplicationWhereInput | boolean;
   connect?: Prisma.ApplicationWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<

@@ -1,15 +1,14 @@
 "use server";
 
 import { requireUserOrRedirectLogin } from "@/lib/auth";
-import { Reminder } from "@/lib/generated/client";
 import { prisma } from "@/lib/prisma";
 import {
   AddReminderError,
   DeleteReminderError,
-  EditReminderSchema,
   GetRemindersError,
   GetRemindersParamsSchema,
   ReminderSchema,
+  ReminderWithApplication,
   Result,
   returnSchemaValidationError,
   UpdateReminderError,
@@ -23,7 +22,7 @@ export async function getReminders(
 ): Promise<
   Result<
     {
-      reminders: Reminder[];
+      reminders: ReminderWithApplication[];
       totalCount: number;
     },
     GetRemindersError
@@ -66,9 +65,10 @@ export async function getReminders(
         orderBy: { remindAt: group === "overdue" ? "desc" : "asc" },
         skip: pageNumber * pageSize,
         take: pageSize,
+        include: { application: true },
       }),
       prisma.reminder.count({ where: { userId, remindAt: remindAtFilter } }),
-    ])) as [Reminder[], number];
+    ])) as [ReminderWithApplication[], number];
 
     return { ok: true, value: { reminders, totalCount } };
   } catch {
@@ -82,8 +82,10 @@ export async function addReminder(
   const userId = await requireUserOrRedirectLogin();
   const parseResult = ReminderSchema.safeParse({
     applicationId: formData.get("applicationId"),
-    type: formData.get("type"),
+    type: formData.get("reminderType"),
     remindAt: formData.get("remindAt"),
+    offsetDays: formData.get("offsetDays"),
+    source: formData.get("source"),
     content: formData.get("content"),
   });
   if (!parseResult.success) {
@@ -92,23 +94,25 @@ export async function addReminder(
       error: returnSchemaValidationError(parseResult),
     };
   }
-  const { applicationId, type, remindAt, content } = parseResult.data;
+  const { applicationId, type, remindAt, offsetDays, source, content } =
+    parseResult.data;
 
   // 3. Write DB record
   try {
     const reminder = await prisma.reminder.create({
       data: {
-        applicationId,
+        ...(applicationId != null && { applicationId }),
         type,
         remindAt: new Date(remindAt),
+        ...(offsetDays != null && { offsetDays }),
+        ...(source != null && { source }),
         content,
         userId,
       },
     });
     revalidatePath(`/reminders`);
     return { ok: true, value: reminder.id };
-  } catch (err) {
-    console.log(err);
+  } catch {
     return {
       ok: false,
       error: { type: "FAILURE" },
@@ -122,9 +126,12 @@ export async function updateReminder(
 ): Promise<Result<void, UpdateReminderError>> {
   const userId = await requireUserOrRedirectLogin();
 
-  const parseResult = EditReminderSchema.safeParse({
-    type: formData.get("type"),
+  const parseResult = ReminderSchema.safeParse({
+    applicationId: formData.get("applicationId"),
+    type: formData.get("reminderType"),
     remindAt: formData.get("remindAt"),
+    offsetDays: formData.get("offsetDays"),
+    source: formData.get("source"),
     content: formData.get("content"),
   });
   if (!parseResult.success) {
@@ -133,14 +140,18 @@ export async function updateReminder(
       error: returnSchemaValidationError(parseResult),
     };
   }
-  const { type, remindAt, content } = parseResult.data;
+  const { applicationId, type, remindAt, offsetDays, source, content } =
+    parseResult.data;
 
   try {
     const result = await prisma.reminder.updateMany({
       where: { id: reminderId, userId },
       data: {
+        applicationId,
         type,
-        remindAt,
+        remindAt: new Date(remindAt),
+        ...(offsetDays != null && { offsetDays }),
+        ...(source != null && { source }),
         content,
       },
     });

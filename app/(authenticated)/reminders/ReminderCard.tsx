@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Bell } from "lucide-react";
-import { Reminder } from "@/lib/generated/client";
 import { deleteReminder } from "@/app/actions/reminders";
 import { useRouter } from "next/navigation";
+import { ReminderWithApplication } from "@/lib/types";
+import Link from "next/link";
+import { Button } from "@/app/components/Button";
 
 interface ReminderCardProps {
-  reminder: Reminder;
+  reminder: ReminderWithApplication;
   variant?: "default" | "overdue";
 }
 
@@ -55,10 +57,20 @@ export default function ReminderCard({
                 isOverdue ? "text-destructive" : "text-muted-foreground"
               }`}
             >
+              {reminder.application &&
+                `From ${reminder.application.company} - ${reminder.application.role} | `}
               {isOverdue ? `Was due ${formattedDate}` : formattedDate}
             </p>
           </div>
         </div>
+
+        {reminder.application && (
+          <Link href={`/applications/${reminder.applicationId}`}>
+            <Button onClick={(e) => e.stopPropagation()}>
+              Application Details
+            </Button>
+          </Link>
+        )}
 
         <button
           onClick={handleDelete}

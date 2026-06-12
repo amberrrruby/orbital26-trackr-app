@@ -343,6 +343,25 @@ export type EnumReminderTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel> | $Enums.ReminderType;
 };
 
+export type EnumSourceKeyNullableFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.SourceKey
+    | Prisma.EnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  in?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>
+    | $Enums.SourceKey
+    | null;
+};
+
 export type EnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?:
     | $Enums.ReminderType
@@ -361,6 +380,28 @@ export type EnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>;
 };
 
+export type EnumSourceKeyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.SourceKey
+    | Prisma.EnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  in?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumSourceKeyNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.SourceKey
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>;
+};
+
 export type EnumTimelineEventTypeFilter<$PrismaModel = never> = {
   equals?:
     | $Enums.TimelineEventType
@@ -374,6 +415,22 @@ export type EnumTimelineEventTypeFilter<$PrismaModel = never> = {
   not?:
     | Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>
     | $Enums.TimelineEventType;
+};
+
+export type EnumStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Status | Prisma.EnumStatusFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStatusNullableFilter<$PrismaModel>
+    | $Enums.Status
+    | null;
 };
 
 export type EnumTimelineEventTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -392,6 +449,25 @@ export type EnumTimelineEventTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>;
+};
+
+export type EnumStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Status | Prisma.EnumStatusFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStatusNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.Status
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumStatusNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumStatusNullableFilter<$PrismaModel>;
 };
 
 export type NestedUuidFilter<$PrismaModel = never> = {
@@ -689,6 +765,25 @@ export type NestedEnumReminderTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel> | $Enums.ReminderType;
 };
 
+export type NestedEnumSourceKeyNullableFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.SourceKey
+    | Prisma.EnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  in?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>
+    | $Enums.SourceKey
+    | null;
+};
+
 export type NestedEnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?:
     | $Enums.ReminderType
@@ -707,6 +802,30 @@ export type NestedEnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>;
 };
 
+export type NestedEnumSourceKeyNullableWithAggregatesFilter<
+  $PrismaModel = never,
+> = {
+  equals?:
+    | $Enums.SourceKey
+    | Prisma.EnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  in?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.SourceKey[]
+    | Prisma.ListEnumSourceKeyFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumSourceKeyNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.SourceKey
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumSourceKeyNullableFilter<$PrismaModel>;
+};
+
 export type NestedEnumTimelineEventTypeFilter<$PrismaModel = never> = {
   equals?:
     | $Enums.TimelineEventType
@@ -720,6 +839,22 @@ export type NestedEnumTimelineEventTypeFilter<$PrismaModel = never> = {
   not?:
     | Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>
     | $Enums.TimelineEventType;
+};
+
+export type NestedEnumStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Status | Prisma.EnumStatusFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.Status[]
+    | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStatusNullableFilter<$PrismaModel>
+    | $Enums.Status
+    | null;
 };
 
 export type NestedEnumTimelineEventTypeWithAggregatesFilter<
@@ -741,3 +876,26 @@ export type NestedEnumTimelineEventTypeWithAggregatesFilter<
   _min?: Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumTimelineEventTypeFilter<$PrismaModel>;
 };
+
+export type NestedEnumStatusNullableWithAggregatesFilter<$PrismaModel = never> =
+  {
+    equals?:
+      | $Enums.Status
+      | Prisma.EnumStatusFieldRefInput<$PrismaModel>
+      | null;
+    in?:
+      | $Enums.Status[]
+      | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+      | null;
+    notIn?:
+      | $Enums.Status[]
+      | Prisma.ListEnumStatusFieldRefInput<$PrismaModel>
+      | null;
+    not?:
+      | Prisma.NestedEnumStatusNullableWithAggregatesFilter<$PrismaModel>
+      | $Enums.Status
+      | null;
+    _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumStatusNullableFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumStatusNullableFilter<$PrismaModel>;
+  };

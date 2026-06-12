@@ -26,9 +26,21 @@ export const ReminderType = {
 
 export type ReminderType = (typeof ReminderType)[keyof typeof ReminderType];
 
+export const SourceKey = {
+  DATE_APPLIED: "DATE_APPLIED",
+  OA_ASSESSMENT_DATE: "OA_ASSESSMENT_DATE",
+  INTERVIEW_DATE: "INTERVIEW_DATE",
+  OFFER_EXPIRY_DATE: "OFFER_EXPIRY_DATE",
+} as const;
+
+export type SourceKey = (typeof SourceKey)[keyof typeof SourceKey];
+
 export const TimelineEventType = {
-  StatusUpdate: "StatusUpdate",
-  CustomEvent: "CustomEvent",
+  APPLICATION_CREATED: "APPLICATION_CREATED",
+  STATUS_CHANGED: "STATUS_CHANGED",
+  IMPORTANT_DATE: "IMPORTANT_DATE",
+  REMINDER_COMPLETED: "REMINDER_COMPLETED",
+  MANUAL: "MANUAL",
 } as const;
 
 export type TimelineEventType =

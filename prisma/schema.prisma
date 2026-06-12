@@ -85,16 +85,25 @@ enum ReminderType {
   FOLLOW_UP
 }
 
+enum SourceKey {
+  DATE_APPLIED
+  OA_ASSESSMENT_DATE
+  INTERVIEW_DATE
+  OFFER_EXPIRY_DATE
+}
+
 model Reminder {
   // FIELDS
   id             String       @id @default(cuid())
   type           ReminderType
-  remindAt       Date
-  content        String
+  remindAt       DateTime
+  offsetDays     Int?
+  content        String?
+  source         SourceKey?
 
   // 1:1 LINKS
-  applicationId  String
-  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId  String?
+  application    Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   userId         String   @db.Uuid
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade) // for reminders page
@@ -103,23 +112,29 @@ model Reminder {
 }
 
 enum TimelineEventType {
-  StatusUpdate
-  CustomEvent
+  APPLICATION_CREATED
+  STATUS_CHANGED
+  IMPORTANT_DATE
+  REMINDER_COMPLETED
+  MANUAL
 }
 
 model TimelineEvent {
   // FIELDS
-  id             String            @id @default(cuid())
-  type           TimelineEventType
-  description    String
-  createdAt      DateTime
+  id          String            @id @default(cuid())
+  type        TimelineEventType
+  description String
+
+  sourceKey SourceKey?
+  status    Status?
 
   // 1:1 LINKS
-  applicationId  String
-  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  userId         String   @db.Uuid
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade) // maybe? we can remove this later if not needed
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // maybe? we can remove this later if not needed
 
-  // 1:MANY LINKS
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

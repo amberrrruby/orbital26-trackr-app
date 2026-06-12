@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Reminder, Application } from "@/lib/generated/client";
+import { Application } from "@/lib/generated/client";
 import ReminderCard from "./ReminderCard";
-import AddReminderModal from "./AddReminderModal";
-import { GetApplicationsError, GetRemindersError, Result } from "@/lib/types";
+import ReminderModal from "./ReminderModal";
+import {
+  GetApplicationsError,
+  GetRemindersError,
+  ReminderWithApplication,
+  Result,
+} from "@/lib/types";
 
 const PREVIEW_LIMIT = 5;
 
 type RemindersResult = Result<
-  { reminders: Reminder[]; totalCount: number },
+  { reminders: ReminderWithApplication[]; totalCount: number },
   GetRemindersError
 >;
 
@@ -31,6 +36,8 @@ export default function RemindersPageClient({
   const [showAllToday, setShowAllToday] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [showAllOverdue, setShowAllOverdue] = useState(false);
+  const [editingReminder, setEditingReminder] =
+    useState<ReminderWithApplication | null>(null);
 
   if (
     !todayResult.ok ||
@@ -57,6 +64,18 @@ export default function RemindersPageClient({
 
   return (
     <>
+      {/* modal for editing, conditional rendering handled by the modal itself*/}
+      <ReminderModal
+        key={editingReminder?.id ?? "create"}
+        open={editingReminder !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingReminder(null);
+          }
+        }}
+        applications={applications}
+        reminder={editingReminder ?? undefined}
+      />
       {/* Page header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-medium">Reminders</h1>
@@ -97,7 +116,13 @@ export default function RemindersPageClient({
         hasMore={todayTotal > PREVIEW_LIMIT}
       >
         {todayReminders.map((r) => (
-          <ReminderCard key={r.id} reminder={r} />
+          <div
+            key={r.id}
+            onClick={() => setEditingReminder(r)}
+            className="cursor-pointer"
+          >
+            <ReminderCard key={r.id} reminder={r} />
+          </div>
         ))}
       </Section>
 
@@ -110,7 +135,13 @@ export default function RemindersPageClient({
         hasMore={upcomingTotal > PREVIEW_LIMIT}
       >
         {upcomingReminders.map((r) => (
-          <ReminderCard key={r.id} reminder={r} />
+          <div
+            key={r.id}
+            onClick={() => setEditingReminder(r)}
+            className="cursor-pointer"
+          >
+            <ReminderCard key={r.id} reminder={r} />
+          </div>
         ))}
       </Section>
 
@@ -124,16 +155,21 @@ export default function RemindersPageClient({
         titleAccent="text-destructive"
       >
         {overdueReminders.map((r) => (
-          <ReminderCard key={r.id} reminder={r} variant="overdue" />
+          <div
+            key={r.id}
+            onClick={() => setEditingReminder(r)}
+            className="cursor-pointer"
+          >
+            <ReminderCard key={r.id} reminder={r} variant="overdue" />
+          </div>
         ))}
       </Section>
 
-      {modalOpen && (
-        <AddReminderModal
-          applications={applications}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
+      <ReminderModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        applications={applications}
+      />
     </>
   );
 }
