@@ -87,10 +87,8 @@ export type GetAggregateStatsError = ActionFailureError;
 
 export type GetTopKRecentApplicationsError = ActionFailureError;
 
-export type AddResumeError =
-  | ActionValidationError
-  | ActionFailureError
-  | AppUploadError;
+export type AddResumeError = // TODO: naming convention: add -> create
+  ActionValidationError | ActionFailureError | AppUploadError;
 
 export type UpdateResumeError =
   | ActionValidationError
@@ -154,6 +152,59 @@ export const UpdateResumeSchema = ResumeSchema.extend({
   filePath: z.string().min(1, "File path is required").optional(),
   fileType: z.enum(["pdf", "docx"]).optional(),
 });
+
+// Actions: Reminders
+
+const REMINDER_TYPE = ["EVENT", "FOLLOW_UP"] as const;
+const SOURCE_KEY = [
+  "DATE_APPLIED",
+  "OA_ASSESSMENT_DATE",
+  "INTERVIEW_DATE",
+  "OFFER_EXPIRY_DATE",
+] as const;
+
+export type GetRemindersError =
+  | ActionValidationError // validating paging params
+  | ActionFailureError;
+
+export type AddReminderError = ActionValidationError | ActionFailureError;
+
+export type UpdateReminderError = ActionValidationError | ActionFailureError;
+
+export type DeleteReminderError = ActionFailureError;
+
+export const ReminderSchema = z.object({
+  applicationId: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z.cuid2().nullable().optional(),
+  ),
+  type: z.enum(REMINDER_TYPE, "A reminder type is required"),
+  remindAt: z.iso.date("Remind date is required"),
+  offsetDays: z.preprocess(
+    (v) => (v === "" || v === null ? undefined : v),
+    z.coerce.number().int().positive().optional(),
+  ),
+  source: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.enum(SOURCE_KEY).optional(),
+  ),
+  content: z
+    .string()
+    .min(1, "Content is required")
+    .max(1000, "Content too long"),
+});
+
+export const GetRemindersParamsSchema = z.object({
+  pageNumber: z.number().int().min(0).default(0),
+  pageSize: z.number().int().min(1).max(100).default(12),
+  group: z.enum(["today", "upcoming", "overdue", "all"]),
+});
+
+export type ReminderWithApplication = Prisma.ReminderGetPayload<{
+  include: {
+    application: true;
+  };
+}>;
 
 // Settings-related errors
 

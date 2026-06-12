@@ -128,7 +128,9 @@ export const ReminderScalarFieldEnum = {
   id: "id",
   type: "type",
   remindAt: "remindAt",
+  offsetDays: "offsetDays",
   content: "content",
+  source: "source",
   applicationId: "applicationId",
   userId: "userId",
 } as const;
@@ -140,9 +142,12 @@ export const TimelineEventScalarFieldEnum = {
   id: "id",
   type: "type",
   description: "description",
-  createdAt: "createdAt",
+  sourceKey: "sourceKey",
+  status: "status",
   applicationId: "applicationId",
   userId: "userId",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
 } as const;
 
 export type TimelineEventScalarFieldEnum =
