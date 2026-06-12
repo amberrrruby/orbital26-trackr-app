@@ -22,9 +22,6 @@ import {
   createOrUpdateImportantDateTimelineEvent,
 } from "./timeline";
 import { revalidatePath } from "next/cache";
-import { Oleo_Script_Swash_Caps } from "next/font/google";
-import { create } from "domain";
-import { off } from "process";
 
 export async function createApplication(
   formData: FormData,
