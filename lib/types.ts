@@ -65,6 +65,9 @@ export const ApplicationSchema = z.object({
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
   dateApplied: z.coerce.date().optional(),
+  oaAssessmentDate: z.coerce.date().optional(),
+  interviewDate: z.coerce.date().optional(),
+  offerExpiryDate: z.coerce.date().optional(),
   notes: z.string().max(1000, "Notes too long").default(""),
   // tags: z.array(z.string()).default([]),
 });

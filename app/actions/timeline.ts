@@ -14,7 +14,9 @@ import {
   returnSchemaValidationError,
   Result,
 } from "@/lib/types";
+import { Status, SourceKey } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
+import { getImplicitTags } from "next/dist/server/lib/implicit-tags";
 
 export async function getTimelineEvents(
   applicationId: string,
@@ -72,7 +74,7 @@ export async function addManualTimelineEvent(
   const { applicationId, eventDate, description } = parseResult.data;
 
   try {
-    const application = prisma.timelineEvent.findFirst({
+    const application = await prisma.application.findFirst({
       where: {
         id: applicationId,
         userId,
@@ -178,4 +180,118 @@ export async function deleteManualTimelineEvent(
   } catch {
     return { ok: false, error: { type: "FAILURE" } };
   }
+}
+
+function formatStatus(status: Status): string {
+  const statusLabels: Record<Status, string> = {
+    WISHLIST: "Wishlist",
+    APPLIED: "Applied",
+    OA_ASSESSMENT: "OA/ Assessment",
+    INTERVIEW: "Interview",
+    OFFER: "Offer",
+    REJECTED: "Rejected",
+  };
+  return statusLabels[status];
+}
+
+export async function createApplicationCreatedTimelineEvent({
+  applicationId,
+  userId,
+  status,
+  eventDate,
+}: {
+  applicationId: string;
+  userId: string;
+  status: Status;
+  eventDate: Date;
+}) {
+  return prisma.timelineEvent.create({
+    data: {
+      applicationId,
+      userId,
+      type: "APPLICATION_CREATED",
+      eventDate,
+      status,
+      description: `Application created with status: ${formatStatus(status)}`,
+    },
+  });
+}
+
+export async function createStatusChangeTimelineEvent({
+  applicationId,
+  userId,
+  fromStatus,
+  toStatus,
+  eventDate,
+}: {
+  applicationId: string;
+  userId: string;
+  fromStatus: Status;
+  toStatus: Status;
+  eventDate: Date;
+}) {
+  return prisma.timelineEvent.create({
+    data: {
+      applicationId,
+      userId,
+      type: "STATUS_CHANGED",
+      eventDate,
+      status: toStatus,
+      description: `Status changed from ${formatStatus(fromStatus)} to ${formatStatus(toStatus)}`,
+    },
+  });
+}
+
+function importantDateDescription(sourceKey: SourceKey): string {
+  const descriptions: Record<SourceKey, string> = {
+    DATE_APPLIED: "Applied",
+    OA_ASSESSMENT_DATE: "OA/Assessment",
+    INTERVIEW_DATE: "Interview",
+    OFFER_EXPIRY_DATE: "Offer expiry",
+  };
+  return descriptions[sourceKey];
+}
+
+export async function createOrUpdateImportantDateTimelineEvent({
+  applicationId,
+  userId,
+  sourceKey,
+  eventDate,
+}: {
+  applicationId: string;
+  userId: string;
+  sourceKey: SourceKey;
+  eventDate: Date;
+}) {
+  const existingTimelineEvent = await prisma.timelineEvent.findFirst({
+    where: {
+      applicationId,
+      userId,
+      type: "IMPORTANT_DATE",
+      sourceKey,
+    },
+  });
+
+  if (existingTimelineEvent) {
+    return prisma.timelineEvent.update({
+      where: {
+        id: existingTimelineEvent.id,
+      },
+      data: {
+        eventDate,
+        description: importantDateDescription(sourceKey),
+      },
+    });
+  }
+
+  return prisma.timelineEvent.create({
+    data: {
+      applicationId,
+      userId,
+      type: "IMPORTANT_DATE",
+      sourceKey,
+      eventDate,
+      description: importantDateDescription(sourceKey),
+    },
+  });
 }
