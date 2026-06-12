@@ -27,6 +27,7 @@ export type AggregateTimelineEvent = {
 export type TimelineEventMinAggregateOutputType = {
   id: string | null;
   type: $Enums.TimelineEventType | null;
+  eventDate: Date | null;
   description: string | null;
   sourceKey: $Enums.SourceKey | null;
   status: $Enums.Status | null;
@@ -39,6 +40,7 @@ export type TimelineEventMinAggregateOutputType = {
 export type TimelineEventMaxAggregateOutputType = {
   id: string | null;
   type: $Enums.TimelineEventType | null;
+  eventDate: Date | null;
   description: string | null;
   sourceKey: $Enums.SourceKey | null;
   status: $Enums.Status | null;
@@ -51,6 +53,7 @@ export type TimelineEventMaxAggregateOutputType = {
 export type TimelineEventCountAggregateOutputType = {
   id: number;
   type: number;
+  eventDate: number;
   description: number;
   sourceKey: number;
   status: number;
@@ -64,6 +67,7 @@ export type TimelineEventCountAggregateOutputType = {
 export type TimelineEventMinAggregateInputType = {
   id?: true;
   type?: true;
+  eventDate?: true;
   description?: true;
   sourceKey?: true;
   status?: true;
@@ -76,6 +80,7 @@ export type TimelineEventMinAggregateInputType = {
 export type TimelineEventMaxAggregateInputType = {
   id?: true;
   type?: true;
+  eventDate?: true;
   description?: true;
   sourceKey?: true;
   status?: true;
@@ -88,6 +93,7 @@ export type TimelineEventMaxAggregateInputType = {
 export type TimelineEventCountAggregateInputType = {
   id?: true;
   type?: true;
+  eventDate?: true;
   description?: true;
   sourceKey?: true;
   status?: true;
@@ -184,6 +190,7 @@ export type TimelineEventGroupByArgs<
 export type TimelineEventGroupByOutputType = {
   id: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date;
   description: string;
   sourceKey: $Enums.SourceKey | null;
   status: $Enums.Status | null;
@@ -218,6 +225,7 @@ export type TimelineEventWhereInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFilter<"TimelineEvent">
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
   description?: Prisma.StringFilter<"TimelineEvent"> | string;
   sourceKey?:
     | Prisma.EnumSourceKeyNullableFilter<"TimelineEvent">
@@ -241,6 +249,7 @@ export type TimelineEventWhereInput = {
 export type TimelineEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   type?: Prisma.SortOrder;
+  eventDate?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   sourceKey?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -261,6 +270,7 @@ export type TimelineEventWhereUniqueInput = Prisma.AtLeast<
     type?:
       | Prisma.EnumTimelineEventTypeFilter<"TimelineEvent">
       | $Enums.TimelineEventType;
+    eventDate?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
     description?: Prisma.StringFilter<"TimelineEvent"> | string;
     sourceKey?:
       | Prisma.EnumSourceKeyNullableFilter<"TimelineEvent">
@@ -286,6 +296,7 @@ export type TimelineEventWhereUniqueInput = Prisma.AtLeast<
 export type TimelineEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   type?: Prisma.SortOrder;
+  eventDate?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   sourceKey?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -310,6 +321,10 @@ export type TimelineEventScalarWhereWithAggregatesInput = {
   type?:
     | Prisma.EnumTimelineEventTypeWithAggregatesFilter<"TimelineEvent">
     | $Enums.TimelineEventType;
+  eventDate?:
+    | Prisma.DateTimeWithAggregatesFilter<"TimelineEvent">
+    | Date
+    | string;
   description?: Prisma.StringWithAggregatesFilter<"TimelineEvent"> | string;
   sourceKey?:
     | Prisma.EnumSourceKeyNullableWithAggregatesFilter<"TimelineEvent">
@@ -334,6 +349,7 @@ export type TimelineEventScalarWhereWithAggregatesInput = {
 export type TimelineEventCreateInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -346,6 +362,7 @@ export type TimelineEventCreateInput = {
 export type TimelineEventUncheckedCreateInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -360,6 +377,7 @@ export type TimelineEventUpdateInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -380,6 +398,7 @@ export type TimelineEventUncheckedUpdateInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -398,6 +417,7 @@ export type TimelineEventUncheckedUpdateInput = {
 export type TimelineEventCreateManyInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -412,6 +432,7 @@ export type TimelineEventUpdateManyMutationInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -430,6 +451,7 @@ export type TimelineEventUncheckedUpdateManyInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -458,6 +480,7 @@ export type TimelineEventOrderByRelationAggregateInput = {
 export type TimelineEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   type?: Prisma.SortOrder;
+  eventDate?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   sourceKey?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -470,6 +493,7 @@ export type TimelineEventCountOrderByAggregateInput = {
 export type TimelineEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   type?: Prisma.SortOrder;
+  eventDate?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   sourceKey?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -482,6 +506,7 @@ export type TimelineEventMaxOrderByAggregateInput = {
 export type TimelineEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   type?: Prisma.SortOrder;
+  eventDate?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   sourceKey?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -722,6 +747,7 @@ export type NullableEnumStatusFieldUpdateOperationsInput = {
 export type TimelineEventCreateWithoutUserInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -733,6 +759,7 @@ export type TimelineEventCreateWithoutUserInput = {
 export type TimelineEventUncheckedCreateWithoutUserInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -796,6 +823,7 @@ export type TimelineEventScalarWhereInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFilter<"TimelineEvent">
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFilter<"TimelineEvent"> | Date | string;
   description?: Prisma.StringFilter<"TimelineEvent"> | string;
   sourceKey?:
     | Prisma.EnumSourceKeyNullableFilter<"TimelineEvent">
@@ -814,6 +842,7 @@ export type TimelineEventScalarWhereInput = {
 export type TimelineEventCreateWithoutApplicationInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -825,6 +854,7 @@ export type TimelineEventCreateWithoutApplicationInput = {
 export type TimelineEventUncheckedCreateWithoutApplicationInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -879,6 +909,7 @@ export type TimelineEventUpdateManyWithWhereWithoutApplicationInput = {
 export type TimelineEventCreateManyUserInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -892,6 +923,7 @@ export type TimelineEventUpdateWithoutUserInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -911,6 +943,7 @@ export type TimelineEventUncheckedUpdateWithoutUserInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -930,6 +963,7 @@ export type TimelineEventUncheckedUpdateManyWithoutUserInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -947,6 +981,7 @@ export type TimelineEventUncheckedUpdateManyWithoutUserInput = {
 export type TimelineEventCreateManyApplicationInput = {
   id?: string;
   type: $Enums.TimelineEventType;
+  eventDate: Date | string;
   description: string;
   sourceKey?: $Enums.SourceKey | null;
   status?: $Enums.Status | null;
@@ -960,6 +995,7 @@ export type TimelineEventUpdateWithoutApplicationInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -979,6 +1015,7 @@ export type TimelineEventUncheckedUpdateWithoutApplicationInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -998,6 +1035,7 @@ export type TimelineEventUncheckedUpdateManyWithoutApplicationInput = {
   type?:
     | Prisma.EnumTimelineEventTypeFieldUpdateOperationsInput
     | $Enums.TimelineEventType;
+  eventDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   sourceKey?:
     | Prisma.NullableEnumSourceKeyFieldUpdateOperationsInput
@@ -1019,6 +1057,7 @@ export type TimelineEventSelect<
   {
     id?: boolean;
     type?: boolean;
+    eventDate?: boolean;
     description?: boolean;
     sourceKey?: boolean;
     status?: boolean;
@@ -1039,6 +1078,7 @@ export type TimelineEventSelectCreateManyAndReturn<
   {
     id?: boolean;
     type?: boolean;
+    eventDate?: boolean;
     description?: boolean;
     sourceKey?: boolean;
     status?: boolean;
@@ -1059,6 +1099,7 @@ export type TimelineEventSelectUpdateManyAndReturn<
   {
     id?: boolean;
     type?: boolean;
+    eventDate?: boolean;
     description?: boolean;
     sourceKey?: boolean;
     status?: boolean;
@@ -1075,6 +1116,7 @@ export type TimelineEventSelectUpdateManyAndReturn<
 export type TimelineEventSelectScalar = {
   id?: boolean;
   type?: boolean;
+  eventDate?: boolean;
   description?: boolean;
   sourceKey?: boolean;
   status?: boolean;
@@ -1090,6 +1132,7 @@ export type TimelineEventOmit<
 > = runtime.Types.Extensions.GetOmit<
   | "id"
   | "type"
+  | "eventDate"
   | "description"
   | "sourceKey"
   | "status"
@@ -1134,6 +1177,7 @@ export type $TimelineEventPayload<
     {
       id: string;
       type: $Enums.TimelineEventType;
+      eventDate: Date;
       description: string;
       sourceKey: $Enums.SourceKey | null;
       status: $Enums.Status | null;
@@ -1772,6 +1816,7 @@ export interface Prisma__TimelineEventClient<
 export interface TimelineEventFieldRefs {
   readonly id: Prisma.FieldRef<"TimelineEvent", "String">;
   readonly type: Prisma.FieldRef<"TimelineEvent", "TimelineEventType">;
+  readonly eventDate: Prisma.FieldRef<"TimelineEvent", "DateTime">;
   readonly description: Prisma.FieldRef<"TimelineEvent", "String">;
   readonly sourceKey: Prisma.FieldRef<"TimelineEvent", "SourceKey">;
   readonly status: Prisma.FieldRef<"TimelineEvent", "Status">;

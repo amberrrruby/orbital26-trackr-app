@@ -206,6 +206,51 @@ export type ReminderWithApplication = Prisma.ReminderGetPayload<{
   };
 }>;
 
+// Actions: Timeline
+const TIMELINE_EVENT_TYPE = [
+  "APPLICATION_CREATED",
+  "STATUS_CHANGED",
+  "IMPORTANT_DATE",
+  "REMINDER_COMPLETED",
+  "MANUAL",
+] as const;
+
+export type GetTimelineEventsError = ActionValidationError | ActionFailureError;
+
+export type AddTimelineEventError = ActionValidationError | ActionFailureError;
+
+export type UpdateTimelineEventError =
+  | ActionValidationError
+  | ActionFailureError;
+
+export type DeleteTimelineEventError = ActionFailureError;
+
+export const ManualTimelineEventSchema = z.object({
+  applicationId: z.cuid2("Application ID is required"),
+  eventDate: z.iso.date("Remind date is required"),
+  description: z
+    .string()
+    .min(1, "Content is required")
+    .max(1000, "Content too long"),
+});
+
+export const EditManualTimelineEventSchema = ManualTimelineEventSchema.extend({
+  id: z.cuid2("Timeline event ID is required"),
+});
+
+export const TimelineApplicationIdSchema = z.object({
+  applicationId: z.cuid2("Application ID is required"),
+});
+export const TimelineEventIdSchema = z.object({
+  id: z.cuid2("Timeline event ID is required"),
+});
+
+export type TimelineEventWithApplication = Prisma.TimelineEventGetPayload<{
+  include: {
+    application: true;
+  };
+}>;
+
 // Settings-related errors
 
 export type ChangeCredentialsError = ActionValidationError | ActionFailureError;
