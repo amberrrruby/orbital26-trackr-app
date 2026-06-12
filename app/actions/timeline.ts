@@ -16,7 +16,6 @@ import {
 } from "@/lib/types";
 import { Status, SourceKey } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
-import { getImplicitTags } from "next/dist/server/lib/implicit-tags";
 
 export async function getTimelineEvents(
   applicationId: string,
