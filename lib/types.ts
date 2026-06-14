@@ -64,6 +64,7 @@ export const ApplicationSchema = z.object({
   source: z.string().default(""),
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
+  resumeId: z.cuid2().optional(),
   dateApplied: z.coerce.date().optional(),
   oaAssessmentDate: z.coerce.date().optional(),
   interviewDate: z.coerce.date().optional(),

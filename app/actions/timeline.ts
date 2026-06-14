@@ -14,7 +14,7 @@ import {
   returnSchemaValidationError,
   Result,
 } from "@/lib/types";
-import { Status, SourceKey } from "@/lib/generated/client";
+import { Status, SourceKey, TimelineEvent } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
 
 export async function getTimelineEvents(
@@ -93,6 +93,22 @@ export async function addManualTimelineEvent(
         description,
       },
     });
+
+    // Only called after TimelineEvent creation to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
+    // Raw call here, can extract and modularize but doesn't clean up a lot...
+    // Return value not used
+    await prisma.reminder.create({
+      data: {
+        applicationId,
+        type: "EVENT",
+        remindAt: new Date(eventDate),
+        offsetDays: 0,
+        content: description,
+        // Nulled source key field
+        userId,
+      },
+    });
+
     revalidatePath(`/applications/${applicationId}`);
     return { ok: true, value: timelineEvent.id };
   } catch {
@@ -138,6 +154,20 @@ export async function updateManualTimelineEvent(
     if (result.count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
+
+    // TODO: might change to conditionally do a DB PATCH call, if date has passed "today", and reminders are not needed
+    const reminderResult = await prisma.reminder.updateMany({
+      where: { id, userId },
+      data: {
+        remindAt: new Date(eventDate),
+        content: description,
+      },
+    });
+
+    if (reminderResult.count === 0) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
     revalidatePath(`/applications/${applicationId}`);
     return { ok: true, value: undefined };
   } catch {
@@ -262,6 +292,7 @@ export async function createOrUpdateImportantDateTimelineEvent({
   sourceKey: SourceKey;
   eventDate: Date;
 }) {
+  let ret; // WARN: return type of `update` unsure, will add soon
   const existingTimelineEvent = await prisma.timelineEvent.findFirst({
     where: {
       applicationId,
@@ -272,7 +303,7 @@ export async function createOrUpdateImportantDateTimelineEvent({
   });
 
   if (existingTimelineEvent) {
-    return prisma.timelineEvent.update({
+    ret = prisma.timelineEvent.update({
       where: {
         id: existingTimelineEvent.id,
       },
@@ -281,16 +312,60 @@ export async function createOrUpdateImportantDateTimelineEvent({
         description: importantDateDescription(sourceKey),
       },
     });
+  } else {
+    // Return was here. Now it's shifted down to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
+    ret = prisma.timelineEvent.create({
+      data: {
+        applicationId,
+        userId,
+        type: "IMPORTANT_DATE",
+        sourceKey,
+        eventDate,
+        description: importantDateDescription(sourceKey),
+      },
+    });
   }
 
-  return prisma.timelineEvent.create({
-    data: {
+  const existingReminder = await prisma.reminder.findFirst({
+    // TODO: might fix? if user behaves, this should only return the one and only one reminder with the following sourceKey.
+    where: {
       applicationId,
       userId,
-      type: "IMPORTANT_DATE",
-      sourceKey,
-      eventDate,
-      description: importantDateDescription(sourceKey),
+      source: sourceKey,
     },
   });
+
+  if (existingReminder) {
+    // TODO: raw call, error bubbled and unhandled for now
+    await prisma.reminder.updateMany({
+      where: {
+        id: existingReminder.id,
+        userId,
+      },
+      data: {
+        remindAt: eventDate,
+        offsetDays: 0,
+      },
+    });
+  }
+
+  // Directly inlined here with no wrapper. Might violate responsibility organization, but this is the only place it's called, if a wrapped helper is ever written.
+
+  // applicationId,
+  // userId,
+  // sourceKey,
+  // eventDate,
+  prisma.reminder.create({
+    data: {
+      applicationId,
+      type: "EVENT",
+      remindAt: eventDate,
+      offsetDays: 0,
+      source: sourceKey,
+      content: importantDateDescription(sourceKey),
+      userId,
+    },
+  });
+
+  return ret;
 }
