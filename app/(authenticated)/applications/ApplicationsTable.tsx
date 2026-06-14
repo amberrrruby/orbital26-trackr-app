@@ -1,9 +1,8 @@
 "use client";
 
-import { Application } from "@/lib/generated/browser";
 import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
-import { useState } from "react";
+import { Suspense, use, useState } from "react";
 import { Button } from "@/app/components/Button";
 import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
@@ -18,22 +17,29 @@ import {
   type SortingState,
   type ColumnFiltersState,
 } from "@tanstack/react-table";
+import { ApplicationWithDetails, GetResumesError, Result } from "@/lib/types";
+import { Resume } from "@/lib/generated/client";
 
 type ApplicationsTableProps = {
-  applications: Application[];
+  applications: ApplicationWithDetails[];
+  resumePromise: Promise<
+    Result<{ resumes: Resume[]; totalCount: number }, GetResumesError>
+  >;
 };
 
 export default function ApplicationsTable({
   applications,
+  resumePromise,
 }: ApplicationsTableProps) {
+  const resumesResult = use(resumePromise);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [editingApplication, setEditingApplication] =
-    useState<Application | null>(null);
+    useState<ApplicationWithDetails | null>(null);
   const [deletingApplication, setDeletingApplication] =
-    useState<Application | null>(null);
+    useState<ApplicationWithDetails | null>(null);
 
-  const columns: ColumnDef<Application>[] = [
+  const columns: ColumnDef<ApplicationWithDetails>[] = [
     {
       accessorKey: "company",
       header: "Company",
@@ -187,10 +193,20 @@ export default function ApplicationsTable({
 
       {editingApplication && (
         <div className={modalStyles.modal}>
-          <EditApplicationModal
-            application={editingApplication}
-            onClose={() => setEditingApplication(null)}
-          />
+          <Suspense>
+            {!resumesResult.ok ? (
+              <p>
+                [TEMP ERROR COMPONENT] Failed to load resumes. Please refresh
+                the page and try again.
+              </p>
+            ) : (
+              <EditApplicationModal
+                application={editingApplication}
+                resumes={resumesResult.value.resumes}
+                onClose={() => setEditingApplication(null)}
+              />
+            )}
+          </Suspense>
         </div>
       )}
 
