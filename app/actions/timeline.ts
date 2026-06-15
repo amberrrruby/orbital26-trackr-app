@@ -94,21 +94,6 @@ export async function addManualTimelineEvent(
       },
     });
 
-    // Only called after TimelineEvent creation to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
-    // Raw call here, can extract and modularize but doesn't clean up a lot...
-    // Return value not used
-    await prisma.reminder.create({
-      data: {
-        applicationId,
-        type: "EVENT",
-        remindAt: new Date(eventDate),
-        offsetDays: 0,
-        content: description,
-        // Nulled source key field
-        userId,
-      },
-    });
-
     revalidatePath(`/applications/${applicationId}`);
     return { ok: true, value: timelineEvent.id };
   } catch {
@@ -152,19 +137,6 @@ export async function updateManualTimelineEvent(
     });
 
     if (result.count === 0) {
-      return { ok: false, error: { type: "FAILURE" } };
-    }
-
-    // TODO: might change to conditionally do a DB PATCH call, if date has passed "today", and reminders are not needed
-    const reminderResult = await prisma.reminder.updateMany({
-      where: { id, userId },
-      data: {
-        remindAt: new Date(eventDate),
-        content: description,
-      },
-    });
-
-    if (reminderResult.count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
 
