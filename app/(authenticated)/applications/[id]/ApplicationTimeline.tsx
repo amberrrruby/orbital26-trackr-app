@@ -236,6 +236,42 @@ export default function ApplicationTimeline({
         onOpenChange={setIsAddModalOpen}
         applicationId={applicationId}
       />
+
+      {eventToDelete && (
+        <Modal
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) setDeleteEventId(null);
+          }}
+          title="Delete timeline event"
+          description="This action cannot be undone."
+        >
+          <p className={styles.deleteMessage}>
+            Are you sure you want to delete{" "}
+            <strong>{eventToDelete.description}</strong>?
+          </p>
+
+          <div className={styles.deleteActions}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setDeleteEventId(null)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              type="button"
+              variant="danger"
+              onClick={handleDelete}
+              disabled={isPending}
+            >
+              {isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </Modal>
+      )}
     </section>
   );
 }

@@ -97,6 +97,18 @@
   color: var(--color-text-secondary);
 }
 
+.deleteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.deleteMessage {
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
 @media (max-width: 640px) {
   .timelineItem {
     grid-template-columns: 96px 20px 1fr;
