@@ -1,0 +1,69 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 120px 24px 1fr;
+  column-gap: var(--space-3);
+  min-height: 60px;
+}
+
+.date {
+  text-align: right;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  padding-top: var(--space-1);
+}
+
+.markerColumn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.markerColumn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+
+.marker {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  z-index: var(--z-raised);
+  margin-top: var(--space-1);
+}
+
+.description {
+  padding-bottom: var(--space-6);
+  color: var(--color-text-primary);
+}
+
+.description p {
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+.empty {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .timelineItem {
+    grid-template-columns: 96px 20px 1fr;
+    column-gap: var(--space-2);
+  }
+  .date {
+    font-size: var(--text-xs);
+  }
+}
