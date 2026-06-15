@@ -1,3 +1,41 @@
+.manualItem:hover .descriptionContent {
+  background: var(--color-bg-subtle);
+}
+
+.descriptionContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  transition: var(--ease-default);
+}
+
+.descriptionContent p {
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.inlineActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
 .timeline {
   display: flex;
   flex-direction: column;
@@ -43,14 +81,15 @@
   margin-top: var(--space-1);
 }
 
-.description {
-  padding-bottom: var(--space-6);
-  color: var(--color-text-primary);
+.eventActions {
+  display: flex;
+  gap: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--ease-default);
 }
 
-.description p {
-  margin: 0;
-  line-height: var(--leading-normal);
+.manualItem:hover .eventActions {
+  opacity: 1;
 }
 
 .empty {

@@ -75,6 +75,7 @@ export default function AddManualTimelineEventModal({
         <Textarea
           label="Description"
           id="manualTimelineDescription"
+          name="description"
           required
           rows={4}
           placeholder="e.g. Prepared documents for interview"

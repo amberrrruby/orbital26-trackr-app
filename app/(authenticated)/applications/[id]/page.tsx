@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { Button } from "@/app/components/Button";
 import { Badge } from "@/app/components/Badge";
 import { getApplicationById } from "@/app/actions/applications";
+import { getTimelineEvents } from "@/app/actions/timeline";
+import ApplicationTimeline from "./ApplicationTimeline";
 import styles from "./page.module.css";
 
 type ApplicationDetailsPageProps = {
@@ -35,6 +37,8 @@ export default async function ApplicationDetailsPage({
   if (!application) {
     notFound();
   }
+
+  const timelineResult = await getTimelineEvents(application.id);
 
   return (
     <main className={styles.page}>
@@ -99,8 +103,17 @@ export default async function ApplicationDetailsPage({
         </div>
 
         <section className={styles.timelineColumn}>
-          <h2>Application Timeline</h2>
-          <p>Timeline will be shown here.</p>
+          {timelineResult.ok ? (
+            <ApplicationTimeline
+              applicationId={application.id}
+              timelineEvents={timelineResult.value}
+            />
+          ) : (
+            <>
+              <h2>Application Timeline</h2>
+              <p>Failed to load application timeline events.</p>
+            </>
+          )}
         </section>
       </div>
     </main>
