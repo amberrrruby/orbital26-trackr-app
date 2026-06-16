@@ -95,6 +95,7 @@ export default function ApplicationTimeline({
         <Button
           type="button"
           variant="primary"
+          size="sm"
           onClick={() => setIsAddModalOpen(true)}
         >
           + Add manual timeline event

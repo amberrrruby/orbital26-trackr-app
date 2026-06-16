@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/app/components/Button";
 import { Badge } from "@/app/components/Badge";
+import { Pencil } from "lucide-react";
 import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
 import ApplicationTimeline from "./ApplicationTimeline";
@@ -22,9 +23,7 @@ export default async function ApplicationDetailsPage({
   if (!result.ok) {
     return (
       <main className={styles.page}>
-        <Link href="/applications">
-          <Button>Back to Applications</Button>
-        </Link>
+        <Link href="/applications">← Back to Applications</Link>
 
         <h1>Application Details</h1>
         <p>Something went wrong while loading this application.</p>
@@ -42,61 +41,87 @@ export default async function ApplicationDetailsPage({
 
   return (
     <main className={styles.page}>
-      <Link href="/applications">
-        <Button>← Back to Applications</Button>
-      </Link>
+      <Link href="/applications">← Back to Applications</Link>
 
       <header className={styles.header}>
-        <h1>{application.company}</h1>
-        <p>{application.role}</p>
-        <Badge variant="accent">{application.status}</Badge>
+        <div className={styles.headerMain}>
+          <h1>{application.company}</h1>
+          <p>{application.role}</p>
+
+          <div className={styles.statusBadge}>
+            <Badge variant="accent">{application.status}</Badge>
+          </div>
+        </div>
+
+        <div className={styles.headerActions}>
+          <Button variant="outline">
+            <span className={styles.editButtonContent}>
+              <Pencil size={12} />
+              <span>Edit Application</span>
+            </span>
+          </Button>
+        </div>
       </header>
 
       <div className={styles.content}>
         <div className={styles.leftColumn}>
-          <section>
+          <section className={styles.card}>
             <h2>Application Details</h2>
 
-            <p>
-              <strong>Source: </strong>
-              {application.source || "Not provided"}
-            </p>
+            <div className={styles.detailsList}>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Source: </span>
+                <span className={styles.detailValue}>
+                  {application.source || "Not provided"}
+                </span>
+              </div>
 
-            <p>
-              <strong>Date Applied: </strong>
-              {application.dateApplied
-                ? application.dateApplied.toLocaleDateString()
-                : "Not provided"}
-            </p>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Date Applied: </span>
+                <span className={styles.detailValue}>
+                  {application.dateApplied
+                    ? application.dateApplied.toLocaleDateString()
+                    : "Not provided"}
+                </span>
+              </div>
 
-            <p>
-              <strong>Resume Used: </strong>
-              {application.resume ? (
-                <Link href={`/resumes/${application.resume.id}`}>
-                  {application.resume.title}
-                </Link>
-              ) : (
-                "No resume linked"
-              )}
-            </p>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Resume Used: </span>
+                <span className={styles.detailValue}>
+                  {application.resume ? (
+                    <Link href={`/resumes/${application.resume.id}`}>
+                      {application.resume.title}
+                    </Link>
+                  ) : (
+                    "No resume linked"
+                  )}
+                </span>
+              </div>
 
-            <p>
-              <strong>Created at: </strong>
-              {application.createdAt.toLocaleDateString()}
-            </p>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Created at: </span>
+                <span className={styles.detailValue}>
+                  {application.createdAt.toLocaleDateString()}
+                </span>
+              </div>
 
-            <p>
-              <strong>Last updated: </strong>
-              {application.updatedAt.toLocaleDateString()}
-            </p>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Last updated: </span>
+                <span className={styles.detailValue}>
+                  {application.updatedAt.toLocaleDateString()}
+                </span>
+              </div>
 
-            <p>
-              <strong>Notes: </strong>
-              {application.notes || "No notes yet"}
-            </p>
+              <div className={styles.detailsRow}>
+                <span className={styles.detailLabel}>Notes: </span>
+                <span className={styles.notesValue}>
+                  {application.notes || "No notes yet"}
+                </span>
+              </div>
+            </div>
           </section>
 
-          <section>
+          <section className={styles.card}>
             <h2>Events and Reminders</h2>
             <p>No reminders or events yet.</p>
           </section>

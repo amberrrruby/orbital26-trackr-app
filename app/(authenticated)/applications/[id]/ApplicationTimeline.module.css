@@ -3,11 +3,12 @@
 }
 
 .descriptionContent {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-1);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   transition: var(--ease-default);
 }
@@ -33,26 +34,35 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.timelineHeader h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semi);
+  margin-bottom: var(--space-3);
+  line-height: var(--leading-tight);
 }
 
 .timeline {
   display: flex;
   flex-direction: column;
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
 }
 
 .timelineItem {
   display: grid;
-  grid-template-columns: 120px 24px 1fr;
+  grid-template-columns: 120px 24px minmax(0, 1fr);
   column-gap: var(--space-3);
-  min-height: 60px;
+  align-items: start;
+  min-height: 44px;
 }
 
 .date {
   text-align: right;
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
   padding-top: var(--space-1);
 }
 
@@ -60,15 +70,20 @@
   position: relative;
   display: flex;
   justify-content: center;
+  align-self: stretch;
 }
 
 .markerColumn::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 10px;
+  bottom: -10px;
   width: 1px;
   background: var(--color-border-strong);
+}
+
+.timelineItem:last-child .markerColumn::before {
+  bottom: 10px;
 }
 
 .marker {
@@ -78,12 +93,13 @@
   background: var(--color-accent);
   border: 2px solid var(--color-accent);
   z-index: var(--z-raised);
-  margin-top: var(--space-1);
+  margin-top: 8px;
 }
 
 .eventActions {
   display: flex;
-  gap: var(--space-1);
+  align-items: center;
+  gap: 0;
   opacity: 0;
   transition: opacity var(--ease-default);
 }

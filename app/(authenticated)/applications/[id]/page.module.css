@@ -4,19 +4,111 @@
   width: 100%;
   max-width: var(--content-max-w);
   padding: var(--content-padding);
+  gap: var(--space-6);
 }
 
 .header {
-  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header h1 {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+}
+
+.header p {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+}
+
+.statusBadge {
+  width: fit-content;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.editButtonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  white-space: nowrap;
 }
 
 .content {
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: minmax(320px, 2fr) minmax(0, 3fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.card {
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+
+.card h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semi);
+  margin-bottom: var(--space-3);
+  line-height: var(--leading-tight);
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailsRow {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detailsRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detailLabel {
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.notesValue {
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
 }
 
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.timelineColumn {
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
 }
