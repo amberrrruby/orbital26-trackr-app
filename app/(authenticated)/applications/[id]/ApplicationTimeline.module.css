@@ -52,7 +52,7 @@
 
 .timelineItem {
   display: grid;
-  grid-template-columns: 120px 24px minmax(0, 1fr);
+  grid-template-columns: 110px 20px minmax(0, 1fr);
   column-gap: var(--space-3);
   align-items: start;
   min-height: 44px;
@@ -126,8 +126,12 @@
 }
 
 @media (max-width: 640px) {
+  .timelineHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
   .timelineItem {
-    grid-template-columns: 96px 20px 1fr;
+    grid-template-columns: 84px 18px 1fr;
     column-gap: var(--space-2);
   }
   .date {

@@ -112,3 +112,28 @@
   box-shadow: var(--shadow-sm);
   padding: var(--space-4);
 }
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .timelineColumn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .card,
+  .timelineColumn {
+    padding: var(--space-3);
+  }
+}
