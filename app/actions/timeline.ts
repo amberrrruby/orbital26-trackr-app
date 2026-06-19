@@ -17,7 +17,6 @@ import {
 import { Status, SourceKey } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
 import { getReminderSettings } from "./settings";
-import { addReminder } from "./reminders";
 
 export async function getTimelineEvents(
   applicationId: string,
@@ -240,18 +239,16 @@ export async function createApplicationCreatedTimelineEvent({
   }
 }
 
+// Status changes are recorded on the timeline only
+// Automatic reminders are intentionally not created here, as the date a status changes may differ from the actual event date
 export async function createStatusChangeTimelineEvent({
   applicationId,
-  company,
-  role,
   userId,
   fromStatus,
   toStatus,
   eventDate,
 }: {
   applicationId: string;
-  company: string;
-  role: string;
   userId: string;
   fromStatus: Status;
   toStatus: Status;
@@ -270,66 +267,9 @@ export async function createStatusChangeTimelineEvent({
       },
     });
 
-    const userSettingsResult = await getReminderSettings();
-    if (!userSettingsResult.ok) {
-      console.log(
-        `[ERROR] from createStatusChangeTimelineEvent: getReminderSettings failed`,
-      );
-      return;
-    }
-    const userSettings = userSettingsResult.value;
-    console.log("user settings:");
-    console.log(userSettings);
-
-    let offset;
-    let source;
-    switch (toStatus) {
-      case "APPLIED": {
-        offset = userSettings.appliedFollowUpDays;
-        source = "DATE_APPLIED";
-        break;
-      }
-      case "OA_ASSESSMENT": {
-        offset = userSettings.assessmentFollowUpDays;
-        source = "OA_ASSESSMENT_DATE";
-        break;
-      }
-      case "INTERVIEW": {
-        offset = userSettings.interviewFollowUpDays;
-        source = "INTERVIEW_DATE";
-        break;
-      }
-      case "REJECTED":
-      case "WISHLIST":
-      case "OFFER":
-        console.log(
-          `[LOG] from createStatusChangeTimelineEvent: received status change to ${toStatus}, not handled`,
-        );
-        break;
-      default:
-        console.log(
-          `[ERROR] from createStatusChangeTimelineEvent: received UNKNOWN status change to ${toStatus}`,
-        );
-        return;
-    }
-
-    if (offset && source) {
-      // Ugly parameter-shaping to match `addReminder`. Since this is the only place that called so,
-      // no refactor is done...
-      const formData = new FormData();
-      formData.set("applicationId", applicationId);
-      formData.set("reminderType", "FOLLOW_UP");
-
-      const remindAt = new Date(eventDate);
-      remindAt.setDate(remindAt.getDate() + offset);
-      formData.set("remindAt", remindAt.toISOString());
-
-      formData.set("offsetDays", String(offset));
-      formData.set("source", source);
-      formData.set("content", `Follow up on application: ${company} - ${role}`);
-
-      await addReminder(formData);
-    }
+    // Reminder creation was removed from this function.
+    // Follow-up reminders are now triggered by the corresponding date fields
+    // inside createOrUpdateImportantDateTimelineEvent()
   } catch (err) {
     console.log("[ERROR] from createStatusChangeTimelineEvent: no return");
     console.log(err);
@@ -346,6 +286,18 @@ function importantDateDescription(sourceKey: SourceKey): string {
   return descriptions[sourceKey];
 }
 
+function followUpDescription(sourceKey: SourceKey): string | undefined {
+  const descriptions: Partial<Record<SourceKey, string>> = {
+    DATE_APPLIED: "Follow up on application status",
+    OA_ASSESSMENT_DATE: "Follow up after OA/ Assessment",
+    INTERVIEW_DATE: "Follow up after interview",
+  };
+
+  return descriptions[sourceKey];
+}
+
+// This function is the source of automatic reminder triggers
+// Reminders are based on the actual dates entered by the user
 export async function createOrUpdateImportantDateTimelineEvent({
   applicationId,
   userId,
@@ -391,15 +343,6 @@ export async function createOrUpdateImportantDateTimelineEvent({
     });
   }
 
-  const existingReminder = await prisma.reminder.findFirst({
-    // TODO: might fix? if user behaves, this should only return the one and only one reminder with the following sourceKey.
-    where: {
-      applicationId,
-      userId,
-      source: sourceKey,
-    },
-  });
-
   const userSettingsResult = await getReminderSettings();
   if (!userSettingsResult.ok) {
     console.log(
@@ -411,7 +354,67 @@ export async function createOrUpdateImportantDateTimelineEvent({
   console.log("user settings:");
   console.log(userSettings);
 
-  let offset;
+  async function createOrUpdateReminder({
+    type,
+    remindAt,
+    offsetDays,
+    content,
+  }: {
+    type: "EVENT" | "FOLLOW_UP";
+    remindAt: Date;
+    offsetDays: number;
+    content: string;
+  }) {
+    const existingReminder = await prisma.reminder.findFirst({
+      // TODO: might fix? if user behaves, this should only return the one and only one reminder with the following sourceKey.
+      where: {
+        applicationId,
+        userId,
+        source: sourceKey,
+        type,
+      },
+    });
+
+    if (existingReminder) {
+      await prisma.reminder.updateMany({
+        where: {
+          id: existingReminder.id,
+          userId,
+        },
+        data: {
+          remindAt,
+          offsetDays,
+          content,
+        },
+      });
+    } else {
+      await prisma.reminder.create({
+        data: {
+          applicationId,
+          userId,
+          type,
+          source: sourceKey,
+          remindAt,
+          offsetDays,
+          content,
+        },
+      });
+    }
+  }
+
+  // OA, Interview and Offer Expiry create an event reminder on the actual entered date
+  // Date Applied only generates a follow-up reminder
+  if (sourceKey !== "DATE_APPLIED") {
+    await createOrUpdateReminder({
+      type: "EVENT",
+      remindAt: new Date(eventDate),
+      offsetDays: 0,
+      content: importantDateDescription(sourceKey),
+    });
+  }
+
+  let offset: number | null = null;
+
   switch (sourceKey) {
     case "DATE_APPLIED": {
       offset = userSettings.appliedFollowUpDays;
@@ -425,6 +428,9 @@ export async function createOrUpdateImportantDateTimelineEvent({
       offset = userSettings.interviewFollowUpDays;
       break;
     }
+    case "OFFER_EXPIRY_DATE": {
+      break;
+    }
     default: {
       console.log(
         `[ERROR?] from createOrUpdateImportantDateTimelineEvent: received UNKNOWN source key ${sourceKey}`,
@@ -432,33 +438,20 @@ export async function createOrUpdateImportantDateTimelineEvent({
       return;
     }
   }
-  const remindDate: Date = eventDate;
-  remindDate.setDate(remindDate.getDate() + offset);
 
-  if (existingReminder) {
-    // TODO: raw call, error bubbled and unhandled for now
-    await prisma.reminder.updateMany({
-      where: {
-        id: existingReminder.id,
-        userId,
-      },
-      data: {
-        remindAt: remindDate,
-        offsetDays: offset,
-      },
-    });
-  } else {
-    // Directly inlined here with no wrapper. Might violate responsibility organization, but this is the only place it's called, if a wrapped helper is ever written.
-    await prisma.reminder.create({
-      data: {
-        applicationId,
-        type: "EVENT",
-        remindAt: remindDate,
-        offsetDays: offset,
-        source: sourceKey,
-        content: importantDateDescription(sourceKey),
-        userId,
-      },
+  const followUpContent = followUpDescription(sourceKey);
+
+  // Create a separate FOLLOW_UP reminder relative to the entered date
+  // This is separate from the EVENT reminder on the actual event date
+  if (offset !== null && followUpContent !== undefined) {
+    const followUpDate = new Date(eventDate);
+    followUpDate.setDate(followUpDate.getDate() + offset);
+
+    await createOrUpdateReminder({
+      type: "FOLLOW_UP",
+      remindAt: followUpDate,
+      offsetDays: offset,
+      content: followUpContent,
     });
   }
 }
