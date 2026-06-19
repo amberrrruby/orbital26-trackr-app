@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client"
-  output          = "../lib/generated"
+  provider = "prisma-client"
+  output   = "../lib/generated"
 }
 
 datasource db {
@@ -9,11 +9,11 @@ datasource db {
 
 model User {
   // FIELDS
-  id             String   @id @db.Uuid
-  email          String   @unique
-  name           String?
-  createdAt      DateTime @default(now())
-  settings       Json?
+  id        String   @id @db.Uuid
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  settings  Json?
 
   // 1:1 LINKS
 
@@ -35,24 +35,24 @@ enum Status {
 
 model Application {
   // FIELDS
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   company        String
   role           String
   source         String?
-  status         Status   @default(APPLIED)
-  interviewRound  Int?
+  status         Status    @default(APPLIED)
+  interviewRound Int?
   dateApplied    DateTime?
   notes          String?
   tags           String[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   // 1:1 LINKS
-  resumeId       String?
-  resume         Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  resumeId String?
+  resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
 
-  userId         String   @db.Uuid
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // 1:MANY LINKS
   reminders      Reminder[]
@@ -61,23 +61,23 @@ model Application {
 
 model Resume {
   // FIELDS
-  id             String   @id @default(cuid())
-  title          String
-  tags           String[]
-  notes          String?
-  filePath       String
-  fileType       String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  thumbnailPath  String
-  thumbnailStatus  String // maybe an enum soon
+  id              String   @id @default(cuid())
+  title           String
+  tags            String[]
+  notes           String?
+  filePath        String
+  fileType        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  thumbnailPath   String
+  thumbnailStatus String // maybe an enum soon
 
   // 1:1 LINKS
-  userId         String   @db.Uuid
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // 1:MANY LINKS
-  applications   Application[]
+  applications Application[]
 }
 
 enum ReminderType {
@@ -94,19 +94,19 @@ enum SourceKey {
 
 model Reminder {
   // FIELDS
-  id             String       @id @default(cuid())
-  type           ReminderType
-  remindAt       DateTime
-  offsetDays     Int?
-  content        String?
-  source         SourceKey?
+  id         String       @id @default(cuid())
+  type       ReminderType
+  remindAt   DateTime
+  offsetDays Int?
+  content    String?
+  source     SourceKey?
 
   // 1:1 LINKS
-  applicationId  String?
-  application    Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  userId         String   @db.Uuid
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade) // for reminders page
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // for reminders page
 
   // 1:MANY LINKS
 }
@@ -123,6 +123,7 @@ model TimelineEvent {
   // FIELDS
   id          String            @id @default(cuid())
   type        TimelineEventType
+  eventDate   DateTime
   description String
 
   sourceKey SourceKey?

@@ -16,6 +16,11 @@ import {
   ApplicationWithDetails,
 } from "@/lib/types";
 import { Application } from "@/lib/generated/client";
+import {
+  createApplicationCreatedTimelineEvent,
+  createStatusChangeTimelineEvent,
+  createOrUpdateImportantDateTimelineEvent,
+} from "./timeline";
 import { revalidatePath } from "next/cache";
 
 export async function createApplication(
@@ -29,6 +34,9 @@ export async function createApplication(
     source: formData.get("source"),
     status: formData.get("status"),
     dateApplied: formData.get("dateApplied") || undefined,
+    oaAssessmentDate: formData.get("oaAssessmentDate") || undefined,
+    interviewDate: formData.get("interviewDate") || undefined,
+    offerExpiryDate: formData.get("offerExpiryDate") || undefined,
     notes: formData.get("notes"),
   });
 
@@ -39,8 +47,17 @@ export async function createApplication(
     };
   }
 
-  const { company, role, source, status, dateApplied, notes } =
-    parseResult.data;
+  const {
+    company,
+    role,
+    source,
+    status,
+    dateApplied,
+    oaAssessmentDate,
+    interviewDate,
+    offerExpiryDate,
+    notes,
+  } = parseResult.data;
 
   try {
     const application = await prisma.application.create({
@@ -54,6 +71,50 @@ export async function createApplication(
         userId,
       },
     });
+
+    await createApplicationCreatedTimelineEvent({
+      applicationId: application.id,
+      userId,
+      status: application.status,
+      eventDate: application.createdAt,
+    });
+
+    if (dateApplied) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: application.id,
+        userId,
+        sourceKey: "DATE_APPLIED",
+        eventDate: dateApplied,
+      });
+    }
+
+    if (oaAssessmentDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: application.id,
+        userId,
+        sourceKey: "OA_ASSESSMENT_DATE",
+        eventDate: oaAssessmentDate,
+      });
+    }
+
+    if (interviewDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: application.id,
+        userId,
+        sourceKey: "INTERVIEW_DATE",
+        eventDate: interviewDate,
+      });
+    }
+
+    if (offerExpiryDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: application.id,
+        userId,
+        sourceKey: "OFFER_EXPIRY_DATE",
+        eventDate: offerExpiryDate,
+      });
+    }
+
     return { ok: true, value: application.id };
   } catch {
     return { ok: false, error: { type: "FAILURE" } };
@@ -118,6 +179,9 @@ export async function updateApplication(
     source: formData.get("source"),
     status: formData.get("status"),
     dateApplied: formData.get("dateApplied") || undefined,
+    oaAssessmentDate: formData.get("oaAssessmentDate") || undefined,
+    interviewDate: formData.get("interviewDate") || undefined,
+    offerExpiryDate: formData.get("offerExpiryDate") || undefined,
     notes: formData.get("notes"),
   });
 
@@ -128,10 +192,31 @@ export async function updateApplication(
     };
   }
 
-  const { id, company, role, source, status, dateApplied, notes } =
-    parseResult.data;
+  const {
+    id,
+    company,
+    role,
+    source,
+    status,
+    dateApplied,
+    oaAssessmentDate,
+    interviewDate,
+    offerExpiryDate,
+    notes,
+  } = parseResult.data;
 
   try {
+    const existingApplication = await prisma.application.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!existingApplication) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
     const result = await prisma.application.updateMany({
       where: {
         id,
@@ -146,9 +231,57 @@ export async function updateApplication(
         notes: notes,
       },
     });
+
     if (result.count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
+
+    if (existingApplication.status !== status) {
+      await createStatusChangeTimelineEvent({
+        applicationId: id,
+        userId,
+        fromStatus: existingApplication.status,
+        toStatus: status,
+        eventDate: new Date(),
+      });
+    }
+
+    if (dateApplied) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: id,
+        userId,
+        sourceKey: "DATE_APPLIED",
+        eventDate: dateApplied,
+      });
+    }
+
+    if (oaAssessmentDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: id,
+        userId,
+        sourceKey: "OA_ASSESSMENT_DATE",
+        eventDate: oaAssessmentDate,
+      });
+    }
+
+    if (interviewDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: id,
+        userId,
+        sourceKey: "INTERVIEW_DATE",
+        eventDate: interviewDate,
+      });
+    }
+
+    if (offerExpiryDate) {
+      await createOrUpdateImportantDateTimelineEvent({
+        applicationId: id,
+        userId,
+        sourceKey: "OFFER_EXPIRY_DATE",
+        eventDate: offerExpiryDate,
+      });
+    }
+
     revalidatePath(`/applications`);
     return { ok: true, value: undefined };
   } catch {

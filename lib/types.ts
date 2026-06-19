@@ -64,7 +64,11 @@ export const ApplicationSchema = z.object({
   source: z.string().default(""),
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
+  resumeId: z.cuid2().optional(),
   dateApplied: z.coerce.date().optional(),
+  oaAssessmentDate: z.coerce.date().optional(),
+  interviewDate: z.coerce.date().optional(),
+  offerExpiryDate: z.coerce.date().optional(),
   notes: z.string().max(1000, "Notes too long").default(""),
   // tags: z.array(z.string()).default([]),
 });
@@ -201,6 +205,51 @@ export const GetRemindersParamsSchema = z.object({
 });
 
 export type ReminderWithApplication = Prisma.ReminderGetPayload<{
+  include: {
+    application: true;
+  };
+}>;
+
+// Actions: Timeline
+const TIMELINE_EVENT_TYPE = [
+  "APPLICATION_CREATED",
+  "STATUS_CHANGED",
+  "IMPORTANT_DATE",
+  "REMINDER_COMPLETED",
+  "MANUAL",
+] as const;
+
+export type GetTimelineEventsError = ActionValidationError | ActionFailureError;
+
+export type AddTimelineEventError = ActionValidationError | ActionFailureError;
+
+export type UpdateTimelineEventError =
+  | ActionValidationError
+  | ActionFailureError;
+
+export type DeleteTimelineEventError = ActionFailureError;
+
+export const ManualTimelineEventSchema = z.object({
+  applicationId: z.cuid2("Application ID is required"),
+  eventDate: z.iso.date("Remind date is required"),
+  description: z
+    .string()
+    .min(1, "Content is required")
+    .max(1000, "Content too long"),
+});
+
+export const EditManualTimelineEventSchema = ManualTimelineEventSchema.extend({
+  id: z.cuid2("Timeline event ID is required"),
+});
+
+export const TimelineApplicationIdSchema = z.object({
+  applicationId: z.cuid2("Application ID is required"),
+});
+export const TimelineEventIdSchema = z.object({
+  id: z.cuid2("Timeline event ID is required"),
+});
+
+export type TimelineEventWithApplication = Prisma.TimelineEventGetPayload<{
   include: {
     application: true;
   };

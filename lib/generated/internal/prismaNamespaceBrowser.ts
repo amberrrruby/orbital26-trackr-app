@@ -141,6 +141,7 @@ export type ReminderScalarFieldEnum =
 export const TimelineEventScalarFieldEnum = {
   id: "id",
   type: "type",
+  eventDate: "eventDate",
   description: "description",
   sourceKey: "sourceKey",
   status: "status",

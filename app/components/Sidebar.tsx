@@ -53,9 +53,8 @@ const NAV_ITEMS: NavItem[] = [
     label: "Reminders",
     href: "/reminders",
     icon: <LuBell />,
-    disabled: true,
   },
-  { label: "Resumes", href: "/resumes", icon: <LuFileText />, disabled: true },
+  { label: "Resumes", href: "/resumes", icon: <LuFileText /> },
 ];
 
 // ─── Main component ───────────────────────────────────────────────────────────
