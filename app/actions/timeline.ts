@@ -14,8 +14,10 @@ import {
   returnSchemaValidationError,
   Result,
 } from "@/lib/types";
-import { Status, SourceKey, TimelineEvent } from "@/lib/generated/client";
+import { Status, SourceKey } from "@/lib/generated/client";
 import { revalidatePath } from "next/cache";
+import { getReminderSettings } from "./settings";
+import { addReminder } from "./reminders";
 
 export async function getTimelineEvents(
   applicationId: string,
@@ -233,42 +235,120 @@ export async function createApplicationCreatedTimelineEvent({
   userId: string;
   status: Status;
   eventDate: Date;
-}) {
-  return prisma.timelineEvent.create({
-    data: {
-      applicationId,
-      userId,
-      type: "APPLICATION_CREATED",
-      eventDate,
-      status,
-      description: `Application created with status: ${formatStatus(status)}`,
-    },
-  });
+}): Promise<void> {
+  try {
+    await prisma.timelineEvent.create({
+      data: {
+        applicationId,
+        userId,
+        type: "APPLICATION_CREATED",
+        eventDate,
+        status,
+        description: `Application created with status: ${formatStatus(status)}`,
+      },
+    });
+  } catch (err) {
+    console.log(
+      "[ERROR] from createApplicationCreatedTimelineEvent: no return",
+    );
+    console.log(err);
+  }
 }
 
 export async function createStatusChangeTimelineEvent({
   applicationId,
+  company,
+  role,
   userId,
   fromStatus,
   toStatus,
   eventDate,
 }: {
   applicationId: string;
+  company: string;
+  role: string;
   userId: string;
   fromStatus: Status;
   toStatus: Status;
   eventDate: Date;
-}) {
-  return prisma.timelineEvent.create({
-    data: {
-      applicationId,
-      userId,
-      type: "STATUS_CHANGED",
-      eventDate,
-      status: toStatus,
-      description: `Status changed from ${formatStatus(fromStatus)} to ${formatStatus(toStatus)}`,
-    },
-  });
+}): Promise<void> {
+  // Assuming user validation is already done, since the only use place of this function is in `createApplication`. Skipping user validation.
+  try {
+    await prisma.timelineEvent.create({
+      data: {
+        applicationId,
+        userId,
+        type: "STATUS_CHANGED",
+        eventDate,
+        status: toStatus,
+        description: `Status changed from ${formatStatus(fromStatus)} to ${formatStatus(toStatus)}`,
+      },
+    });
+
+    const userSettingsResult = await getReminderSettings();
+    if (!userSettingsResult.ok) {
+      console.log(
+        `[ERROR] from createStatusChangeTimelineEvent: getReminderSettings failed`,
+      );
+      return;
+    }
+    const userSettings = userSettingsResult.value;
+    console.log("user settings:");
+    console.log(userSettings);
+
+    let offset;
+    let source;
+    switch (toStatus) {
+      case "APPLIED": {
+        offset = userSettings.appliedFollowUpDays;
+        source = "DATE_APPLIED";
+        break;
+      }
+      case "OA_ASSESSMENT": {
+        offset = userSettings.assessmentFollowUpDays;
+        source = "OA_ASSESSMENT_DATE";
+        break;
+      }
+      case "INTERVIEW": {
+        offset = userSettings.interviewFollowUpDays;
+        source = "INTERVIEW_DATE";
+        break;
+      }
+      case "REJECTED":
+      case "WISHLIST":
+      case "OFFER":
+        console.log(
+          `[LOG] from createStatusChangeTimelineEvent: received status change to ${toStatus}, not handled`,
+        );
+        break;
+      default:
+        console.log(
+          `[ERROR] from createStatusChangeTimelineEvent: received UNKNOWN status change to ${toStatus}`,
+        );
+        return;
+    }
+
+    if (offset && source) {
+      // Ugly parameter-shaping to match `addReminder`. Since this is the only place that called so,
+      // no refactor is done...
+      const formData = new FormData();
+      formData.set("applicationId", applicationId);
+      formData.set("reminderType", "FOLLOW_UP");
+
+      const remindAt = new Date(eventDate);
+      remindAt.setDate(remindAt.getDate() + offset);
+      formData.set("remindAt", remindAt.toISOString());
+
+      formData.set("offsetDays", String(offset));
+      formData.set("source", source);
+      formData.set("content", `Follow up on application: ${company} - ${role}`);
+
+      await addReminder(formData);
+    }
+  } catch (err) {
+    console.log("[ERROR] from createStatusChangeTimelineEvent: no return");
+    console.log(err);
+  }
 }
 
 function importantDateDescription(sourceKey: SourceKey): string {
@@ -292,7 +372,6 @@ export async function createOrUpdateImportantDateTimelineEvent({
   sourceKey: SourceKey;
   eventDate: Date;
 }) {
-  let ret; // WARN: return type of `update` unsure, will add soon
   const existingTimelineEvent = await prisma.timelineEvent.findFirst({
     where: {
       applicationId,
@@ -303,7 +382,7 @@ export async function createOrUpdateImportantDateTimelineEvent({
   });
 
   if (existingTimelineEvent) {
-    ret = prisma.timelineEvent.update({
+    await prisma.timelineEvent.update({
       where: {
         id: existingTimelineEvent.id,
       },
@@ -314,7 +393,8 @@ export async function createOrUpdateImportantDateTimelineEvent({
     });
   } else {
     // Return was here. Now it's shifted down to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
-    ret = prisma.timelineEvent.create({
+    // UPDATE: no return update
+    await prisma.timelineEvent.create({
       data: {
         applicationId,
         userId,
@@ -335,6 +415,41 @@ export async function createOrUpdateImportantDateTimelineEvent({
     },
   });
 
+  const userSettingsResult = await getReminderSettings();
+  if (!userSettingsResult.ok) {
+    console.log(
+      `[ERROR] from createOrUpdateImportantDateTimelineEvent: getReminderSettings failed`,
+    );
+    return;
+  }
+  const userSettings = userSettingsResult.value;
+  console.log("user settings:");
+  console.log(userSettings);
+
+  let offset;
+  switch (sourceKey) {
+    case "DATE_APPLIED": {
+      offset = userSettings.appliedFollowUpDays;
+      break;
+    }
+    case "OA_ASSESSMENT_DATE": {
+      offset = userSettings.assessmentFollowUpDays;
+      break;
+    }
+    case "INTERVIEW_DATE": {
+      offset = userSettings.interviewFollowUpDays;
+      break;
+    }
+    default: {
+      console.log(
+        `[ERROR?] from createOrUpdateImportantDateTimelineEvent: received UNKNOWN source key ${sourceKey}`,
+      );
+      return;
+    }
+  }
+  const remindDate: Date = eventDate;
+  remindDate.setDate(remindDate.getDate() + offset);
+
   if (existingReminder) {
     // TODO: raw call, error bubbled and unhandled for now
     await prisma.reminder.updateMany({
@@ -343,29 +458,22 @@ export async function createOrUpdateImportantDateTimelineEvent({
         userId,
       },
       data: {
-        remindAt: eventDate,
-        offsetDays: 0,
+        remindAt: remindDate,
+        offsetDays: offset,
+      },
+    });
+  } else {
+    // Directly inlined here with no wrapper. Might violate responsibility organization, but this is the only place it's called, if a wrapped helper is ever written.
+    await prisma.reminder.create({
+      data: {
+        applicationId,
+        type: "EVENT",
+        remindAt: remindDate,
+        offsetDays: offset,
+        source: sourceKey,
+        content: importantDateDescription(sourceKey),
+        userId,
       },
     });
   }
-
-  // Directly inlined here with no wrapper. Might violate responsibility organization, but this is the only place it's called, if a wrapped helper is ever written.
-
-  // applicationId,
-  // userId,
-  // sourceKey,
-  // eventDate,
-  prisma.reminder.create({
-    data: {
-      applicationId,
-      type: "EVENT",
-      remindAt: eventDate,
-      offsetDays: 0,
-      source: sourceKey,
-      content: importantDateDescription(sourceKey),
-      userId,
-    },
-  });
-
-  return ret;
 }

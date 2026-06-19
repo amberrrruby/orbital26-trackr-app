@@ -26,7 +26,6 @@ import { revalidatePath } from "next/cache";
 export async function createApplication(
   formData: FormData,
 ): Promise<Result<string, CreateApplicationError>> {
-  console.log(formData);
   const userId = await requireUserOrRedirectLogin();
 
   const parseResult = ApplicationSchema.safeParse({
@@ -34,7 +33,7 @@ export async function createApplication(
     role: formData.get("role"),
     source: formData.get("source"),
     status: formData.get("status"),
-    resumeId: formData.get("resumeId"),
+    resumeId: formData.get("resumeId") || undefined,
     dateApplied: formData.get("dateApplied") || undefined,
     oaAssessmentDate: formData.get("oaAssessmentDate") || undefined,
     interviewDate: formData.get("interviewDate") || undefined,
@@ -43,7 +42,6 @@ export async function createApplication(
   });
 
   if (!parseResult.success) {
-    console.log(`haiya parse error ${parseResult.error.message}`);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),
@@ -178,7 +176,6 @@ export async function getApplicationById(
 export async function updateApplication(
   formData: FormData,
 ): Promise<Result<void, UpdateApplicationError>> {
-  console.log(formData);
   const userId = await requireUserOrRedirectLogin();
 
   const parseResult = EditApplicationSchema.safeParse({
@@ -196,7 +193,6 @@ export async function updateApplication(
   });
 
   if (!parseResult.success) {
-    console.log(`haiya parse error ${parseResult.error.message}`);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),
@@ -252,6 +248,8 @@ export async function updateApplication(
     if (existingApplication.status !== status) {
       await createStatusChangeTimelineEvent({
         applicationId: id,
+        company,
+        role,
         userId,
         fromStatus: existingApplication.status,
         toStatus: status,

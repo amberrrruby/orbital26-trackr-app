@@ -25,8 +25,6 @@ export default function ReminderModal({
   applications,
   reminder,
 }: ReminderModalProps) {
-  console.log(`will show reminder`);
-  console.log(reminder);
   const [isPending, startTransition] = useTransition();
   const [comboOpen, setComboOpen] = useState(false);
   const [comboQuery, setComboQuery] = useState("");
@@ -59,7 +57,6 @@ export default function ReminderModal({
   );
 
   function handleSubmit(formData: FormData) {
-    console.log(formData);
     setFieldErrors({});
     setGenericError(null);
 
