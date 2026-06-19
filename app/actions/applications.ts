@@ -248,8 +248,6 @@ export async function updateApplication(
     if (existingApplication.status !== status) {
       await createStatusChangeTimelineEvent({
         applicationId: id,
-        company,
-        role,
         userId,
         fromStatus: existingApplication.status,
         toStatus: status,

@@ -305,6 +305,13 @@ export async function createOrUpdateImportantDateTimelineEvent({
     },
   });
 
+  if (
+    existingTimelineEvent &&
+    existingTimelineEvent.eventDate.getTime() === eventDate.getTime()
+  ) {
+    return;
+  }
+
   if (existingTimelineEvent) {
     await prisma.timelineEvent.update({
       where: {
