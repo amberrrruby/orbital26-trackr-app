@@ -141,19 +141,6 @@ export async function updateManualTimelineEvent(
       return { ok: false, error: { type: "FAILURE" } };
     }
 
-    // TODO: might change to conditionally do a DB PATCH call, if date has passed "today", and reminders are not needed
-    const reminderResult = await prisma.reminder.updateMany({
-      where: { id, userId },
-      data: {
-        remindAt: new Date(eventDate),
-        content: description,
-      },
-    });
-
-    if (reminderResult.count === 0) {
-      return { ok: false, error: { type: "FAILURE" } };
-    }
-
     revalidatePath(`/applications/${applicationId}`);
     return { ok: true, value: undefined };
   } catch {
