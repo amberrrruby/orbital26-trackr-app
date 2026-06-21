@@ -88,6 +88,7 @@ export async function createApplication(
         userId,
         sourceKey: "DATE_APPLIED",
         eventDate: dateApplied,
+        currentStatus: status,
       });
     }
 
@@ -97,6 +98,7 @@ export async function createApplication(
         userId,
         sourceKey: "OA_ASSESSMENT_DATE",
         eventDate: oaAssessmentDate,
+        currentStatus: status,
       });
     }
 
@@ -106,6 +108,7 @@ export async function createApplication(
         userId,
         sourceKey: "INTERVIEW_DATE",
         eventDate: interviewDate,
+        currentStatus: status,
       });
     }
 
@@ -115,6 +118,7 @@ export async function createApplication(
         userId,
         sourceKey: "OFFER_EXPIRY_DATE",
         eventDate: offerExpiryDate,
+        currentStatus: status,
       });
     }
 
@@ -261,6 +265,7 @@ export async function updateApplication(
         userId,
         sourceKey: "DATE_APPLIED",
         eventDate: dateApplied,
+        currentStatus: status,
       });
     }
 
@@ -270,6 +275,7 @@ export async function updateApplication(
         userId,
         sourceKey: "OA_ASSESSMENT_DATE",
         eventDate: oaAssessmentDate,
+        currentStatus: status,
       });
     }
 
@@ -279,6 +285,7 @@ export async function updateApplication(
         userId,
         sourceKey: "INTERVIEW_DATE",
         eventDate: interviewDate,
+        currentStatus: status,
       });
     }
 
@@ -288,6 +295,7 @@ export async function updateApplication(
         userId,
         sourceKey: "OFFER_EXPIRY_DATE",
         eventDate: offerExpiryDate,
+        currentStatus: status,
       });
     }
 

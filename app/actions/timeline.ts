@@ -290,11 +290,13 @@ export async function createOrUpdateImportantDateTimelineEvent({
   userId,
   sourceKey,
   eventDate,
+  currentStatus,
 }: {
   applicationId: string;
   userId: string;
   sourceKey: SourceKey;
   eventDate: Date;
+  currentStatus: Status;
 }) {
   const existingTimelineEvent = await prisma.timelineEvent.findFirst({
     where: {
@@ -305,36 +307,35 @@ export async function createOrUpdateImportantDateTimelineEvent({
     },
   });
 
-  if (
+  const timelineDateUnchanged =
     existingTimelineEvent &&
-    existingTimelineEvent.eventDate.getTime() === eventDate.getTime()
-  ) {
-    return;
-  }
+    existingTimelineEvent.eventDate.getTime() === eventDate.getTime();
 
-  if (existingTimelineEvent) {
-    await prisma.timelineEvent.update({
-      where: {
-        id: existingTimelineEvent.id,
-      },
-      data: {
-        eventDate,
-        description: importantDateDescription(sourceKey),
-      },
-    });
-  } else {
-    // Return was here. Now it's shifted down to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
-    // UPDATE: no return update
-    await prisma.timelineEvent.create({
-      data: {
-        applicationId,
-        userId,
-        type: "IMPORTANT_DATE",
-        sourceKey,
-        eventDate,
-        description: importantDateDescription(sourceKey),
-      },
-    });
+  if (!timelineDateUnchanged) {
+    if (existingTimelineEvent) {
+      await prisma.timelineEvent.update({
+        where: {
+          id: existingTimelineEvent.id,
+        },
+        data: {
+          eventDate,
+          description: importantDateDescription(sourceKey),
+        },
+      });
+    } else {
+      // Return was here. Now it's shifted down to ensure that a reminder is created only after a TimelineEvent is correctly created (if not, error interrupts execution before moving on to creating / updating reminder).
+      // UPDATE: no return update
+      await prisma.timelineEvent.create({
+        data: {
+          applicationId,
+          userId,
+          type: "IMPORTANT_DATE",
+          sourceKey,
+          eventDate,
+          description: importantDateDescription(sourceKey),
+        },
+      });
+    }
   }
 
   const userSettingsResult = await getReminderSettings();
@@ -435,8 +436,21 @@ export async function createOrUpdateImportantDateTimelineEvent({
 
   const followUpContent = followUpDescription(sourceKey);
 
+  // If a follow-up is already overdue when created, only keep it if the application is still in the corresponding stage
+  // This avoids generating stale reminders for stages the user has already moved past
+  function isFollowUpStillRelevant(
+    sourceKey: SourceKey,
+    currentStatus: Status,
+  ): boolean {
+    const relevantStatus: Partial<Record<SourceKey, Status>> = {
+      DATE_APPLIED: "APPLIED",
+      OA_ASSESSMENT_DATE: "OA_ASSESSMENT",
+      INTERVIEW_DATE: "INTERVIEW",
+    };
+    return relevantStatus[sourceKey] === currentStatus;
+  }
+
   // Create a separate FOLLOW_UP reminder relative to the entered date
-  // Only when it's calculated date is today or later
   // This is separate from the EVENT reminder on the actual event date
   if (offset !== null && followUpContent !== undefined) {
     const followUpDate = new Date(eventDate);
@@ -445,7 +459,10 @@ export async function createOrUpdateImportantDateTimelineEvent({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (followUpDate >= today) {
+    if (
+      followUpDate >= today ||
+      isFollowUpStillRelevant(sourceKey, currentStatus)
+    ) {
       await createOrUpdateReminder({
         type: "FOLLOW_UP",
         remindAt: followUpDate,
