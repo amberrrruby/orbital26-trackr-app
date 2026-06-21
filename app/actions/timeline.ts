@@ -445,11 +445,13 @@ export async function createOrUpdateImportantDateTimelineEvent({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    await createOrUpdateReminder({
-      type: "FOLLOW_UP",
-      remindAt: followUpDate,
-      offsetDays: offset,
-      content: followUpContent,
-    });
+    if (followUpDate >= today) {
+      await createOrUpdateReminder({
+        type: "FOLLOW_UP",
+        remindAt: followUpDate,
+        offsetDays: offset,
+        content: followUpContent,
+      });
+    }
   }
 }
