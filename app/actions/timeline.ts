@@ -436,10 +436,14 @@ export async function createOrUpdateImportantDateTimelineEvent({
   const followUpContent = followUpDescription(sourceKey);
 
   // Create a separate FOLLOW_UP reminder relative to the entered date
+  // Only when it's calculated date is today or later
   // This is separate from the EVENT reminder on the actual event date
   if (offset !== null && followUpContent !== undefined) {
     const followUpDate = new Date(eventDate);
     followUpDate.setDate(followUpDate.getDate() + offset);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     await createOrUpdateReminder({
       type: "FOLLOW_UP",
