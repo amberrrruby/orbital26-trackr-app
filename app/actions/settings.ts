@@ -11,9 +11,13 @@ import {
   EditProfileError,
   EditProfileSchema,
   EmailSchema,
+  GetReminderSettingsError,
   PasswordSchema,
+  ReminderSettings,
+  ReminderSettingsSchema,
   Result,
   returnSchemaValidationError,
+  UpdateReminderSettingsError,
 } from "@/lib/types";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
@@ -127,6 +131,71 @@ export async function editProfile(
     where: { id: userId },
     data: { name },
   });
+
+  // Only a boolean `true` here because the page only does one thing, which is edit profile information
+  redirect(`/settings/profile?success=true`);
+}
+
+export async function getReminderSettings(): Promise<
+  Result<ReminderSettings, GetReminderSettingsError>
+> {
+  const userId = await requireUserOrRedirectLogin();
+  try {
+    const userProfile = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!userProfile) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    const parseResult = ReminderSettingsSchema.safeParse(userProfile.settings);
+
+    if (!parseResult.success) {
+      console.log("[ERROR] Reminder settings are not the expected shape:");
+      console.log(parseResult.error.message);
+      console.log("Settings, raw:");
+      console.log(userProfile.settings);
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    return { ok: true, value: parseResult.data };
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
+}
+
+export async function updateReminderSettings(
+  formData: FormData,
+): Promise<Result<void, UpdateReminderSettingsError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  const parseResult = ReminderSettingsSchema.safeParse({
+    eventReminderDays: String(formData.get("eventReminderDays") ?? "")
+      .split(",")
+      .filter(Boolean)
+      .map(Number),
+    appliedFollowUpDays: Number(formData.get("appliedFollowUpDays")),
+    assessmentFollowUpDays: Number(formData.get("assessmentFollowUpDays")),
+    interviewFollowUpDays: Number(formData.get("interviewFollowUpDays")),
+  });
+
+  if (!parseResult.success) {
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        settings: parseResult.data,
+      },
+    });
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
 
   // Only a boolean `true` here because the page only does one thing, which is edit profile information
   redirect(`/settings/profile?success=true`);

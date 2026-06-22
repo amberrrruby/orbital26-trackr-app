@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { updateApplication } from "@/app/actions/applications";
-import { Application } from "@/lib/generated/client";
+import { Resume } from "@/lib/generated/client";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
 import styles from "./EditApplicationModal.module.css";
+import { ApplicationWithDetails } from "@/lib/types";
+import ResumeSelector from "./ResumeSelector";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -17,7 +19,8 @@ const statusOptions = [
 ];
 
 type EditApplicationProps = {
-  application: Application;
+  application: ApplicationWithDetails;
+  resumes: Resume[];
   onClose: () => void;
 };
 
@@ -27,6 +30,7 @@ function formatDateForInput(date: Date | string) {
 
 export default function EditApplicationModal({
   application,
+  resumes,
   onClose,
 }: EditApplicationProps) {
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +96,11 @@ export default function EditApplicationModal({
             ))}
           </select>
         </div>
+
+        <ResumeSelector
+          resumes={resumes}
+          defaultValue={application.resumeId ?? ""}
+        />
 
         <Input
           label="Date Applied"

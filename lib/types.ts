@@ -314,3 +314,23 @@ export function returnSchemaValidationError(parseResult: {
     message: first.message,
   };
 }
+
+export type GetReminderSettingsError = ActionFailureError;
+
+export const ReminderSettingsSchema = z.object({
+  eventReminderDays: z
+    .array(z.number().int().nonnegative())
+    .refine((days) => new Set(days).size === days.length, {
+      message: "Reminder days must be unique",
+    }),
+
+  appliedFollowUpDays: z.number().int().nonnegative(),
+  assessmentFollowUpDays: z.number().int().nonnegative(),
+  interviewFollowUpDays: z.number().int().nonnegative(),
+});
+
+export type ReminderSettings = z.infer<typeof ReminderSettingsSchema>;
+
+export type UpdateReminderSettingsError =
+  | ActionValidationError
+  | ActionFailureError;

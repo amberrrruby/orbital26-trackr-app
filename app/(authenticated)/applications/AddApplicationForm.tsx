@@ -6,6 +6,8 @@ import styles from "./AddApplicationForm.module.css";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
 import { redirect } from "next/navigation";
+import { Resume } from "@/lib/generated/client";
+import ResumeSelector from "./ResumeSelector";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -16,7 +18,11 @@ const statusOptions = [
   { label: "Rejected", value: "REJECTED" },
 ];
 
-export default function AddApplicationForm() {
+type Props = {
+  resumes: Resume[];
+};
+
+export default function AddApplicationForm({ resumes }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(formData: FormData) {
@@ -60,6 +66,8 @@ export default function AddApplicationForm() {
           ))}
         </select>
       </div>
+
+      <ResumeSelector resumes={resumes} defaultValue={""} />
 
       <Input
         label="Date Applied"
