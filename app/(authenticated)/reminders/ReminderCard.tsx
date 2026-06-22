@@ -29,7 +29,8 @@ export default function ReminderCard({
     year: "numeric",
   }).format(new Date(reminder.remindAt));
 
-  async function handleDelete() {
+  async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
     setError(null);
     setIsDeleting(true);
 

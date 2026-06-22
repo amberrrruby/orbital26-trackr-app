@@ -3,6 +3,7 @@ import EditProfileForm from "./EditProfileForm";
 import { prisma } from "@/lib/prisma";
 import { User as DBUser } from "@/lib/generated/client";
 import styles from "../Settings.module.css";
+import { ReminderSettingsSchema } from "@/lib/types";
 
 type Props = {
   searchParams: Promise<{
@@ -38,10 +39,23 @@ export default async function EditProfilePage({ searchParams }: Props) {
     );
   }
 
+  // Only place where profile and settings are needed, hence parse here and not a separate call
+  let userSettings = ReminderSettingsSchema.safeParse(
+    userProfile.settings,
+  ).data;
+  if (!userSettings) {
+    userSettings = {
+      eventReminderDays: [],
+      appliedFollowUpDays: 7,
+      assessmentFollowUpDays: 7,
+      interviewFollowUpDays: 7,
+    };
+  }
+
   return (
     <main className={styles.page}>
       {successMessage && <div className={styles.toast}>{successMessage}</div>}
-      <EditProfileForm userProfile={userProfile} />
+      <EditProfileForm userProfile={userProfile} userSettings={userSettings} />
     </main>
   );
 }

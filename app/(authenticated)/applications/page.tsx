@@ -3,9 +3,13 @@ import { getApplications } from "@/app/actions/applications";
 import ApplicationsTable from "./ApplicationsTable";
 import { Button } from "@/app/components/Button";
 import styles from "./page.module.css";
+import { getResumes } from "@/app/actions/resume";
 
 export default async function ApplicationsPage() {
   const result = await getApplications();
+  // No await
+  const resumePromise = getResumes();
+
   // TODO: replace with proper error component
   if (!result.ok) {
     return (
@@ -29,7 +33,10 @@ export default async function ApplicationsPage() {
         </Link>
       </section>
 
-      <ApplicationsTable applications={result.value} />
+      <ApplicationsTable
+        applications={result.value}
+        resumePromise={resumePromise}
+      />
     </main>
   );
 }

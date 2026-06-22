@@ -18,7 +18,7 @@ export default async function SettingsPage() {
       <section className={styles.settings}>
         <Link href="/settings/profile" className={styles.settingsCard}>
           <div>
-            <h2>Account</h2>
+            <h2>Profile</h2>
             <p>Manage your profile information.</p>
           </div>
           <span>›</span>

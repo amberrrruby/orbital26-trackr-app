@@ -15,7 +15,7 @@ import {
   UpdateApplicationError,
   ApplicationWithDetails,
 } from "@/lib/types";
-import { Application } from "@/lib/generated/client";
+// import { Application } from "@/lib/generated/client";
 import {
   createApplicationCreatedTimelineEvent,
   createStatusChangeTimelineEvent,
@@ -33,6 +33,7 @@ export async function createApplication(
     role: formData.get("role"),
     source: formData.get("source"),
     status: formData.get("status"),
+    resumeId: formData.get("resumeId") || undefined,
     dateApplied: formData.get("dateApplied") || undefined,
     oaAssessmentDate: formData.get("oaAssessmentDate") || undefined,
     interviewDate: formData.get("interviewDate") || undefined,
@@ -52,6 +53,7 @@ export async function createApplication(
     role,
     source,
     status,
+    resumeId,
     dateApplied,
     oaAssessmentDate,
     interviewDate,
@@ -67,6 +69,7 @@ export async function createApplication(
         source: source ?? "",
         status,
         ...(dateApplied ? { dateApplied } : {}),
+        ...(resumeId ? { resumeId } : {}),
         notes: notes,
         userId,
       },
@@ -85,6 +88,7 @@ export async function createApplication(
         userId,
         sourceKey: "DATE_APPLIED",
         eventDate: dateApplied,
+        currentStatus: status,
       });
     }
 
@@ -94,6 +98,7 @@ export async function createApplication(
         userId,
         sourceKey: "OA_ASSESSMENT_DATE",
         eventDate: oaAssessmentDate,
+        currentStatus: status,
       });
     }
 
@@ -103,6 +108,7 @@ export async function createApplication(
         userId,
         sourceKey: "INTERVIEW_DATE",
         eventDate: interviewDate,
+        currentStatus: status,
       });
     }
 
@@ -112,6 +118,7 @@ export async function createApplication(
         userId,
         sourceKey: "OFFER_EXPIRY_DATE",
         eventDate: offerExpiryDate,
+        currentStatus: status,
       });
     }
 
@@ -122,7 +129,7 @@ export async function createApplication(
 }
 
 export async function getApplications(): Promise<
-  Result<Application[], GetApplicationsError>
+  Result<ApplicationWithDetails[], GetApplicationsError>
 > {
   const userId = await requireUserOrRedirectLogin();
 
@@ -130,6 +137,9 @@ export async function getApplications(): Promise<
     const applications = await prisma.application.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      include: {
+        resume: true,
+      },
     });
     return { ok: true, value: applications };
   } catch {
@@ -178,6 +188,7 @@ export async function updateApplication(
     role: formData.get("role"),
     source: formData.get("source"),
     status: formData.get("status"),
+    resumeId: formData.get("resumeId") || undefined,
     dateApplied: formData.get("dateApplied") || undefined,
     oaAssessmentDate: formData.get("oaAssessmentDate") || undefined,
     interviewDate: formData.get("interviewDate") || undefined,
@@ -198,6 +209,7 @@ export async function updateApplication(
     role,
     source,
     status,
+    resumeId,
     dateApplied,
     oaAssessmentDate,
     interviewDate,
@@ -228,6 +240,7 @@ export async function updateApplication(
         source: source ?? "",
         status,
         ...(dateApplied ? { dateApplied } : {}),
+        ...(resumeId ? { resumeId } : {}),
         notes: notes,
       },
     });
@@ -252,6 +265,7 @@ export async function updateApplication(
         userId,
         sourceKey: "DATE_APPLIED",
         eventDate: dateApplied,
+        currentStatus: status,
       });
     }
 
@@ -261,6 +275,7 @@ export async function updateApplication(
         userId,
         sourceKey: "OA_ASSESSMENT_DATE",
         eventDate: oaAssessmentDate,
+        currentStatus: status,
       });
     }
 
@@ -270,6 +285,7 @@ export async function updateApplication(
         userId,
         sourceKey: "INTERVIEW_DATE",
         eventDate: interviewDate,
+        currentStatus: status,
       });
     }
 
@@ -279,6 +295,7 @@ export async function updateApplication(
         userId,
         sourceKey: "OFFER_EXPIRY_DATE",
         eventDate: offerExpiryDate,
+        currentStatus: status,
       });
     }
 

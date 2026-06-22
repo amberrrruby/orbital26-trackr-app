@@ -55,19 +55,43 @@ export async function getReminders(
           ? { gt: endOfToday }
           : undefined; // "all" — no filter
 
+  // Hide future system-generated follow-up reminders until they become due
+  // Custom follow-ups have no source key, so they remain visible in Upcoming
+  const upcomingVisibilityFilter =
+    group === "upcoming"
+      ? {
+          OR: [
+            {
+              type: "EVENT" as const,
+            },
+            {
+              type: "FOLLOW_UP" as const,
+              source: null,
+            },
+          ],
+        }
+      : {};
+
   try {
     const [reminders, totalCount] = (await prisma.$transaction([
       prisma.reminder.findMany({
         where: {
           userId,
           remindAt: remindAtFilter,
+          ...upcomingVisibilityFilter,
         },
         orderBy: { remindAt: group === "overdue" ? "desc" : "asc" },
         skip: pageNumber * pageSize,
         take: pageSize,
         include: { application: true },
       }),
-      prisma.reminder.count({ where: { userId, remindAt: remindAtFilter } }),
+      prisma.reminder.count({
+        where: {
+          userId,
+          remindAt: remindAtFilter,
+          ...upcomingVisibilityFilter,
+        },
+      }),
     ])) as [ReminderWithApplication[], number];
 
     return { ok: true, value: { reminders, totalCount } };
