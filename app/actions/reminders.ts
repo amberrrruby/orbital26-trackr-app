@@ -192,6 +192,7 @@ export async function updateReminder(
   }
 }
 
+// Dismissing a reminder removes it without recording a timeline event
 export async function deleteReminder(
   reminderId: string,
 ): Promise<Result<void, DeleteReminderError>> {
@@ -207,6 +208,65 @@ export async function deleteReminder(
       return { ok: false, error: { type: "FAILURE" } };
     }
     revalidatePath(`/reminders`);
+    return { ok: true, value: undefined };
+  } catch {
+    return {
+      ok: false,
+      error: { type: "FAILURE" },
+    };
+  }
+}
+
+export async function completeReminder(
+  reminderId: string,
+): Promise<Result<void, DeleteReminderError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  try {
+    const reminder = await prisma.reminder.findFirst({
+      where: {
+        id: reminderId,
+        userId,
+      },
+    });
+
+    if (!reminder) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    // Log only completed follow-up reminders and custom reminders
+    // Date-triggered EVENT reminders are not logged onto the timeline
+    // They already exist as a separate IMPORTANT_DATE timeline event
+    const shouldLogCompletion =
+      reminder.type === "FOLLOW_UP" ||
+      (reminder.type === "EVENT" && reminder.source === null);
+
+    await prisma.$transaction(async (tx) => {
+      if (reminder.applicationId && shouldLogCompletion) {
+        await tx.timelineEvent.create({
+          data: {
+            type: "REMINDER_COMPLETED",
+            eventDate: new Date(),
+            applicationId: reminder.applicationId,
+            userId,
+            description: `Completed reminder: ${reminder.content ?? "Reminder"}`,
+          },
+        });
+      }
+
+      await tx.reminder.delete({
+        where: {
+          id: reminder.id,
+        },
+      });
+    });
+
+    revalidatePath("/reminders");
+
+    if (reminder.applicationId) {
+      revalidatePath(`/applications/${reminder.applicationId}`);
+    }
+
     return { ok: true, value: undefined };
   } catch {
     return {
