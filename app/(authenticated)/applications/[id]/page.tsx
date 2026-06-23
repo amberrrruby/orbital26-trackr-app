@@ -5,7 +5,9 @@ import { Badge } from "@/app/components/Badge";
 import { Pencil } from "lucide-react";
 import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
+import { getRemindersByApplicationId } from "@/app/actions/reminders";
 import ApplicationTimeline from "./ApplicationTimeline";
+import ApplicationReminders from "./ApplicationReminders";
 import styles from "./page.module.css";
 
 type ApplicationDetailsPageProps = {
@@ -37,7 +39,10 @@ export default async function ApplicationDetailsPage({
     notFound();
   }
 
-  const timelineResult = await getTimelineEvents(application.id);
+  const [reminderResult, timelineResult] = await Promise.all([
+    getRemindersByApplicationId(application.id),
+    getTimelineEvents(application.id),
+  ]);
 
   return (
     <main className={styles.page}>
@@ -121,9 +126,15 @@ export default async function ApplicationDetailsPage({
             </div>
           </section>
 
-          <section className={styles.card}>
-            <h2>Events and Reminders</h2>
-            <p>No reminders or events yet.</p>
+          <section>
+            {reminderResult.ok ? (
+              <ApplicationReminders reminders={reminderResult.value} />
+            ) : (
+              <>
+                <h2>Events and Reminders</h2>
+                <p>Failed to load events and reminders.</p>
+              </>
+            )}
           </section>
         </div>
 
