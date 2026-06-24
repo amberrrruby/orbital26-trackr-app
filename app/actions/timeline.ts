@@ -346,8 +346,6 @@ export async function createOrUpdateImportantDateTimelineEvent({
     return;
   }
   const userSettings = userSettingsResult.value;
-  console.log("user settings:");
-  console.log(userSettings);
 
   async function createOrUpdateReminder({
     type,
