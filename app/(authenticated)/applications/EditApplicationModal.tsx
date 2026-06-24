@@ -48,11 +48,6 @@ export default function EditApplicationModal({
 
   return (
     <div>
-      <div className={styles.modalHeader}>
-        <h2>Edit Application</h2>
-        <p>Update the details of your job application below.</p>
-      </div>
-
       <form action={handleSubmit} className={styles.form}>
         {error && <p>{error}</p>}
 

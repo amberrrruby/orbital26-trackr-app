@@ -1,13 +1,15 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Button } from "@/app/components/Button";
 import { Badge } from "@/app/components/Badge";
-import { Pencil } from "lucide-react";
+import { Button } from "@/app/components/Button";
 import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
 import { getRemindersByApplicationId } from "@/app/actions/reminders";
+import { getResumes } from "@/app/actions/resume";
 import ApplicationTimeline from "./ApplicationTimeline";
 import ApplicationReminders from "./ApplicationReminders";
+import ApplicationDetailsEditButton from "./ApplicationDetailsEditButton";
 import styles from "./page.module.css";
 
 type ApplicationDetailsPageProps = {
@@ -39,6 +41,8 @@ export default async function ApplicationDetailsPage({
     notFound();
   }
 
+  const resumePromise = getResumes();
+
   const [reminderResult, timelineResult] = await Promise.all([
     getRemindersByApplicationId(application.id),
     getTimelineEvents(application.id),
@@ -58,14 +62,18 @@ export default async function ApplicationDetailsPage({
           </div>
         </div>
 
-        <div className={styles.headerActions}>
-          <Button variant="outline">
-            <span className={styles.editButtonContent}>
-              <Pencil size={12} />
-              <span>Edit Application</span>
-            </span>
-          </Button>
-        </div>
+        <Suspense
+          fallback={
+            <Button type="button" variant="outline" disabled>
+              Loading...
+            </Button>
+          }
+        >
+          <ApplicationDetailsEditButton
+            application={application}
+            resumePromise={resumePromise}
+          />
+        </Suspense>
       </header>
 
       <div className={styles.content}>
