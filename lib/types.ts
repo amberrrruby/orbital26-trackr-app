@@ -42,6 +42,7 @@ export type GetApplicationByIdError =
 export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
   include: {
     resume: true;
+    timelineEvents: true;
   };
 }>;
 

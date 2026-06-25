@@ -7,6 +7,7 @@ import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
 import { getRemindersByApplicationId } from "@/app/actions/reminders";
 import { getResumes } from "@/app/actions/resume";
+import { getImportantDateValues } from "../importantDatesUtils";
 import ApplicationTimeline from "./ApplicationTimeline";
 import ApplicationReminders from "./ApplicationReminders";
 import ApplicationDetailsEditButton from "./ApplicationDetailsEditButton";
@@ -48,6 +49,14 @@ export default async function ApplicationDetailsPage({
     getTimelineEvents(application.id),
   ]);
 
+  const importantDates = timelineResult.ok
+    ? getImportantDateValues(timelineResult.value)
+    : {
+        oaAssessmentDate: "",
+        interviewDate: "",
+        offerExpiryDate: "",
+      };
+
   return (
     <main className={styles.page}>
       <Link href="/applications">← Back to Applications</Link>
@@ -72,6 +81,7 @@ export default async function ApplicationDetailsPage({
           <ApplicationDetailsEditButton
             application={application}
             resumePromise={resumePromise}
+            importantDates={importantDates}
           />
         </Suspense>
       </header>

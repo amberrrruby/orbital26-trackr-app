@@ -7,7 +7,6 @@ import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
-import modalStyles from "./EditApplicationModal.module.css";
 import {
   useReactTable,
   getCoreRowModel,
@@ -20,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { ApplicationWithDetails, GetResumesError, Result } from "@/lib/types";
 import { Resume } from "@/lib/generated/client";
+import { getImportantDateValues } from "./importantDatesUtils";
 
 type ApplicationsTableProps = {
   applications: ApplicationWithDetails[];
@@ -37,6 +37,15 @@ export default function ApplicationsTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [editingApplication, setEditingApplication] =
     useState<ApplicationWithDetails | null>(null);
+
+  const importantDates = editingApplication
+    ? getImportantDateValues(editingApplication.timelineEvents)
+    : {
+        oaAssessmentDate: "",
+        interviewDate: "",
+        offerExpiryDate: "",
+      };
+
   const [deletingApplication, setDeletingApplication] =
     useState<ApplicationWithDetails | null>(null);
 
@@ -211,6 +220,7 @@ export default function ApplicationsTable({
           <EditApplicationModal
             application={editingApplication}
             resumes={resumesResult.value.resumes}
+            importantDates={importantDates}
             onClose={() => setEditingApplication(null)}
           />
         ) : null}

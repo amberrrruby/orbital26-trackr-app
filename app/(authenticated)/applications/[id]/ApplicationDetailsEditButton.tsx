@@ -6,7 +6,9 @@ import { Resume } from "@/lib/generated/client";
 import { Pencil } from "lucide-react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
-import EditApplicationModal from "../EditApplicationModal";
+import EditApplicationModal, {
+  ImportantDateValues,
+} from "../EditApplicationModal";
 import styles from "./page.module.css";
 
 type ApplicationDetailsEditButtonProps = {
@@ -14,11 +16,13 @@ type ApplicationDetailsEditButtonProps = {
   resumePromise: Promise<
     Result<{ resumes: Resume[]; totalCount: number }, GetResumesError>
   >;
+  importantDates: ImportantDateValues;
 };
 
 export default function ApplicationDetailsEditButton({
   application,
   resumePromise,
+  importantDates,
 }: ApplicationDetailsEditButtonProps) {
   const [isEditing, setIsEditing] = useState(false);
   const resumesResult = use(resumePromise);
@@ -51,6 +55,7 @@ export default function ApplicationDetailsEditButton({
           <EditApplicationModal
             application={application}
             resumes={resumesResult.value.resumes}
+            importantDates={importantDates}
             onClose={() => setIsEditing(false)}
           />
         )}
