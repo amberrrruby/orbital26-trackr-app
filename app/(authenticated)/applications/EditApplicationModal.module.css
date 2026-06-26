@@ -47,6 +47,12 @@
   margin: 0;
 }
 
+.importantDates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
 .buttonRow {
   display: flex;
   justify-content: space-between;
