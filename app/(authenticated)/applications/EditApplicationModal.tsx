@@ -18,9 +18,16 @@ const statusOptions = [
   { label: "Rejected", value: "REJECTED" },
 ];
 
+export type ImportantDateValues = {
+  oaAssessmentDate: string;
+  interviewDate: string;
+  offerExpiryDate: string;
+};
+
 type EditApplicationProps = {
   application: ApplicationWithDetails;
   resumes: Resume[];
+  importantDates: ImportantDateValues;
   onClose: () => void;
 };
 
@@ -31,6 +38,7 @@ function formatDateForInput(date: Date | string) {
 export default function EditApplicationModal({
   application,
   resumes,
+  importantDates,
   onClose,
 }: EditApplicationProps) {
   const [error, setError] = useState<string | null>(null);
@@ -48,11 +56,6 @@ export default function EditApplicationModal({
 
   return (
     <div>
-      <div className={styles.modalHeader}>
-        <h2>Edit Application</h2>
-        <p>Update the details of your job application below.</p>
-      </div>
-
       <form action={handleSubmit} className={styles.form}>
         {error && <p>{error}</p>}
 
@@ -115,6 +118,7 @@ export default function EditApplicationModal({
           id="oaAssessmentDate"
           name="oaAssessmentDate"
           type="date"
+          defaultValue={importantDates.oaAssessmentDate ?? ""}
         />
 
         <Input
@@ -122,6 +126,7 @@ export default function EditApplicationModal({
           id="interviewDate"
           name="interviewDate"
           type="date"
+          defaultValue={importantDates.interviewDate ?? ""}
         />
 
         <Input
@@ -129,6 +134,7 @@ export default function EditApplicationModal({
           id="offerExpiryDate"
           name="offerExpiryDate"
           type="date"
+          defaultValue={importantDates.offerExpiryDate ?? ""}
         />
 
         <Textarea

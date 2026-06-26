@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { getApplications } from "@/app/actions/applications";
 import ApplicationsTable from "./ApplicationsTable";
 import { Button } from "@/app/components/Button";
@@ -33,10 +34,12 @@ export default async function ApplicationsPage() {
         </Link>
       </section>
 
-      <ApplicationsTable
-        applications={result.value}
-        resumePromise={resumePromise}
-      />
+      <Suspense fallback={<p>Loading applications...</p>}>
+        <ApplicationsTable
+          applications={result.value}
+          resumePromise={resumePromise}
+        />
+      </Suspense>
     </main>
   );
 }

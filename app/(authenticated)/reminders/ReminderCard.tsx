@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bell } from "lucide-react";
-import { deleteReminder } from "@/app/actions/reminders";
+import { deleteReminder, completeReminder } from "@/app/actions/reminders";
 import { useRouter } from "next/navigation";
 import { ReminderWithApplication } from "@/lib/types";
 import Link from "next/link";
@@ -18,7 +18,8 @@ export default function ReminderCard({
   variant = "default",
 }: ReminderCardProps) {
   const [error, setError] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDismissing, setIsDismissing] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
   const router = useRouter();
 
   const isOverdue = variant === "overdue";
@@ -29,13 +30,27 @@ export default function ReminderCard({
     year: "numeric",
   }).format(new Date(reminder.remindAt));
 
-  async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+  async function handleDismiss(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     setError(null);
-    setIsDeleting(true);
+    setIsDismissing(true);
 
     const result = await deleteReminder(reminder.id);
-    setIsDeleting(false);
+    setIsDismissing(false);
+    if (!result.ok) {
+      setError("Something went wrong. Please try again.");
+      return;
+    }
+    router.refresh();
+  }
+
+  async function handleComplete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    setError(null);
+    setIsCompleting(true);
+
+    const result = await completeReminder(reminder.id);
+    setIsCompleting(false);
     if (!result.ok) {
       setError("Something went wrong. Please try again.");
       return;
@@ -73,17 +88,27 @@ export default function ReminderCard({
           </Link>
         )}
 
-        <button
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className={`shrink-0 rounded-md border px-3 py-1 text-xs transition-colors hover:bg-muted ${
-            isOverdue
-              ? "border-destructive/40 text-destructive hover:bg-destructive/10"
-              : "border-border text-muted-foreground"
-          }`}
-        >
-          {isDeleting ? "Deleting..." : "Dismiss"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleComplete}
+            disabled={isDismissing || isCompleting}
+            className="shrink-0 rounded-md border px-3 py-1 text-xs transition-colors hover:bg-muted"
+          >
+            {isCompleting ? "Completing..." : "Mark as Completed"}
+          </button>
+
+          <button
+            onClick={handleDismiss}
+            disabled={isDismissing || isCompleting}
+            className={`shrink-0 rounded-md border px-3 py-1 text-xs transition-colors hover:bg-muted ${
+              isOverdue
+                ? "border-destructive/40 text-destructive hover:bg-destructive/10"
+                : "border-border text-muted-foreground"
+            }`}
+          >
+            {isDismissing ? "Deleting..." : "Dismiss"}
+          </button>
+        </div>
       </div>
 
       {error && <p className="mt-2 text-xs text-destructive">{error}</p>}

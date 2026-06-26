@@ -4,9 +4,9 @@ import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { Suspense, use, useState } from "react";
 import { Button } from "@/app/components/Button";
+import { Modal } from "@/app/components/Modal";
 import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
-import modalStyles from "./EditApplicationModal.module.css";
 import {
   useReactTable,
   getCoreRowModel,
@@ -19,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { ApplicationWithDetails, GetResumesError, Result } from "@/lib/types";
 import { Resume } from "@/lib/generated/client";
+import { getImportantDateValues } from "./importantDatesUtils";
 
 type ApplicationsTableProps = {
   applications: ApplicationWithDetails[];
@@ -36,6 +37,15 @@ export default function ApplicationsTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [editingApplication, setEditingApplication] =
     useState<ApplicationWithDetails | null>(null);
+
+  const importantDates = editingApplication
+    ? getImportantDateValues(editingApplication.timelineEvents)
+    : {
+        oaAssessmentDate: "",
+        interviewDate: "",
+        offerExpiryDate: "",
+      };
+
   const [deletingApplication, setDeletingApplication] =
     useState<ApplicationWithDetails | null>(null);
 
@@ -191,24 +201,30 @@ export default function ApplicationsTable({
         </tbody>
       </table>
 
-      {editingApplication && (
-        <div className={modalStyles.modal}>
-          <Suspense>
-            {!resumesResult.ok ? (
-              <p>
-                [TEMP ERROR COMPONENT] Failed to load resumes. Please refresh
-                the page and try again.
-              </p>
-            ) : (
-              <EditApplicationModal
-                application={editingApplication}
-                resumes={resumesResult.value.resumes}
-                onClose={() => setEditingApplication(null)}
-              />
-            )}
-          </Suspense>
-        </div>
-      )}
+      <Modal
+        open={editingApplication !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingApplication(null);
+          }
+        }}
+        title="Edit application"
+        description="Update the details of your job application below."
+      >
+        {!resumesResult.ok ? (
+          <p>
+            [TEMP ERROR COMPONENT] Failed to load resumes. Please refresh the
+            page and try again.
+          </p>
+        ) : editingApplication ? (
+          <EditApplicationModal
+            application={editingApplication}
+            resumes={resumesResult.value.resumes}
+            importantDates={importantDates}
+            onClose={() => setEditingApplication(null)}
+          />
+        ) : null}
+      </Modal>
 
       {deletingApplication && (
         <DeleteApplicationDialog

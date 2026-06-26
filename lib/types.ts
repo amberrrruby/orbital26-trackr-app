@@ -42,6 +42,7 @@ export type GetApplicationByIdError =
 export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
   include: {
     resume: true;
+    timelineEvents: true;
   };
 }>;
 
@@ -171,6 +172,10 @@ export type GetRemindersError =
   | ActionValidationError // validating paging params
   | ActionFailureError;
 
+export type GetRemindersByApplicationIdError =
+  | ActionValidationError
+  | ActionFailureError;
+
 export type AddReminderError = ActionValidationError | ActionFailureError;
 
 export type UpdateReminderError = ActionValidationError | ActionFailureError;
@@ -209,6 +214,8 @@ export type ReminderWithApplication = Prisma.ReminderGetPayload<{
     application: true;
   };
 }>;
+
+export type Reminder = Prisma.ReminderGetPayload<Prisma.ReminderDefaultArgs>;
 
 // Actions: Timeline
 const TIMELINE_EVENT_TYPE = [

@@ -139,6 +139,14 @@ export async function getApplications(): Promise<
       orderBy: { createdAt: "desc" },
       include: {
         resume: true,
+        timelineEvents: {
+          where: {
+            type: "IMPORTANT_DATE",
+            sourceKey: {
+              in: ["OA_ASSESSMENT_DATE", "INTERVIEW_DATE", "OFFER_EXPIRY_DATE"],
+            },
+          },
+        },
       },
     });
     return { ok: true, value: applications };
@@ -169,6 +177,14 @@ export async function getApplicationById(
       },
       include: {
         resume: true,
+        timelineEvents: {
+          where: {
+            type: "IMPORTANT_DATE",
+            sourceKey: {
+              in: ["OA_ASSESSMENT_DATE", "INTERVIEW_DATE", "OFFER_EXPIRY_DATE"],
+            },
+          },
+        },
       },
     });
     return { ok: true, value: application };
