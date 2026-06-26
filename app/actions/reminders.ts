@@ -4,10 +4,13 @@ import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
   AddReminderError,
+  ApplicationIdSchema,
   DeleteReminderError,
   GetRemindersError,
+  GetRemindersByApplicationIdError,
   GetRemindersParamsSchema,
   ReminderSchema,
+  Reminder,
   ReminderWithApplication,
   Result,
   returnSchemaValidationError,
@@ -100,6 +103,60 @@ export async function getReminders(
   }
 }
 
+export async function getRemindersByApplicationId(
+  applicationId: string,
+): Promise<Result<Reminder[], GetRemindersByApplicationIdError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  const parseResult = ApplicationIdSchema.safeParse({
+    id: applicationId,
+  });
+
+  if (!parseResult.success) {
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
+  }
+
+  const startOfTomorrow = new Date();
+  startOfTomorrow.setHours(24, 0, 0, 0);
+
+  try {
+    const reminders = await prisma.reminder.findMany({
+      where: {
+        applicationId: parseResult.data.id,
+        userId,
+        OR: [
+          // Always show EVENT reminders
+          {
+            type: "EVENT",
+          },
+          // Always show custom FOLLOW_UP reminders
+          {
+            type: "FOLLOW_UP",
+            source: null,
+          },
+          // Show system follow-ups only if its due date is today or earlier
+          {
+            type: "FOLLOW_UP",
+            source: {
+              not: null,
+            },
+            remindAt: {
+              lt: startOfTomorrow,
+            },
+          },
+        ],
+      },
+    });
+
+    return { ok: true, value: reminders };
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
+}
+
 export async function addReminder(
   formData: FormData,
 ): Promise<Result<string, AddReminderError>> {
@@ -135,6 +192,10 @@ export async function addReminder(
       },
     });
     revalidatePath(`/reminders`);
+
+    if (applicationId) {
+      revalidatePath(`/applications/${applicationId}`);
+    }
     return { ok: true, value: reminder.id };
   } catch {
     return {
@@ -182,7 +243,11 @@ export async function updateReminder(
     if (result.count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
-    // revalidatePath(`/reminders`);
+    revalidatePath(`/reminders`);
+
+    if (applicationId) {
+      revalidatePath(`/applications/${applicationId}`);
+    }
     return { ok: true, value: undefined };
   } catch {
     return {
@@ -192,21 +257,94 @@ export async function updateReminder(
   }
 }
 
+// Dismissing a reminder removes it without recording a timeline event
 export async function deleteReminder(
   reminderId: string,
 ): Promise<Result<void, DeleteReminderError>> {
   const userId = await requireUserOrRedirectLogin();
   try {
-    const { count } = await prisma.reminder.deleteMany({
+    const reminder = await prisma.reminder.findFirst({
       where: {
         id: reminderId,
         userId,
       },
     });
-    if (count === 0) {
+
+    if (!reminder) {
       return { ok: false, error: { type: "FAILURE" } };
     }
+
+    await prisma.reminder.delete({
+      where: {
+        id: reminderId,
+      },
+    });
+
     revalidatePath(`/reminders`);
+
+    if (reminder.applicationId) {
+      revalidatePath(`/applications/${reminder.applicationId}`);
+    }
+
+    return { ok: true, value: undefined };
+  } catch {
+    return {
+      ok: false,
+      error: { type: "FAILURE" },
+    };
+  }
+}
+
+export async function completeReminder(
+  reminderId: string,
+): Promise<Result<void, DeleteReminderError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  try {
+    const reminder = await prisma.reminder.findFirst({
+      where: {
+        id: reminderId,
+        userId,
+      },
+    });
+
+    if (!reminder) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    // Log only completed follow-up reminders and custom reminders
+    // Date-triggered EVENT reminders are not logged onto the timeline
+    // They already exist as a separate IMPORTANT_DATE timeline event
+    const shouldLogCompletion =
+      reminder.type === "FOLLOW_UP" ||
+      (reminder.type === "EVENT" && reminder.source === null);
+
+    await prisma.$transaction(async (tx) => {
+      if (reminder.applicationId && shouldLogCompletion) {
+        await tx.timelineEvent.create({
+          data: {
+            type: "REMINDER_COMPLETED",
+            eventDate: new Date(),
+            applicationId: reminder.applicationId,
+            userId,
+            description: `Completed reminder: ${reminder.content ?? "Reminder"}`,
+          },
+        });
+      }
+
+      await tx.reminder.delete({
+        where: {
+          id: reminder.id,
+        },
+      });
+    });
+
+    revalidatePath("/reminders");
+
+    if (reminder.applicationId) {
+      revalidatePath(`/applications/${reminder.applicationId}`);
+    }
+
     return { ok: true, value: undefined };
   } catch {
     return {
