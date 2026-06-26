@@ -1,0 +1,36 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.currentFile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.helperText {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.primaryAction {
+  margin-left: auto;
+}

@@ -7,6 +7,9 @@ import { useState, useTransition } from "react";
 import { FileUpload } from "./FileUpload";
 import { ACCEPTED_MIME } from "@/lib/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+import { Input, Textarea } from "./Input";
+import { Button } from "./Button";
+import styles from "./ResumeFormComponent.module.css";
 
 type Props = {
   userId?: string;
@@ -79,10 +82,10 @@ export default function ResumeFormComponent({
   }
 
   return (
-    <form action={handleSubmit}>
+    <form action={handleSubmit} className={styles.form}>
       <div>
-        <label htmlFor="title">Title</label>
-        <input
+        <Input
+          label="Title"
           id="title"
           name="title"
           type="text"
@@ -93,20 +96,24 @@ export default function ResumeFormComponent({
         />
       </div>
 
-      <div>
+      <div className={styles.field}>
         <label htmlFor="file">
           {isEditing
             ? "Replace file (PDF or DOCX)"
             : "Resume file (PDF or DOCX)"}
-          {isEditing && signedUrl && resume?.fileType && (
-            <div>
-              <span>Current file: {fileType.toUpperCase()}</span>
-              <a href={signedUrl} target="_blank" rel="noopener noreferrer">
-                View current file
-              </a>
-            </div>
-          )}
         </label>
+
+        {isEditing && signedUrl && resume?.fileType && (
+          <div className={styles.currentFile}>
+            <span>
+              <strong>Current file:</strong> {fileType.toUpperCase()}
+            </span>
+            <a href={signedUrl} target="_blank" rel="noopener noreferrer">
+              View current file
+            </a>
+          </div>
+        )}
+
         <FileUpload
           onFileSelect={(file) => setPendingFile(file)}
           onError={(msg) => setErrMsg(msg)}
@@ -116,21 +123,23 @@ export default function ResumeFormComponent({
         <input type="hidden" name="fileType" value={fileType} />
       </div>
 
-      <div>
-        <label htmlFor="tags">Tags</label>
-        <input
+      <div className={styles.field}>
+        <Input
+          label="Tags"
           id="tags"
           name="tags"
           type="text"
           placeholder="frontend, internship"
           defaultValue={resume?.tags.join(", ") ?? ""}
         />
-        <span>Comma-separated</span>
+        <span className={styles.helperText}>
+          Separate multiple tags with commas
+        </span>
       </div>
 
       <div>
-        <label htmlFor="notes">Notes</label>
-        <textarea
+        <Textarea
+          label="Notes"
           id="notes"
           name="notes"
           placeholder="E.g. what is this resume tailored for?"
@@ -142,25 +151,28 @@ export default function ResumeFormComponent({
 
       {errMsg && <p>{errMsg}</p>}
 
-      <div>
+      <div className={styles.actions}>
         {isEditing && (
-          <button
+          <Button
+            variant="secondary"
             type="button"
             onClick={() => router.push(`/resumes/${resume.id}`)}
             disabled={isPending}
           >
             Cancel
-          </button>
+          </Button>
         )}
-        <button type="submit" disabled={isPending}>
-          {isPending
-            ? isEditing
-              ? "Saving..."
-              : "Uploading..."
-            : isEditing
-              ? "Save Changes"
-              : "Add Resume"}
-        </button>
+        <div className={styles.primaryAction}>
+          <Button variant="primary" type="submit" disabled={isPending}>
+            {isPending
+              ? isEditing
+                ? "Saving..."
+                : "Uploading..."
+              : isEditing
+                ? "Save Changes"
+                : "Add Resume"}
+          </Button>
+        </div>
       </div>
     </form>
   );
