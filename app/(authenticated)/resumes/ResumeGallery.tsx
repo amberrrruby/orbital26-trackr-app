@@ -6,6 +6,7 @@ import ResumeCard from "./ResumeCard";
 import { useInfiniteScroll } from "react-infinite-scroll-component";
 import { Resume } from "@/lib/generated/client";
 import { SORTABLE_FIELDS, SortableField } from "@/lib/types";
+import styles from "./ResumeGallery.module.css";
 
 type Props = {
   initialResumes: Resume[];
@@ -79,11 +80,17 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
   }
 
   return (
-    <>
+    <div className={styles.container}>
       {/* ordering */}
-      <div>
+      <div className={styles.ordering}>
         {SORTABLE_FIELDS.map((key) => (
-          <button key={key} onClick={() => handleOrderChange(key)}>
+          <button
+            key={key}
+            onClick={() => handleOrderChange(key)}
+            className={`${styles.sortButton} ${
+              orderKey === key ? styles.activeSortButton : ""
+            }`}
+          >
             {key === "updatedAt" ? "Updated At" : "Created At"}
             {orderKey === key && (order === "desc" ? " (Desc)" : " (Asc)")}
           </button>
@@ -91,28 +98,33 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
       </div>
 
       {/* gallery */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {resumes.map((resume) => (
-          <ResumeCard key={resume.id} resume={resume} />
-        ))}
-      </div>
+      {resumes.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyTitle}>No resume uploaded</p>
+          <p className={styles.emptyDescription}>
+            Upload your first resume to start building your resume library.
+          </p>
+        </div>
+      ) : (
+        <div className={styles.gallery}>
+          {resumes.map((resume) => (
+            <ResumeCard key={resume.id} resume={resume} />
+          ))}
+        </div>
+      )}
 
       {/* sentinel */}
-      <div ref={sentinelRef} aria-hidden="true">
-        {isLoading && (
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            Loading...
-          </p>
-        )}
+      <div ref={sentinelRef} className={styles.sentinel} aria-hidden="true">
+        {isLoading && <p className={styles.status}>Loading...</p>}
         {errMsg && (
-          <p className="text-center text-sm text-destructive mt-4">{errMsg}</p>
+          <p className={`${styles.status} ${styles.error}`}>{errMsg}</p>
         )}
         {!hasMore && !isLoading && (
-          <p className="text-center text-sm text-muted-foreground mt-4">
+          <p className={styles.status}>
             {resumes.length} / {totalCount} resumes
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 }

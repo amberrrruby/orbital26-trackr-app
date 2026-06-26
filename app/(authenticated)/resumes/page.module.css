@@ -1,0 +1,26 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: var(--content-max-w);
+  padding: var(--content-padding);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+}
+
+.header p {
+  margin-bottom: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+}
+
+.addButton {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
