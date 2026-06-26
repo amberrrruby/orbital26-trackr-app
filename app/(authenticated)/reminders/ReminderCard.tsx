@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Bell } from "lucide-react";
+import { Bell, TriangleAlert, MoveUpRight } from "lucide-react";
 import { deleteReminder, completeReminder } from "@/app/actions/reminders";
 import { useRouter } from "next/navigation";
 import { ReminderWithApplication } from "@/lib/types";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
+import styles from "./ReminderCard.module.css";
 
 interface ReminderCardProps {
   reminder: ReminderWithApplication;
@@ -23,6 +24,8 @@ export default function ReminderCard({
   const router = useRouter();
 
   const isOverdue = variant === "overdue";
+
+  const ReminderIcon = isOverdue ? TriangleAlert : Bell;
 
   const formattedDate = new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
@@ -59,59 +62,61 @@ export default function ReminderCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card px-4 py-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
-            <Bell size={18} className="text-muted-foreground" />
+    <div className={styles.card} data-variant={variant}>
+      <div className={styles.mainRow}>
+        <div className={styles.reminderInfo}>
+          <div className={styles.iconWrapper}>
+            <ReminderIcon size={18} className={styles.icon} />
           </div>
 
-          <div>
-            <p className="text-sm font-medium">{reminder.content}</p>
-            <p
-              className={`mt-0.5 text-xs ${
-                isOverdue ? "text-destructive" : "text-muted-foreground"
-              }`}
-            >
-              {reminder.application &&
-                `From ${reminder.application.company} - ${reminder.application.role} | `}
-              {isOverdue ? `Was due ${formattedDate}` : formattedDate}
-            </p>
+          <div className={styles.text}>
+            <p className={styles.content}>{reminder.content}</p>
+            <div className={styles.metadata}>
+              {reminder.application && (
+                <Link
+                  href={`/applications/${reminder.applicationId}`}
+                  className={styles.applicationLink}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <span>
+                    {reminder.application.company} - {reminder.application.role}
+                  </span>
+
+                  <MoveUpRight className={styles.linkIcon} />
+                </Link>
+              )}
+
+              <span className={isOverdue ? styles.overdueDate : styles.date}>
+                {isOverdue ? `Was due ${formattedDate}` : formattedDate}
+              </span>
+            </div>
           </div>
         </div>
 
-        {reminder.application && (
-          <Link href={`/applications/${reminder.applicationId}`}>
-            <Button onClick={(e) => e.stopPropagation()}>
-              Application Details
-            </Button>
-          </Link>
-        )}
-
-        <div className="flex items-center gap-2">
-          <button
+        <div className={styles.actions}>
+          <Button
             onClick={handleComplete}
             disabled={isDismissing || isCompleting}
-            className="shrink-0 rounded-md border px-3 py-1 text-xs transition-colors hover:bg-muted"
+            className={styles.actionButton}
+            variant="ghost"
+            size="sm"
           >
             {isCompleting ? "Completing..." : "Mark as Completed"}
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleDismiss}
             disabled={isDismissing || isCompleting}
-            className={`shrink-0 rounded-md border px-3 py-1 text-xs transition-colors hover:bg-muted ${
-              isOverdue
-                ? "border-destructive/40 text-destructive hover:bg-destructive/10"
-                : "border-border text-muted-foreground"
-            }`}
+            className={styles.actionButton}
+            variant="ghost"
+            size="sm"
           >
             {isDismissing ? "Deleting..." : "Dismiss"}
-          </button>
+          </Button>
         </div>
       </div>
 
-      {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }
