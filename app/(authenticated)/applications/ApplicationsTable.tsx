@@ -2,7 +2,7 @@
 
 import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
-import { Suspense, use, useState } from "react";
+import { use, useState } from "react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import Link from "next/link";
@@ -23,16 +23,20 @@ import { getImportantDateValues } from "./importantDatesUtils";
 
 type ApplicationsTableProps = {
   applications: ApplicationWithDetails[];
-  resumePromise: Promise<
-    Result<{ resumes: Resume[]; totalCount: number }, GetResumesError>
+  // resumePromise: Promise<
+  //   Result<{ resumes: Resume[]; totalCount: number }, GetResumesError>
+  // >;
+  resumesResult: Result<
+    { resumes: Resume[]; totalCount: number },
+    GetResumesError
   >;
 };
 
 export default function ApplicationsTable({
   applications,
-  resumePromise,
+  resumesResult,
 }: ApplicationsTableProps) {
-  const resumesResult = use(resumePromise);
+  // const resumesResult = use(resumePromise);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [editingApplication, setEditingApplication] =

@@ -8,8 +8,7 @@ import { getResumes } from "@/app/actions/resume";
 
 export default async function ApplicationsPage() {
   const result = await getApplications();
-  // No await
-  const resumePromise = getResumes();
+  const resumesResult = await getResumes();
 
   // TODO: replace with proper error component
   if (!result.ok) {
@@ -37,7 +36,7 @@ export default async function ApplicationsPage() {
       <Suspense fallback={<p>Loading applications...</p>}>
         <ApplicationsTable
           applications={result.value}
-          resumePromise={resumePromise}
+          resumesResult={resumesResult}
         />
       </Suspense>
     </main>

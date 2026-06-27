@@ -47,7 +47,11 @@ export default function EditProfileForm({ userProfile, userSettings }: Props) {
 
   return (
     <>
-      <form action={handleSubmitProfile} className={styles.card}>
+      <form
+        aria-label="Profile settings"
+        action={handleSubmitProfile}
+        className={styles.card}
+      >
         {errMsg && <div>{errMsg}</div>}
 
         <Input
@@ -68,7 +72,7 @@ export default function EditProfileForm({ userProfile, userSettings }: Props) {
         </Button>
       </form>
 
-      <form action={handleSubmitReminders}>
+      <form aria-label="Reminder settings" action={handleSubmitReminders}>
         <div>
           <label htmlFor="eventReminderDays">
             Event reminder days (comma-separated)
