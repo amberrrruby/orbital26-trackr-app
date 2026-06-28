@@ -8,6 +8,7 @@ import { Input, Textarea } from "@/app/components/Input";
 import { redirect } from "next/navigation";
 import { Resume } from "@/lib/generated/client";
 import ResumeSelector from "./ResumeSelector";
+import { useFormStatus } from "react-dom";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -100,8 +101,18 @@ export default function AddApplicationForm({ resumes }: Props) {
       <Textarea label="Notes" id="notes" name="notes" />
 
       <div className={styles.createButton}>
-        <Button type="submit">Create Application</Button>
+        <SubmitButton />
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus(); // useState is useless here
+
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Creating..." : "Create Application"}
+    </Button>
   );
 }
