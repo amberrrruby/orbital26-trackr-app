@@ -123,6 +123,17 @@
   padding: var(--space-2);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+
+  transition:
+    background-color var(--ease-default),
+    border-color var(--ease-default),
+    box-shadow var(--ease-default);
+}
+
+.appItem:hover {
+  background: var(--color-bg-subtle);
+  border-color: var(--color-accent-border);
+  box-shadow: var(--shadow-xs);
 }
 
 .applicationDetails {

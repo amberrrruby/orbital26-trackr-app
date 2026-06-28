@@ -135,16 +135,22 @@ export default function ResumeDetailsClient({
             ) : (
               <ul className={styles.appList}>
                 {recentApplicationsResult.value.map((app) => (
-                  <li key={app.id} className={styles.appItem}>
-                    <div className={styles.applicationDetails}>
-                      <span className={styles.applicationCompany}>
-                        {app.company}
-                      </span>
+                  <li key={app.id}>
+                    <Link
+                      className={styles.appItem}
+                      href={`/applications/${app.id}`}
+                    >
+                      <div className={styles.applicationDetails}>
+                        <span className={styles.applicationCompany}>
+                          {app.company}
+                        </span>
+                        <span className={styles.applicationRole}>
+                          {app.role}
+                        </span>
+                      </div>
 
-                      <span className={styles.applicationRole}>{app.role}</span>
-                    </div>
-
-                    <Badge variant="accent">{app.status}</Badge>
+                      <Badge variant="accent">{app.status}</Badge>
+                    </Link>
                   </li>
                 ))}
               </ul>
