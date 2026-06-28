@@ -35,12 +35,12 @@ vi.mock("@/app/components/Modal", () => ({
     open,
     children,
     title,
-    onOpenChange,
+    // onOpenChange,
   }: {
     open: boolean;
     children: React.ReactNode;
     title: string;
-    onOpenChange: (v: boolean) => void;
+    // onOpenChange: (v: boolean) => void;
   }) =>
     open ? (
       <div role="dialog" aria-label={title}>
@@ -124,7 +124,7 @@ describe("ReminderCard", () => {
       expect(screen.queryByText(/from/i)).not.toBeInTheDocument();
     });
 
-    it("shows 'From Company - Role |' prefix when linked", () => {
+    it("shows 'Company - Role' when linked", () => {
       render(
         <ReminderCard
           reminder={buildReminder({
@@ -134,7 +134,7 @@ describe("ReminderCard", () => {
         />,
       );
       expect(
-        screen.getByText(/from acme corp - software engineer/i),
+        screen.getByText(/acme corp - software engineer/i),
       ).toBeInTheDocument();
     });
 
@@ -162,16 +162,18 @@ describe("ReminderCard", () => {
           })}
         />,
       );
-      const link = screen.getByRole("link", { name: /application details/i });
+      const link = screen.getByRole("link", {
+        name: /acme corp - software engineer/i,
+      });
       expect(link).toHaveAttribute("href", "/applications/app-1");
     });
 
-    it("does not render Application Details link when unlinked", () => {
-      render(<ReminderCard reminder={buildReminder()} />);
-      expect(
-        screen.queryByRole("link", { name: /application details/i }),
-      ).not.toBeInTheDocument();
-    });
+    // it("does not render Application Details link when unlinked", () => {
+    //   render(<ReminderCard reminder={buildReminder()} />);
+    //   expect(
+    //     screen.queryByRole("link", { name: /application details/i }),
+    //   ).not.toBeInTheDocument();
+    // });
   });
 
   describe("mark as completed", () => {

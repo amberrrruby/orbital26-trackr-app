@@ -38,7 +38,7 @@ vi.mock("@/app/components/Modal", () => ({
 }));
 
 const mockUseRouter = vi.mocked(useRouter);
-const mockDeleteResume = vi.mocked(deleteResume);
+// const mockDeleteResume = vi.mocked(deleteResume);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -291,8 +291,12 @@ describe("ResumeDetailsClient", () => {
           recentApplicationsResult={{ ok: true, value: apps }}
         />,
       );
-      expect(screen.getByText("Company 0 — Role 0")).toBeInTheDocument();
-      expect(screen.getByText("Company 1 — Role 1")).toBeInTheDocument();
+
+      // TODO: more fine-grained assertions?
+      expect(screen.getByText("Company 0")).toBeInTheDocument();
+      expect(screen.getByText("Role 0")).toBeInTheDocument();
+      expect(screen.getByText("Company 1")).toBeInTheDocument();
+      expect(screen.getByText("Role 1")).toBeInTheDocument();
     });
 
     it("renders the status chip for each application", () => {

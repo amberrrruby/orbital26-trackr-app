@@ -38,7 +38,8 @@ vi.mock("@/app/actions/applications", () => ({
 }));
 
 vi.mock("@/app/(authenticated)/applications/ResumeSelector", () => ({
-  default: ({ resumes }: { resumes: unknown[] }) => (
+  // default: ({ resumes }: { resumes: unknown[] }) => (
+  default: () => (
     <select name="resumeId" aria-label="Resume">
       <option value="">None</option>
     </select>
@@ -157,8 +158,8 @@ describe("ApplicationsTable", () => {
       expect(await screen.findByText("Acme")).toBeInTheDocument();
       expect(await screen.findByText("Globex")).toBeInTheDocument();
 
-      await userEvent.selectOptions(screen.getByRole("combobox"), "INTERVIEW");
-      await userEvent.selectOptions(screen.getByRole("combobox"), "ALL");
+      await userEvent.selectOptions(screen.getByRole("combobox"), "Interview");
+      await userEvent.selectOptions(screen.getByRole("combobox"), "All");
 
       expect(await screen.findByText("Acme")).toBeInTheDocument();
       expect(await screen.findByText("Globex")).toBeInTheDocument();
