@@ -12,7 +12,10 @@ import {
 } from "@/lib/types";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { FileText, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
+import { Badge } from "@/app/components/Badge";
 
 type Props = {
   resume: Resume;
@@ -49,11 +52,31 @@ export default function ResumeDetailsClient({
 
   return (
     <main className={styles.page}>
-      <Link href={`/resumes/${resume.id}/edit`}>
-        <button>[Edit]</button>
-      </Link>
-      <button onClick={() => setShowDeleteModal(true)}>[Delete]</button>
-      {deleteErrMsg && <p>{deleteErrMsg}</p>}
+      <div className={styles.topBar}>
+        <Link href="/resumes" className={styles.back}>
+          ← Back
+        </Link>
+
+        <div className={styles.actions}>
+          <Link href={`/resumes/${resume.id}/edit`}>
+            <Button variant="outline">
+              <div className={styles.actionButton}>
+                <Pencil className={styles.actionIcon} />
+                <p>Edit</p>
+              </div>
+            </Button>
+          </Link>
+
+          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+            <div className={styles.actionButton}>
+              <Trash2 className={styles.actionIcon} />
+              <p>Delete</p>
+            </div>
+          </Button>
+        </div>
+      </div>
+
+      {deleteErrMsg && <p className={styles.errorMessage}>{deleteErrMsg}</p>}
 
       <Modal
         open={showDeleteModal}
@@ -62,49 +85,48 @@ export default function ResumeDetailsClient({
         description={`Are you sure you want to delete "${resume.title}"? This cannot be undone.`}
         footer={
           <>
-            <button
+            <Button
+              variant="secondary"
               onClick={() => setShowDeleteModal(false)}
               disabled={isDeleting}
             >
               Cancel
-            </button>
-            <button onClick={handleDelete} disabled={isDeleting}>
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
               {isDeleting ? "Deleting..." : "Delete"}
-            </button>
+            </Button>
           </>
         }
       />
-      <div className={styles.topBar}>
-        <Link href="/resumes" className={styles.back}>
-          [&lt;- Back]
-        </Link>
-      </div>
+
+      <header>
+        <h1 className={styles.title}>{resume.title}</h1>
+        {resume.tags.length > 0 && (
+          <div className={styles.tags}>
+            {resume.tags.map((tag) => (
+              <span key={tag} className={styles.tag}>
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </header>
 
       <div className={styles.layout}>
         {/* Left column */}
         <div className={styles.left}>
-          <h1 className={styles.title}>{resume.title}</h1>
-
-          {resume.tags.length > 0 && (
-            <div className={styles.tags}>
-              {resume.tags.map((tag) => (
-                <span key={tag} className={styles.tag}>
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <hr className={styles.divider} />
-
-          <section className={styles.section}>
+          <section className={styles.card}>
             <h2 className={styles.sectionTitle}>Notes</h2>
             <p className={styles.notes}>
               {resume.notes?.trim() || "No notes added."}
             </p>
           </section>
 
-          <section className={styles.section}>
+          <section className={styles.card}>
             <h2 className={styles.sectionTitle}>Recent Applications</h2>
             {!recentApplicationsResult.ok ? (
               <p className={styles.empty}>Failed to load applications.</p>
@@ -113,11 +135,22 @@ export default function ResumeDetailsClient({
             ) : (
               <ul className={styles.appList}>
                 {recentApplicationsResult.value.map((app) => (
-                  <li key={app.id} className={styles.appItem}>
-                    <span>
-                      {app.company} — {app.role}
-                    </span>
-                    <span className={styles.statusChip}>{app.status}</span>
+                  <li key={app.id}>
+                    <Link
+                      className={styles.appItem}
+                      href={`/applications/${app.id}`}
+                    >
+                      <div className={styles.applicationDetails}>
+                        <span className={styles.applicationCompany}>
+                          {app.company}
+                        </span>
+                        <span className={styles.applicationRole}>
+                          {app.role}
+                        </span>
+                      </div>
+
+                      <Badge variant="accent">{app.status}</Badge>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -133,39 +166,44 @@ export default function ResumeDetailsClient({
 
         {/* Right column */}
         <div className={styles.right}>
-          <div className={styles.thumbnailWrapper}>
-            {/* {resume.thumbnailPath ? (
-              <Image
-                src={resume.thumbnailPath}
-                alt={`Thumbnail for ${resume.title}`}
-                className={styles.thumbnail}
-              />
-            ) : (
-              <div className={styles.thumbnailPlaceholder} />
-            )} */}
-            <div className={styles.thumbnailPlaceholder} />
-          </div>
+          <section className={`${styles.card} ${styles.fileCard}`}>
+            <div className={styles.thumbnailWrapper}>
+              {/* {resume.thumbnailPath ? (
+                <Image
+                  src={resume.thumbnailPath}
+                  alt={`Thumbnail for ${resume.title}`}
+                  className={styles.thumbnail}
+                />
+                ) : (
+                <div className={styles.thumbnailPlaceholder} />
+              )} */}
+              <div className={styles.thumbnailPlaceholder}>
+                <FileText className={styles.fileIcon} />
+                <span>{resume.fileType.toUpperCase()}</span>
+              </div>
+            </div>
 
-          <p className={styles.lastUpdated}>
-            <em>
-              Last updated: {new Date(resume.updatedAt).toLocaleDateString()}
-            </em>
-          </p>
+            <div className={styles.fileInformation}>
+              {signedUrl ? (
+                <a href={signedUrl} target="_blank" rel="noopener noreferrer">
+                  {resume.title}.{resume.fileType.toLowerCase()}
+                </a>
+              ) : (
+                <p>
+                  Failed to generate signed URL. Please refresh and try again.
+                </p>
+              )}
 
-          {signedUrl ? (
-            <a
-              href={signedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.fileLink}
-            >
-              {resume.title}.{resume.fileType.toLowerCase()}
-            </a>
-          ) : (
-            <p>Failed to generate signed URL. Please refresh and try again.</p>
-          )}
+              <p className={styles.lastUpdated}>
+                <em>
+                  Last updated:{" "}
+                  {new Date(resume.updatedAt).toLocaleDateString()}
+                </em>
+              </p>
+            </div>
+          </section>
 
-          <section className={styles.statsPanel}>
+          <section className={styles.card}>
             <h2 className={styles.sectionTitle}>Stats</h2>
             {!statsResult.ok ? (
               <p className={styles.empty}>Failed to load stats.</p>

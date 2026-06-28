@@ -71,7 +71,7 @@ nav a:hover {
 
 /* ── Inputs & Textarea ───────────────────────────────────────── */
 
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 textarea {
   font-family: var(--font-ui);
   font-size: var(--text-base);
@@ -164,15 +164,10 @@ input[type="radio"] {
   height: 15px;
   min-width: 15px;
   padding: 0;
-  background: var(--color-bg-inset);
-  border: 1.5px solid var(--color-border-strong);
-  border-radius: var(--radius-xs);
   cursor: pointer;
-  transition:
-    background var(--ease-fast),
-    border-color var(--ease-fast),
-    box-shadow var(--ease-fast);
   accent-color: var(--color-accent);
+  appearance: auto;
+  -webkit-appearance: auto;
 }
 
 input[type="radio"] {

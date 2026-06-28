@@ -76,26 +76,28 @@ export default function AddApplicationForm({ resumes }: Props) {
         type="date"
       />
 
-      <Input
-        label="OA/Assessment Date"
-        id="oaAssessmentDate"
-        name="oaAssessmentDate"
-        type="date"
-      />
+      <div className={styles.importantDates}>
+        <Input
+          label="OA/Assessment Date"
+          id="oaAssessmentDate"
+          name="oaAssessmentDate"
+          type="date"
+        />
 
-      <Input
-        label="Interview Date"
-        id="interviewDate"
-        name="interviewDate"
-        type="date"
-      />
+        <Input
+          label="Interview Date"
+          id="interviewDate"
+          name="interviewDate"
+          type="date"
+        />
 
-      <Input
-        label="Offer Expiry Date"
-        id="offerExpiryDate"
-        name="offerExpiryDate"
-        type="date"
-      />
+        <Input
+          label="Offer Expiry Date"
+          id="offerExpiryDate"
+          name="offerExpiryDate"
+          type="date"
+        />
+      </div>
 
       <Textarea label="Notes" id="notes" name="notes" />
 

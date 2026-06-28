@@ -113,29 +113,31 @@ export default function EditApplicationModal({
           defaultValue={dateApplied ? formatDateForInput(dateApplied) : ""}
         />
 
-        <Input
-          label="OA/Assessment Date"
-          id="oaAssessmentDate"
-          name="oaAssessmentDate"
-          type="date"
-          defaultValue={importantDates.oaAssessmentDate ?? ""}
-        />
+        <div className={styles.importantDates}>
+          <Input
+            label="OA/Assessment Date"
+            id="oaAssessmentDate"
+            name="oaAssessmentDate"
+            type="date"
+            defaultValue={importantDates.oaAssessmentDate ?? ""}
+          />
 
-        <Input
-          label="Interview Date"
-          id="interviewDate"
-          name="interviewDate"
-          type="date"
-          defaultValue={importantDates.interviewDate ?? ""}
-        />
+          <Input
+            label="Interview Date"
+            id="interviewDate"
+            name="interviewDate"
+            type="date"
+            defaultValue={importantDates.interviewDate ?? ""}
+          />
 
-        <Input
-          label="Offer Expiry Date"
-          id="offerExpiryDate"
-          name="offerExpiryDate"
-          type="date"
-          defaultValue={importantDates.offerExpiryDate ?? ""}
-        />
+          <Input
+            label="Offer Expiry Date"
+            id="offerExpiryDate"
+            name="offerExpiryDate"
+            type="date"
+            defaultValue={importantDates.offerExpiryDate ?? ""}
+          />
+        </div>
 
         <Textarea
           label="Notes"

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { FileText } from "lucide-react";
 import { Resume } from "@/lib/generated/client";
+import styles from "./ResumeCard.module.css";
 
 type Props = {
   resume: Resume;
@@ -11,10 +12,11 @@ export default function ResumeCard({ resume }: Props) {
   return (
     <Link
       href={`/resumes/${resume.id}`}
-      className="group block rounded-xl border border-border hover:border-primary/40 hover:shadow-sm transition-all overflow-hidden"
+      className={styles.card}
+      aria-label={`View ${resume.title}`}
     >
       {/* Thumbnail. Will always use the fallback until we sort out thumbnail gen. */}
-      <div className="aspect-[3/4] bg-muted relative overflow-hidden">
+      <div className={styles.preview}>
         {/* {resume.thumbnailUrl ? (
           <Image
             src={resume.thumbnailUrl}
@@ -29,15 +31,13 @@ export default function ResumeCard({ resume }: Props) {
           </div>
         )} */}
         <div className="w-full h-full flex items-center justify-center">
-          <FileText className="w-12 h-12 text-muted-foreground/40" />
+          <FileText className={styles.fileIcon} aria-hidden="true" />
         </div>
       </div>
 
       {/* Metadata */}
-      <div className="p-3 space-y-1">
-        <p className="font-medium text-sm leading-tight truncate">
-          {resume.title}
-        </p>
+      <div className={styles.details}>
+        <p className={styles.title}>{resume.title}</p>
         {/* {resume.company && (
           <p className="text-xs text-muted-foreground truncate">
             {resume.company}
@@ -48,7 +48,8 @@ export default function ResumeCard({ resume }: Props) {
             {resume.position}
           </p>
         )} */}
-        <p className="text-xs text-muted-foreground/60">
+        <p className={styles.metaData}>
+          Uploaded{" "}
           {formatDistanceToNow(new Date(resume.createdAt), {
             addSuffix: true,
           })}

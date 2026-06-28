@@ -1,0 +1,209 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.optional {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.fieldError {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+/* Application combobox */
+.combobox {
+  position: relative;
+}
+
+.comboboxTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--space-10);
+  padding: var(--space-2) var(--space-3);
+
+  background: var(--color-bg-inset);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  transition:
+    background-color var(--ease-default),
+    border-color var(--ease-default);
+}
+
+.comboboxTrigger:hover {
+  background: var(--color-bg-subtle);
+  border-color: var(--color-border-strong);
+}
+
+.selectedApplication,
+.placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.comboboxIcon {
+  width: var(--space-4);
+  height: var(--space-4);
+  flex-shrink: 0;
+
+  color: var(--color-text-tertiary);
+}
+
+.comboboxDropdown {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: calc(100% + var(--space-1));
+  left: 0;
+  width: 100%;
+
+  overflow: hidden;
+  background: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.searchWrapper {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.optionList {
+  max-height: 220px;
+  margin: 0;
+  padding: var(--space-1) 0;
+
+  overflow-y: auto;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--color-bg-subtle);
+}
+
+.optionText {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.optionRole {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.noResults {
+  padding: var(--space-3);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* Reminder types */
+.radioGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+
+  cursor: pointer;
+}
+
+.reminderTiming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.timingHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.timingTitle {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.timingDescription {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.inlineField {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.inlineLabel {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.numberInput {
+  max-width: var(--space-16);
+}
+
+.inputSuffix {
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-6);
+  gap: var(--space-3);
+}
