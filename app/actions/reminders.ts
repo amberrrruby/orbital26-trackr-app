@@ -170,6 +170,8 @@ export async function addReminder(
     content: formData.get("content"),
   });
   if (!parseResult.success) {
+    console.log(`[dbg] addReminder parseResult fail`);
+    console.log(parseResult.error.message);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),

@@ -40,22 +40,23 @@ export default async function EditProfilePage({ searchParams }: Props) {
   }
 
   // Only place where profile and settings are needed, hence parse here and not a separate call
-  let userSettings = ReminderSettingsSchema.safeParse(
+  const userSettings = ReminderSettingsSchema.safeParse(
     userProfile.settings,
   ).data;
-  if (!userSettings) {
-    userSettings = {
-      eventReminderDays: [],
-      appliedFollowUpDays: 7,
-      assessmentFollowUpDays: 7,
-      interviewFollowUpDays: 7,
-    };
-  }
+  // if (!userSettings) { // shouldn't happen
+  //   userSettings = {
+  //     eventReminderDays: [],
+  //     appliedFollowUpDays: 7,
+  //     assessmentFollowUpDays: 7,
+  //     interviewFollowUpDays: 7,
+  //   };
+  // }
 
+  // Forceful `!` because the internal JSON that's being passed around shouldn't cause an issue...
   return (
     <main className={styles.page}>
       {successMessage && <div className={styles.toast}>{successMessage}</div>}
-      <EditProfileForm userProfile={userProfile} userSettings={userSettings} />
+      <EditProfileForm userProfile={userProfile} userSettings={userSettings!} />
     </main>
   );
 }

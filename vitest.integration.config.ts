@@ -14,5 +14,6 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["app/tests/integration/**/*.test.ts"],
+    fileParallelism: false, // so application cleanups don't mess with timeline events
   },
 });

@@ -35,7 +35,6 @@ export default function DeleteApplicationDialog({
     <Modal
       open={true}
       onOpenChange={(open) => {
-        7;
         if (!open) onClose();
       }}
       title="Delete Application"
