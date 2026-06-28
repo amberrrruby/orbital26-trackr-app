@@ -6,7 +6,10 @@ import { Application, ReminderType } from "@/lib/generated/client";
 import { addReminder, updateReminder } from "@/app/actions/reminders";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/components/Modal";
+import { Button } from "@/app/components/Button";
+import { Input, Textarea } from "@/app/components/Input";
 import { ReminderWithApplication } from "@/lib/types";
+import styles from "./ReminderModal.module.css";
 
 type ReminderModalProps = {
   open: boolean;
@@ -99,51 +102,50 @@ export default function ReminderModal({
       onOpenChange={onOpenChange}
       title={mode === "create" ? "Add reminder" : "Edit reminder"}
     >
-      {genericError && (
-        <div className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {genericError}
-        </div>
-      )}
+      {genericError && <div className={styles.error}>{genericError}</div>}
 
-      <form action={handleSubmit} className="flex flex-col gap-4">
+      <form action={handleSubmit} className={styles.form}>
         {/* Application combobox */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-muted-foreground">
-            Application{" "}
-            <span className="text-muted-foreground/60">(optional)</span>
-          </label>
-          <input
+        <div className={styles.field}>
+          <div className={styles.labelRow}>
+            <label className={styles.fieldLabel}>Application</label>
+            <span className={styles.optional}>(Optional)</span>
+          </div>
+          <Input
             type="hidden"
             name="applicationId"
             value={selectedApp?.id ?? ""}
           />
-          <div className="relative" ref={comboRef}>
+          <div className={styles.combobox} ref={comboRef}>
             <button
               type="button"
               onClick={() => setComboOpen((v) => !v)}
-              className="flex h-9 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              className={styles.comboboxTrigger}
             >
-              <span className={selectedApp ? "" : "text-muted-foreground"}>
+              <span
+                className={
+                  selectedApp ? styles.selectedApplication : styles.placeholder
+                }
+              >
                 {selectedApp
                   ? `${selectedApp.company} - ${selectedApp.role}`
                   : "Search applications..."}
               </span>
-              <ChevronsUpDown size={14} className="text-muted-foreground" />
+              <ChevronsUpDown size={14} className={styles.comboboxIcon} />
             </button>
 
             {comboOpen && (
-              <div className="absolute z-10 mt-1 w-full rounded-lg border border-border bg-background shadow-md">
-                <div className="p-2">
-                  <input
+              <div className={styles.comboboxDropdown}>
+                <div className={styles.searchWrapper}>
+                  <Input
                     type="text"
                     placeholder="Search..."
                     value={comboQuery}
                     onChange={(e) => setComboQuery(e.target.value)}
-                    className="h-8 w-full rounded-md border border-border bg-muted px-3 text-xs focus:outline-none"
                     autoFocus
                   />
                 </div>
-                <ul className="max-h-48 overflow-y-auto pb-1">
+                <ul className={styles.optionList}>
                   <li>
                     <button
                       type="button"
@@ -152,15 +154,14 @@ export default function ReminderModal({
                         setComboOpen(false);
                         setComboQuery("");
                       }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:bg-muted"
+                      className={styles.option}
                     >
                       <span>None</span>
                     </button>
                   </li>
+
                   {filteredApps.length === 0 ? (
-                    <li className="px-3 py-2 text-xs text-muted-foreground">
-                      No applications found.
-                    </li>
+                    <li className={styles.noResults}>No applications found.</li>
                   ) : (
                     filteredApps.map((app) => (
                       <li key={app.id}>
@@ -171,16 +172,16 @@ export default function ReminderModal({
                             setComboOpen(false);
                             setComboQuery("");
                           }}
-                          className="flex w-full items-center justify-between gap-2 px-3 py-2 text-xs hover:bg-muted"
+                          className={styles.option}
                         >
-                          <span>
-                            {app.company}{" "}
-                            <span className="text-muted-foreground">
-                              - {app.role}
+                          <span className={styles.optionText}>
+                            <span>{app.company}</span>
+                            <span className={styles.optionRole}>
+                              {app.role}
                             </span>
                           </span>
                           {selectedApp?.id === app.id && (
-                            <Check size={12} className="text-primary" />
+                            <Check size={12} className={styles.checkIcon} />
                           )}
                         </button>
                       </li>
@@ -191,9 +192,7 @@ export default function ReminderModal({
             )}
           </div>
           {fieldErrors.applicationId && (
-            <p className="text-xs text-destructive">
-              {fieldErrors.applicationId}
-            </p>
+            <p className={styles.fieldError}>{fieldErrors.applicationId}</p>
           )}
         </div>
 
@@ -201,11 +200,11 @@ export default function ReminderModal({
         <input type="hidden" name="source" value="" />
 
         {/* Remind at */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-muted-foreground">Remind at</label>
+        <div className={styles.field}>
+          <label className={styles.fieldLabel}>Reminder type:</label>
 
-          <div className="flex gap-5">
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+          <div className={styles.radioGroup}>
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="reminderType"
@@ -215,7 +214,7 @@ export default function ReminderModal({
               />
               Event-based
             </label>
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="reminderType"
@@ -227,22 +226,26 @@ export default function ReminderModal({
             </label>
           </div>
 
-          <div className="rounded-lg border border-border bg-muted/40 p-3 flex flex-col gap-2.5">
+          <div className={styles.reminderTiming}>
             {reminderType === "EVENT" ? (
               <>
-                <span className="text-sm font-medium">
-                  Event-based reminder
-                </span>
-                <div className="flex items-center gap-2.5">
-                  <label className="text-sm text-muted-foreground whitespace-nowrap">
-                    Reminder date:
-                  </label>
-                  <input
+                <div className={styles.timingHeader}>
+                  <span className={styles.timingTitle}>
+                    Event-based reminder
+                  </span>
+                  <span className={styles.timingDescription}>
+                    Choose the date when this reminder should appear.
+                  </span>
+                </div>
+
+                <div className={styles.inlineField}>
+                  <label className={styles.inlineLabel}>Reminder date:</label>
+                  <Input
                     type="date"
                     name="remindAt"
                     required
                     aria-invalid={!!fieldErrors.remindAt}
-                    className="h-8 flex-1 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring aria-[invalid=true]:border-destructive"
+                    className={styles.dateInput}
                     defaultValue={
                       reminder?.remindAt
                         ? new Date(reminder.remindAt)
@@ -255,16 +258,19 @@ export default function ReminderModal({
               </>
             ) : (
               <>
-                <span className="text-sm font-medium">Follow-up reminder</span>
-                <div className="flex items-center gap-2.5">
-                  <label className="text-sm text-muted-foreground whitespace-nowrap">
-                    Base date:
-                  </label>
-                  <input
+                <div className={styles.timingHeader}>
+                  <span className={styles.timingTitle}>Follow-up reminder</span>
+                  <span className={styles.timingDescription}>
+                    Choose a base date and how many days later to be reminded.
+                  </span>
+                </div>
+                <div className={styles.inlineField}>
+                  <label className={styles.inlineLabel}>Base date:</label>
+                  <Input
                     type="date"
                     name="remindAt"
                     required
-                    className="h-8 flex-1 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                    className={styles.dateInput}
                     defaultValue={
                       reminder
                         ? (() => {
@@ -277,32 +283,30 @@ export default function ReminderModal({
                     }
                   />
                 </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm text-muted-foreground whitespace-nowrap">
-                    Remind me after
-                  </label>
-                  <input
+                <div className={styles.inlineField}>
+                  <label className={styles.inlineLabel}>Remind me after</label>
+                  <Input
                     type="number"
                     name="offsetDays"
                     min="1"
                     defaultValue={7}
-                    className="h-8 w-16 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                    className={styles.numberInput}
                   />
-                  <span className="text-sm text-muted-foreground">days</span>
+                  <span className={styles.inputSuffix}>days</span>
                 </div>
               </>
             )}
           </div>
 
           {fieldErrors.remindAt && (
-            <p className="text-xs text-destructive">{fieldErrors.remindAt}</p>
+            <p className={styles.fieldError}>{fieldErrors.remindAt}</p>
           )}
         </div>
 
         {/* Content */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-muted-foreground">Title</label>
-          <textarea
+          <Textarea
+            label="Title"
             name="content"
             required
             rows={3}
@@ -312,24 +316,20 @@ export default function ReminderModal({
             className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring aria-[invalid=true]:border-destructive"
           />
           {fieldErrors.content && (
-            <p className="text-xs text-destructive">{fieldErrors.content}</p>
+            <p className={styles.fieldError}>{fieldErrors.content}</p>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-2 pt-1">
-          <button
+        <div className={styles.actions}>
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => onOpenChange(false)}
-            className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted"
           >
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity disabled:opacity-60"
-          >
+          </Button>
+          <Button type="submit" variant="primary" disabled={isPending}>
             {isPending
               ? mode === "create"
                 ? "Adding..."
@@ -337,7 +337,7 @@ export default function ReminderModal({
               : mode === "create"
                 ? "Add reminder"
                 : "Save changes"}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

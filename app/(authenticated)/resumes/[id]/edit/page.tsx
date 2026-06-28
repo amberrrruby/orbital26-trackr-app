@@ -4,6 +4,7 @@ import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import { FileText } from "lucide-react";
+import styles from "./page.module.css";
 
 type Props = {
   params: Promise<{
@@ -32,10 +33,16 @@ export default async function EditResumeDetailPage({ params }: Props) {
   const signedUrl = data?.signedUrl ?? undefined;
 
   return (
-    <ResumeFormComponent
-      userId={userId}
-      resume={resume}
-      signedUrl={signedUrl}
-    />
+    <main className={styles.page}>
+      <div className={styles.header}>
+        <h1>Edit resume details</h1>
+        <p>Modify resume details or upload a new version.</p>
+      </div>
+      <ResumeFormComponent
+        userId={userId}
+        resume={resume}
+        signedUrl={signedUrl}
+      />
+    </main>
   );
 }

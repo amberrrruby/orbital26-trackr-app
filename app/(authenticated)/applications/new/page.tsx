@@ -9,9 +9,7 @@ export default async function NewApplicationPage() {
   const res = await getResumes();
   return (
     <main className={styles.page}>
-      <Link href="/applications">
-        <Button>Back to Applications</Button>
-      </Link>
+      <Link href="/applications">← Back to Applications</Link>
 
       <div className={styles.header}>
         <h1>Add Application</h1>

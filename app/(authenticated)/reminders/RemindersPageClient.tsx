@@ -11,6 +11,8 @@ import {
   ReminderWithApplication,
   Result,
 } from "@/lib/types";
+import { Button } from "@/app/components/Button";
+import styles from "./page.module.css";
 
 const PREVIEW_LIMIT = 5;
 
@@ -77,93 +79,108 @@ export default function RemindersPageClient({
         reminder={editingReminder ?? undefined}
       />
       {/* Page header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-medium">Reminders</h1>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm transition-colors hover:bg-muted"
-        >
+      <section className={styles.header}>
+        <h1>Reminders</h1>
+        <p>Stay on top of your deadlines and follow-ups.</p>
+        <hr />
+      </section>
+      <section className={styles.addButton}>
+        <Button onClick={() => setModalOpen(true)}>
           <Plus size={16} />
           Add reminder
-        </button>
-      </div>
+        </Button>
+      </section>
 
       {/* Stats row */}
-      <div className="mt-6 grid grid-cols-4 gap-3">
+      <div className={styles.statsRow}>
         {[
           {
             label: "Today",
             value: todayTotal,
-            accent: "text-blue-600 dark:text-blue-400",
+            variant: "today",
           },
-          { label: "Upcoming", value: upcomingTotal, accent: "" },
-          { label: "Overdue", value: overdueTotal, accent: "text-destructive" },
-          { label: "Total", value: grandTotal, accent: "" },
-        ].map(({ label, value, accent }) => (
-          <div key={label} className="rounded-lg bg-muted/60 p-4">
-            <p className="text-xs text-muted-foreground">{label}</p>
-            <p className={`mt-1 text-2xl font-medium ${accent}`}>{value}</p>
+          {
+            label: "Upcoming",
+            value: upcomingTotal,
+            variant: "upcoming",
+          },
+          {
+            label: "Overdue",
+            value: overdueTotal,
+            variant: "overdue",
+          },
+          {
+            label: "Total",
+            value: grandTotal,
+            variant: "total",
+          },
+        ].map(({ label, value, variant }) => (
+          <div key={label} className={styles.statCard} data-stat={variant}>
+            <p className={styles.statLabel}>{label}</p>
+            <p className={styles.statValue}>{value}</p>
           </div>
         ))}
       </div>
 
-      {/* Today */}
-      <Section
-        title="Today"
-        count={todayTotal}
-        showAll={showAllToday}
-        onToggleShowAll={() => setShowAllToday((v) => !v)}
-        hasMore={todayTotal > PREVIEW_LIMIT}
-      >
-        {todayReminders.map((r) => (
-          <div
-            key={r.id}
-            onClick={() => setEditingReminder(r)}
-            className="cursor-pointer"
-          >
-            <ReminderCard key={r.id} reminder={r} />
-          </div>
-        ))}
-      </Section>
+      <div className={styles.reminderList}>
+        {/* Today */}
+        <Section
+          title="Today"
+          count={todayTotal}
+          showAll={showAllToday}
+          onToggleShowAll={() => setShowAllToday((v) => !v)}
+          hasMore={todayTotal > PREVIEW_LIMIT}
+        >
+          {todayReminders.map((r) => (
+            <div
+              key={r.id}
+              onClick={() => setEditingReminder(r)}
+              className={styles.reminderItem}
+            >
+              <ReminderCard key={r.id} reminder={r} />
+            </div>
+          ))}
+        </Section>
 
-      {/* Upcoming */}
-      <Section
-        title="Upcoming"
-        count={upcomingTotal}
-        showAll={showAllUpcoming}
-        onToggleShowAll={() => setShowAllUpcoming((v) => !v)}
-        hasMore={upcomingTotal > PREVIEW_LIMIT}
-      >
-        {upcomingReminders.map((r) => (
-          <div
-            key={r.id}
-            onClick={() => setEditingReminder(r)}
-            className="cursor-pointer"
-          >
-            <ReminderCard key={r.id} reminder={r} />
-          </div>
-        ))}
-      </Section>
+        {/* Upcoming */}
+        <Section
+          title="Upcoming"
+          count={upcomingTotal}
+          showAll={showAllUpcoming}
+          onToggleShowAll={() => setShowAllUpcoming((v) => !v)}
+          hasMore={upcomingTotal > PREVIEW_LIMIT}
+        >
+          {upcomingReminders.map((r) => (
+            <div
+              key={r.id}
+              onClick={() => setEditingReminder(r)}
+              className={styles.reminderItem}
+            >
+              <ReminderCard key={r.id} reminder={r} />
+            </div>
+          ))}
+        </Section>
 
-      {/* Overdue */}
-      <Section
-        title="Overdue"
-        count={overdueTotal}
-        showAll={showAllOverdue}
-        onToggleShowAll={() => setShowAllOverdue((v) => !v)}
-        hasMore={overdueTotal > PREVIEW_LIMIT}
-        titleAccent="text-destructive"
-      >
-        {overdueReminders.map((r) => (
-          <div
-            key={r.id}
-            onClick={() => setEditingReminder(r)}
-            className="cursor-pointer"
-          >
-            <ReminderCard key={r.id} reminder={r} variant="overdue" />
-          </div>
-        ))}
-      </Section>
+        {/* Overdue */}
+        <Section
+          title="Overdue"
+          count={overdueTotal}
+          showAll={showAllOverdue}
+          onToggleShowAll={() => setShowAllOverdue((v) => !v)}
+          hasMore={overdueTotal > PREVIEW_LIMIT}
+          variant="overdue"
+        >
+          {overdueReminders.map((r) => (
+            <div
+              key={r.id}
+              onClick={() => setEditingReminder(r)}
+              className={styles.reminderItem}
+            >
+              <ReminderCard key={r.id} reminder={r} variant="overdue" />
+            </div>
+          ))}
+        </Section>
+      </div>
 
       <ReminderModal
         open={modalOpen}
@@ -181,7 +198,7 @@ function Section({
   showAll,
   onToggleShowAll,
   hasMore,
-  titleAccent = "",
+  variant = "default",
 }: {
   title: string;
   count: number;
@@ -189,27 +206,23 @@ function Section({
   showAll: boolean;
   onToggleShowAll: () => void;
   hasMore: boolean;
-  titleAccent?: string;
+  variant?: "default" | "overdue";
 }) {
   if (count === 0) return null;
 
   return (
-    <div className="mt-8">
-      <div className="mb-3 flex items-center gap-2">
-        <h2 className={`text-base font-medium ${titleAccent}`}>{title}</h2>
-        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-          {count}
-        </span>
+    <section className={styles.reminderSection} data-variant={variant}>
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <span className={styles.sectionCount}>{count}</span>
       </div>
-      <div className="flex flex-col gap-2">{children}</div>
+
+      <div className={styles.sectionList}>{children}</div>
       {hasMore && (
-        <button
-          onClick={onToggleShowAll}
-          className="mt-3 text-sm text-muted-foreground underline-offset-2 hover:underline"
-        >
+        <button onClick={onToggleShowAll} className={styles.showAllButton}>
           {showAll ? "Show less" : `View all ${title.toLowerCase()}`}
         </button>
       )}
-    </div>
+    </section>
   );
 }

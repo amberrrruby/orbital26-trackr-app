@@ -5,6 +5,7 @@ import DeleteApplicationDialog from "./DeleteApplicationDialog";
 import { use, useState } from "react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
+import { Input } from "@/app/components/Input";
 import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
 import {
@@ -12,14 +13,17 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   flexRender,
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
+  type PaginationState,
 } from "@tanstack/react-table";
 import { ApplicationWithDetails, GetResumesError, Result } from "@/lib/types";
 import { Resume } from "@/lib/generated/client";
 import { getImportantDateValues } from "./importantDatesUtils";
+import { Eye, Pencil, Trash2, Search } from "lucide-react";
 
 type ApplicationsTableProps = {
   applications: ApplicationWithDetails[];
@@ -39,6 +43,11 @@ export default function ApplicationsTable({
   // const resumesResult = use(resumePromise);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [globalFilter, setGlobalFilter] = useState("");
   const [editingApplication, setEditingApplication] =
     useState<ApplicationWithDetails | null>(null);
 
@@ -72,7 +81,14 @@ export default function ApplicationsTable({
     },
     {
       accessorKey: "dateApplied",
-      header: "Date Applied",
+      header: ({ column }) => (
+        <button onClick={column.getToggleSortingHandler()}>
+          Date Applied
+          {column.getIsSorted() === "asc" && " ↑"}
+          {column.getIsSorted() === "desc" && " ↓"}
+        </button>
+      ),
+      enableSorting: true,
       cell: ({ row }) =>
         row.original.dateApplied
           ? row.original.dateApplied.toLocaleDateString()
@@ -108,28 +124,25 @@ export default function ApplicationsTable({
         const application = row.original;
         return (
           <div className={tableStyles.action}>
-            <Link href={`/applications/${application.id}`}>
-              <Button type="button" size="sm" variant="primary">
-                Details
-              </Button>
+            <Link href={`/applications/${application.id}`} title="Details">
+              <Eye size={18} className={tableStyles.icon} />
             </Link>
 
-            <Button
+            <button
               type="button"
-              size="sm"
-              variant="outline"
+              title="Edit"
               onClick={() => setEditingApplication(application)}
             >
-              Edit
-            </Button>
-            <Button
+              <Pencil size={18} className={tableStyles.icon} />
+            </button>
+            <button
               type="button"
-              size="sm"
-              variant="danger"
+              title="Delete"
               onClick={() => setDeletingApplication(application)}
+              className={tableStyles.deleteAction}
             >
-              Delete
-            </Button>
+              <Trash2 size={18} className={tableStyles.icon} />
+            </button>
           </div>
         );
       },
@@ -139,12 +152,16 @@ export default function ApplicationsTable({
   const table = useReactTable({
     data: applications,
     columns,
-    state: { sorting, columnFilters },
+    state: { sorting, columnFilters, pagination, globalFilter },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+
+    globalFilterFn: "includesString",
   });
 
   if (applications.length == 0) {
@@ -153,27 +170,46 @@ export default function ApplicationsTable({
 
   return (
     <div>
-      <div className={tableStyles.filterRow}>
-        <label>Filter by Status:</label>
-        <select
-          value={
-            (table.getColumn("status")?.getFilterValue() as string) ?? "ALL"
-          }
-          onChange={(event) => {
-            const value = event.target.value;
-            table
-              .getColumn("status")
-              ?.setFilterValue(value === "ALL" ? undefined : value);
-          }}
-        >
-          <option value="ALL">All</option>
-          <option value="WISHLIST">Wishlist</option>
-          <option value="APPLIED">Applied</option>
-          <option value="OA_ASSESSMENT">OA / Assessment</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="REJECTED">Rejected</option>
-        </select>
+      <div className={tableStyles.toolbar}>
+        <div className={tableStyles.search}>
+          <Search
+            size={16}
+            className={tableStyles.searchIcon}
+            aria-hidden="true"
+          />
+          <Input
+            type="search"
+            value={globalFilter}
+            placeholder="Search company, role or source..."
+            onChange={(event) => {
+              setGlobalFilter(event.target.value);
+              table.setPageIndex(0);
+            }}
+          />
+        </div>
+
+        <div className={tableStyles.filterRow}>
+          <label>Filter by Status:</label>
+          <select
+            id="status-filter"
+            value={
+              (table.getColumn("status")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) => {
+              const value = event.target.value;
+              table.getColumn("status")?.setFilterValue(value);
+              table.setPageIndex(0);
+            }}
+          >
+            <option value="">All</option>
+            <option value="WISHLIST">Wishlist</option>
+            <option value="APPLIED">Applied</option>
+            <option value="OA_ASSESSMENT">OA / Assessment</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="OFFER">Offer</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
       </div>
 
       <table>
@@ -181,7 +217,18 @@ export default function ApplicationsTable({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th
+                  key={header.id}
+                  className={
+                    header.column.id === "company"
+                      ? tableStyles.companyColumn
+                      : header.column.id === "role"
+                        ? tableStyles.roleColumn
+                        : header.column.id === "source"
+                          ? tableStyles.sourceColumn
+                          : undefined
+                  }
+                >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
@@ -196,7 +243,18 @@ export default function ApplicationsTable({
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  className={
+                    cell.column.id === "company"
+                      ? tableStyles.companyColumn
+                      : cell.column.id === "role"
+                        ? tableStyles.roleColumn
+                        : cell.column.id === "source"
+                          ? tableStyles.sourceColumn
+                          : undefined
+                  }
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -204,6 +262,33 @@ export default function ApplicationsTable({
           ))}
         </tbody>
       </table>
+
+      <div className={tableStyles.pagination}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          &lt;
+        </Button>
+
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </span>
+
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          &gt;
+        </Button>
+      </div>
 
       <Modal
         open={editingApplication !== null}

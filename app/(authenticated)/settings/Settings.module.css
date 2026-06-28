@@ -134,3 +134,7 @@
 .card p {
   color: var(--color-text-secondary);
 }
+
+.saveButton {
+  margin-left: auto;
+}
