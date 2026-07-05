@@ -188,7 +188,10 @@ export const ReminderSchema = z.object({
     z.cuid2().nullable().optional(),
   ),
   type: z.enum(REMINDER_TYPE, "A reminder type is required"),
-  remindAt: z.iso.date("Remind date is required"),
+  remindAt: z.iso.datetime({
+    offset: true,
+    error: "Remind datetime is required",
+  }),
   offsetDays: z.preprocess(
     (v) => (v === "" || v === null ? undefined : v),
     z.coerce.number().int().positive().optional(),
