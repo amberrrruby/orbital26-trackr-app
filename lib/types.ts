@@ -48,6 +48,10 @@ export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
 
 export type UpdateApplicationError = ActionValidationError | ActionFailureError;
 
+export type UpdateApplicationStatusError =
+  | ActionValidationError
+  | ActionFailureError;
+
 export type DeleteApplicationError = ActionFailureError;
 
 export enum Status {
@@ -76,6 +80,11 @@ export const ApplicationSchema = z.object({
 
 export const EditApplicationSchema = ApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
+});
+
+export const UpdateApplicationStatusSchema = z.object({
+  id: z.cuid2("Application ID is required"),
+  status: z.enum(Status),
 });
 
 export const ApplicationIdSchema = z.object({
