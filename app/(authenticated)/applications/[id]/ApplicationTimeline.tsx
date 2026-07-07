@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   updateManualTimelineEvent,
-  deleteManualTimelineEvent,
+  deleteTimelineEvent,
 } from "@/app/actions/timeline";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
@@ -74,7 +74,7 @@ export default function ApplicationTimeline({
     setError(null);
 
     startTransition(async () => {
-      const res = await deleteManualTimelineEvent(deleteEventId);
+      const res = await deleteTimelineEvent(deleteEventId);
       if (!res.ok) {
         setError(
           "Something went wrong while deleting this timeline event. Please try again.",
@@ -112,7 +112,7 @@ export default function ApplicationTimeline({
             const isManual = event.type === "MANUAL";
             const isEditing = editingEventId === event.id;
 
-            if (isEditing) {
+            if (isEditing && isManual) {
               return (
                 <form
                   key={event.id}
@@ -170,16 +170,16 @@ export default function ApplicationTimeline({
             return (
               <div
                 key={event.id}
-                className={`${styles.timelineItem} ${
-                  isManual ? styles.manualItem : ""
-                }`}
+                className={`${styles.timelineItem} ${styles.editableItem}`}
               >
                 <div
                   className={`${styles.date} ${
                     isManual ? styles.clickable : ""
                   }`}
                   onClick={() => {
-                    if (isManual) setEditingEventId(event.id);
+                    if (isManual) {
+                      setEditingEventId(event.id);
+                    }
                   }}
                 >
                   {formatDate(event.eventDate)}
@@ -195,16 +195,17 @@ export default function ApplicationTimeline({
                       isManual ? styles.clickable : ""
                     }`}
                     onClick={() => {
-                      if (isManual) setEditingEventId(event.id);
+                      if (isManual) {
+                        setEditingEventId(event.id);
+                      }
                     }}
                   >
                     <p>{event.description}</p>
-
-                    {isManual && (
-                      <div
-                        className={styles.eventActions}
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                    <div
+                      className={styles.eventActions}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {isManual && (
                         <Button
                           type="button"
                           variant="ghost"
@@ -213,17 +214,17 @@ export default function ApplicationTimeline({
                         >
                           <Pencil size={14}></Pencil>
                         </Button>
+                      )}
 
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => setDeleteEventId(event.id)}
-                          aria-label="Delete timeline event"
-                        >
-                          <Trash2 size={14}></Trash2>
-                        </Button>
-                      </div>
-                    )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setDeleteEventId(event.id)}
+                        aria-label="Delete timeline event"
+                      >
+                        <Trash2 size={14}></Trash2>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
