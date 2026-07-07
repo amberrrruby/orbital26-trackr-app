@@ -5,6 +5,7 @@ import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { ApplicationWithDetails, Status } from "@/lib/types";
 import { updateApplicationStatus } from "@/app/actions/applications";
 import KanbanColumn from "./KanbanColumn";
+import { useToast } from "@/app/components/Toast";
 import styles from "./Kanban.module.css";
 
 const KANBAN_COLUMNS = [
@@ -35,6 +36,7 @@ type KanbanBoardProps = {
 };
 
 export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
+  const { toast } = useToast();
   const [applications, setApplications] = useState(
     initialApplications.filter(
       (application) => application.status !== Status.WISHLIST,
@@ -92,9 +94,13 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
       // Restore the previous state if the database update fails
       setApplications(previousApplications);
 
-      window.alert(
-        "The application status could not be updated. Please try again.",
-      );
+      toast({
+        title: "Status update failed",
+        description:
+          "The application was moved back to its previous status. Please try again.",
+        variant: "danger",
+      });
+      return;
     }
   }
 

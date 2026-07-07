@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Badge } from "@/app/components/Badge";
+import { ApplicationStatusBadge } from "@/app/components/ApplicationStatusBadge";
 import { Button } from "@/app/components/Button";
 import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
@@ -67,7 +67,7 @@ export default async function ApplicationDetailsPage({
           <p>{application.role}</p>
 
           <div className={styles.statusBadge}>
-            <Badge variant="accent">{application.status}</Badge>
+            <ApplicationStatusBadge status={application.status} />
           </div>
         </div>
 

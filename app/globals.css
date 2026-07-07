@@ -63,9 +63,9 @@
   --shadow-xl: 0 16px 56px rgba(0, 0, 0, 0.6);
 
   /* Status Colors */
-  --status-wishlist: #a78bfa;
-  --status-wishlist-subtle: rgba(167, 139, 250, 0.12);
-  --status-wishlist-border: rgba(167, 139, 250, 0.28);
+  --status-wishlist: #f59e0b;
+  --status-wishlist-subtle: rgba(245, 158, 11, 0.12);
+  --status-wishlist-border: rgba(245, 158, 11, 0.28);
 
   --status-applied: #489df1;
   --status-applied-subtle: rgba(72, 157, 241, 0.12);
@@ -75,9 +75,9 @@
   --status-assessment-subtle: rgba(34, 211, 238, 0.12);
   --status-assessment-border: rgba(34, 211, 238, 0.28);
 
-  --status-interview: #f59e0b;
-  --status-interview-subtle: rgba(245, 158, 11, 0.12);
-  --status-interview-border: rgba(245, 158, 11, 0.28);
+  --status-interview: #a78bfa;
+  --status-interview-subtle: rgba(167, 139, 250, 0.12);
+  --status-interview-border: rgba(167, 139, 250, 0.28);
 
   --status-offer: #4caf7d;
   --status-offer-subtle: rgba(76, 175, 125, 0.12);
