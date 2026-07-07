@@ -212,7 +212,7 @@ describe("Reminders", () => {
     it("creates a reminder and returns the new id on valid input", async () => {
       const formData = makeFormData({
         reminderType: "EVENT",
-        remindAt: "2026-07-01",
+        remindAt: "2026-07-01T00:00:00+08:00",
         source: "",
         content: "Follow up with recruiter",
       });
@@ -231,7 +231,7 @@ describe("Reminders", () => {
     it("creates a reminder without an applicationId when omitted", async () => {
       const formData = makeFormData({
         reminderType: "EVENT",
-        remindAt: "2026-07-01",
+        remindAt: "2026-07-01T00:00:00+08:00",
         source: "",
         content: "Standalone reminder",
       });
@@ -249,7 +249,7 @@ describe("Reminders", () => {
     it("returns a schema validation error on invalid input", async () => {
       const formData = makeFormData({
         reminderType: "EVENT",
-        remindAt: "not-a-date",
+        remindAt: "2026-07-01", // Intentionally not an ISO date
         source: "",
         content: "x",
       });
@@ -276,7 +276,7 @@ describe("Reminders", () => {
 
       const formData = makeFormData({
         reminderType: "EVENT",
-        remindAt: "2026-08-01",
+        remindAt: "2026-08-01T00:00:00+08:00",
         source: "",
         content: "Updated content",
       });
@@ -288,7 +288,7 @@ describe("Reminders", () => {
         where: { id: reminder.id },
       });
       expect(updated!.content).toBe("Updated content");
-      expect(updated!.remindAt).toEqual(new Date("2026-08-01"));
+      expect(updated!.remindAt).toEqual(new Date("2026-08-01T00:00:00+08:00"));
     });
 
     it("returns FAILURE when reminder does not belong to the user", async () => {
@@ -298,7 +298,7 @@ describe("Reminders", () => {
 
       const formData = makeFormData({
         reminderType: "EVENT",
-        remindAt: "2026-08-01",
+        remindAt: "2026-08-01T00:00:00+08:00",
         source: "",
         content: "Attempted update",
       });

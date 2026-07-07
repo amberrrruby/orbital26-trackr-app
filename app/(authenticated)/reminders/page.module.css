@@ -122,6 +122,7 @@
 
 .showAllButton {
   align-self: flex-start;
+  margin-left: auto; /* make the button align right */
   padding: var(--space-1) 0;
   color: var(--color-text-secondary);
   background: transparent;

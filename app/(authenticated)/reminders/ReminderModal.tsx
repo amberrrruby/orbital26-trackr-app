@@ -62,10 +62,9 @@ export default function ReminderModal({
   function handleSubmit(formData: FormData) {
     setFieldErrors({});
     setGenericError(null);
+    const remindAt = formData.get("remindAt") as string;
 
     if (reminderType === "FOLLOW_UP") {
-      const remindAt = formData.get("remindAt") as string;
-
       const offsetDays = Number(formData.get("offsetDays") ?? 0);
 
       const [year, month, day] = remindAt.split("-").map(Number);
@@ -73,9 +72,11 @@ export default function ReminderModal({
 
       date.setDate(date.getDate() + offsetDays);
 
-      const result = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      const result = toLocalISOString(date);
 
       formData.set("remindAt", result);
+    } else {
+      formData.set("remindAt", toLocalISOString(new Date(remindAt)));
     }
 
     startTransition(async () => {
@@ -341,5 +342,19 @@ export default function ReminderModal({
         </div>
       </form>
     </Modal>
+  );
+}
+
+function toLocalISOString(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const offsetMinutes = date.getTimezoneOffset();
+  const sign = offsetMinutes <= 0 ? "+" : "-";
+  const absOffset = Math.abs(offsetMinutes);
+  const offsetStr = `${sign}${pad(Math.floor(absOffset / 60))}:${pad(absOffset % 60)}`;
+
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}` +
+    offsetStr
   );
 }
