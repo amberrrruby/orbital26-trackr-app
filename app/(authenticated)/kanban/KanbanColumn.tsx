@@ -5,6 +5,15 @@ import { ApplicationWithDetails, Status } from "@/lib/types";
 import KanbanCard from "./KanbanCard";
 import styles from "./Kanban.module.css";
 
+const columnClassNames: Record<Status, string> = {
+  [Status.WISHLIST]: styles.wishlist,
+  [Status.APPLIED]: styles.applied,
+  [Status.OA_ASSESSMENT]: styles.assessment,
+  [Status.INTERVIEW]: styles.interview,
+  [Status.OFFER]: styles.offer,
+  [Status.REJECTED]: styles.rejected,
+};
+
 type KanbanColumnProps = {
   status: Status;
   label: string;
@@ -23,7 +32,7 @@ export default function KanbanColumn({
   return (
     <section
       ref={ref}
-      className={`${styles.column} ${
+      className={`${styles.column} ${columnClassNames[status]} ${
         isDropTarget ? styles.columnDropTarget : ""
       }`}
       aria-labelledby={`kanban-column-${status}`}

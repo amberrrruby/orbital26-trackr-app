@@ -20,6 +20,7 @@ export default async function KanbanPage() {
         <h1>Kanban</h1>
         <p>Track applications across each stage of the pipeline.</p>
       </header>
+      <hr />
 
       <KanbanBoard initialApplications={result.value} />
     </main>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useDraggable } from "@dnd-kit/react";
-import { GripHorizontal, GripVertical } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import { ApplicationWithDetails } from "@/lib/types";
 import styles from "./Kanban.module.css";
 
@@ -29,8 +29,11 @@ export default function KanbanCard({ application }: KanbanCardProps) {
       ref={ref}
       className={`${styles.card} ${isDragging ? styles.cardDragging : ""}`}
     >
-      <div>
-        <Link href={`/applications/${application.id}`}>
+      <div className={styles.cardTopRow}>
+        <Link
+          href={`/applications/${application.id}`}
+          className={styles.cardLink}
+        >
           <h3>{application.company}</h3>
           <p>{application.role}</p>
         </Link>
@@ -41,11 +44,13 @@ export default function KanbanCard({ application }: KanbanCardProps) {
           className={styles.dragHandle}
           aria-label={`Move ${application.company} ${application.role}`}
         >
-          <GripVertical aria-hidden="true" />
+          <GripVertical aria-hidden="true" size={20} />
         </button>
       </div>
 
-      {formattedDate && <p>Applied {formattedDate}</p>}
+      {formattedDate && (
+        <p className={styles.dateApplied}>Applied {formattedDate}</p>
+      )}
     </article>
   );
 }

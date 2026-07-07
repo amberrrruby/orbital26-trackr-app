@@ -89,6 +89,7 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
     );
 
     if (!result.ok) {
+      // Restore the previous state if the database update fails
       setApplications(previousApplications);
 
       window.alert(
