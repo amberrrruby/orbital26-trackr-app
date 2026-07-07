@@ -63,6 +63,12 @@
   border-color: var(--status-assessment-border);
 }
 
+.interview {
+  background: var(--status-interview-subtle);
+  color: var(--status-interview);
+  border-color: var(--status-interview-border);
+}
+
 .offer {
   background: var(--status-offer-subtle);
   color: var(--status-offer);
