@@ -24,6 +24,26 @@
   align-items: center;
 }
 
+.search {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search input[type="search"] {
+  padding-left: var(--space-10);
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(5, minmax(180px, 1fr));

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { ApplicationWithDetails, Status } from "@/lib/types";
 import { updateApplicationStatus } from "@/app/actions/applications";
 import KanbanColumn from "./KanbanColumn";
 import { useToast } from "@/app/components/Toast";
+import { Input } from "@/app/components/Input";
+import { Search } from "lucide-react";
 import styles from "./Kanban.module.css";
 
 const KANBAN_COLUMNS = [
@@ -42,6 +44,24 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
       (application) => application.status !== Status.WISHLIST,
     ),
   );
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredApplications = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return applications;
+    }
+
+    return applications.filter((application) => {
+      const company = application.company.toLowerCase();
+      const role = application.role.toLowerCase();
+
+      return (
+        company.includes(normalizedQuery) || role.includes(normalizedQuery)
+      );
+    });
+  }, [applications, searchQuery]);
 
   async function handleDragEnd(event: DragEndEvent) {
     if (event.canceled) {
@@ -105,23 +125,36 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
   }
 
   return (
-    <DragDropProvider onDragEnd={handleDragEnd}>
-      <section className={styles.board} aria-label="Application Kanban board">
-        {KANBAN_COLUMNS.map((column) => {
-          const columnApplications = applications.filter(
-            (application) => application.status === column.status,
-          );
+    <>
+      <div className={styles.search}>
+        <Search size={16} className={styles.searchIcon} aria-hidden="true" />
+        <Input
+          type="search"
+          value={searchQuery}
+          placeholder="Search company or role"
+          aria-label="Search Kanban applications"
+          onChange={(event) => setSearchQuery(event.target.value)}
+        />
+      </div>
 
-          return (
-            <KanbanColumn
-              key={column.status}
-              status={column.status}
-              label={column.label}
-              applications={columnApplications}
-            />
-          );
-        })}
-      </section>
-    </DragDropProvider>
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <section className={styles.board} aria-label="Application Kanban board">
+          {KANBAN_COLUMNS.map((column) => {
+            const columnApplications = filteredApplications.filter(
+              (application) => application.status === column.status,
+            );
+
+            return (
+              <KanbanColumn
+                key={column.status}
+                status={column.status}
+                label={column.label}
+                applications={columnApplications}
+              />
+            );
+          })}
+        </section>
+      </DragDropProvider>
+    </>
   );
 }
