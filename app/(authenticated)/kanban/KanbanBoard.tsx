@@ -9,8 +9,13 @@ import { useToast } from "@/app/components/Toast";
 import { Input } from "@/app/components/Input";
 import { Search } from "lucide-react";
 import styles from "./Kanban.module.css";
+import { Application } from "@/lib/generated/client";
 
 const KANBAN_COLUMNS = [
+  {
+    status: Status.WISHLIST,
+    label: "Wishlist",
+  },
   {
     status: Status.APPLIED,
     label: "Applied",
@@ -39,11 +44,10 @@ type KanbanBoardProps = {
 
 export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
   const { toast } = useToast();
-  const [applications, setApplications] = useState(
-    initialApplications.filter(
-      (application) => application.status !== Status.WISHLIST,
-    ),
-  );
+  const [applications, setApplications] =
+    useState<ApplicationWithDetails[]>(initialApplications);
+  const [showWishlist, setShowWishlist] = useState(false);
+  const [showRejected, setShowRejected] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredApplications = useMemo(() => {
@@ -63,6 +67,20 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
     });
   }, [applications, searchQuery]);
 
+  const visibleColumns = useMemo(() => {
+    return KANBAN_COLUMNS.filter((column) => {
+      if (column.status === Status.WISHLIST && !showWishlist) {
+        return false;
+      }
+
+      if (column.status === Status.REJECTED && !showRejected) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [showWishlist, showRejected]);
+
   async function handleDragEnd(event: DragEndEvent) {
     if (event.canceled) {
       return;
@@ -78,7 +96,7 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
     const applicationId = String(source.id);
     const destinationStatus = String(target.id) as Status;
 
-    const isValidColumn = KANBAN_COLUMNS.some(
+    const isValidColumn = visibleColumns.some(
       (column) => column.status === destinationStatus,
     );
 
@@ -126,20 +144,50 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
 
   return (
     <>
-      <div className={styles.search}>
-        <Search size={16} className={styles.searchIcon} aria-hidden="true" />
-        <Input
-          type="search"
-          value={searchQuery}
-          placeholder="Search company or role"
-          aria-label="Search Kanban applications"
-          onChange={(event) => setSearchQuery(event.target.value)}
-        />
+      <div className={styles.boardControls}>
+        <div className={styles.search}>
+          <Search size={16} className={styles.searchIcon} aria-hidden="true" />
+          <Input
+            type="search"
+            value={searchQuery}
+            placeholder="Search company or role"
+            aria-label="Search Kanban applications"
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+        </div>
+
+        <div className={styles.columnToggles}>
+          <label className={styles.toggleControl}>
+            <input
+              type="checkbox"
+              checked={showWishlist}
+              onChange={(event) => setShowWishlist(event.target.checked)}
+            />
+            <span>Include Wishlist</span>
+          </label>
+
+          <label className={styles.toggleControl}>
+            <input
+              type="checkbox"
+              checked={showRejected}
+              onChange={(event) => setShowRejected(event.target.checked)}
+            />
+            <span>Show Rejected Applications</span>
+          </label>
+        </div>
       </div>
 
       <DragDropProvider onDragEnd={handleDragEnd}>
-        <section className={styles.board} aria-label="Application Kanban board">
-          {KANBAN_COLUMNS.map((column) => {
+        <section
+          className={styles.board}
+          style={
+            {
+              "--column-count": visibleColumns.length,
+            } as React.CSSProperties
+          }
+          aria-label="Application Kanban board"
+        >
+          {visibleColumns.map((column) => {
             const columnApplications = filteredApplications.filter(
               (application) => application.status === column.status,
             );

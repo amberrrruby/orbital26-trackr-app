@@ -24,6 +24,30 @@
   align-items: center;
 }
 
+.boardControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.columnToggles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.toggleControl {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .search {
   position: relative;
   width: 280px;
@@ -46,12 +70,14 @@
 
 .board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(180px, 1fr));
+  grid-template-columns: repeat(var(--column-count), minmax(180px, 1fr));
   gap: var(--space-2);
 
   flex: 1;
   min-height: 0;
-  min-width: calc((180px * 5) + (var(--space-2) * 4));
+  min-width: calc(
+    (180px * var(--column-count)) + (var(--space-2) * var(--column-count) - 1)
+  );
   height: calc(100vh - var(--topbar-h) - 140px);
   overflow-x: auto;
   overflow-y: hidden;
@@ -236,6 +262,12 @@
   border-radius: var(--radius-md);
 }
 
+.wishlist {
+  --status-color: var(--status-wishlist);
+  --status-bg: var(--status-wishlist-subtle);
+  --status-border: var(--status-wishlist-border);
+}
+
 .applied {
   --status-color: var(--status-applied);
   --status-bg: var(--status-applied-subtle);
@@ -275,6 +307,15 @@
 @media (max-width: 768px) {
   .board {
     height: calc(100vh - var(--topbar-h) - 110px);
+  }
+
+  .boardControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .columnToggles {
+    flex-wrap: wrap;
   }
 
   .page {
