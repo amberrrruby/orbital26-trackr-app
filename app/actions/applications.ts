@@ -45,6 +45,7 @@ export async function createApplication(
   });
 
   if (!parseResult.success) {
+    console.log(parseResult.error.issues);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),

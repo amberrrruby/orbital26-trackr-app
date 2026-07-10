@@ -5,6 +5,8 @@ import { createApplication } from "@/app/actions/applications";
 import styles from "./AddApplicationForm.module.css";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
+import { useRouter } from "next/navigation";
 import { redirect } from "next/navigation";
 import { Resume } from "@/lib/generated/client";
 import ResumeSelector from "./ResumeSelector";
@@ -24,36 +26,61 @@ type Props = {
 };
 
 export default function AddApplicationForm({ resumes }: Props) {
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const router = useRouter();
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   async function handleSubmit(formData: FormData) {
-    setError(null);
+    setFieldErrors({});
+
     const result = await createApplication(formData);
+
     if (!result.ok) {
       if (result.error.type === "FAILURE") {
-        setError("Something went wrong. Try again.");
+        toast({
+          title: "Could not create application",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+
       if (result.error.type === "VALIDATION") {
-        setError(
-          `Invalid fields: ${result.error.param}: ${result.error.message}`,
-        );
+        setFieldErrors({
+          [result.error.param]: result.error.message,
+        });
         return;
       }
     }
-    redirect(`/applications`);
 
-    // When applications details page are done.
-    // redirect(`/applications/${result.value}`);
+    toast({
+      title: "Application created",
+      description: "The application has been saved successfully.",
+      variant: "success",
+    });
+
+    router.push("/applications");
   }
 
   return (
     <form action={handleSubmit} className={styles.form}>
-      {error && <p>{error}</p>}
+      <Input
+        label="Company"
+        id="company"
+        name="company"
+        type="text"
+        error={fieldErrors.company}
+        required
+      />
 
-      <Input label="Company" id="company" name="company" type="text" required />
-
-      <Input label="Role" id="role" name="role" type="role" required />
+      <Input
+        label="Role"
+        id="role"
+        name="role"
+        type="role"
+        error={fieldErrors.role}
+        required
+      />
 
       <Input label="Source" id="source" name="source" type="text" />
 
@@ -75,6 +102,7 @@ export default function AddApplicationForm({ resumes }: Props) {
         id="dateApplied"
         name="dateApplied"
         type="date"
+        error={fieldErrors.dateApplied}
       />
 
       <div className={styles.importantDates}>
@@ -83,6 +111,7 @@ export default function AddApplicationForm({ resumes }: Props) {
           id="oaAssessmentDate"
           name="oaAssessmentDate"
           type="date"
+          error={fieldErrors.oaAssessmentDate}
         />
 
         <Input
@@ -90,6 +119,7 @@ export default function AddApplicationForm({ resumes }: Props) {
           id="interviewDate"
           name="interviewDate"
           type="date"
+          error={fieldErrors.interviewDate}
         />
 
         <Input
@@ -97,10 +127,16 @@ export default function AddApplicationForm({ resumes }: Props) {
           id="offerExpiryDate"
           name="offerExpiryDate"
           type="date"
+          error={fieldErrors.offerExpiryDate}
         />
       </div>
 
-      <Textarea label="Notes" id="notes" name="notes" />
+      <Textarea
+        label="Notes"
+        id="notes"
+        name="notes"
+        error={fieldErrors.notes}
+      />
 
       <div className={styles.createButton}>
         <SubmitButton />
