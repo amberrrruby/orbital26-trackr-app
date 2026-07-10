@@ -103,6 +103,60 @@ export async function getReminders(
   }
 }
 
+export async function getAllGroupReminders(
+  group: "today" | "upcoming" | "overdue" | "all" = "all",
+): Promise<Result<ReminderWithApplication[], GetRemindersError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  const now = new Date();
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(now);
+  endOfToday.setHours(23, 59, 59, 999);
+
+  const remindAtFilter =
+    group === "today"
+      ? { gte: startOfToday, lte: endOfToday }
+      : group === "overdue"
+        ? { lt: startOfToday }
+        : group === "upcoming"
+          ? { gt: endOfToday }
+          : undefined; // "all" — no filter
+
+  // Hide future system-generated follow-up reminders until they become due
+  // Custom follow-ups have no source key, so they remain visible in Upcoming
+  const upcomingVisibilityFilter =
+    group === "upcoming"
+      ? {
+          OR: [
+            {
+              type: "EVENT" as const,
+            },
+            {
+              type: "FOLLOW_UP" as const,
+              source: null,
+            },
+          ],
+        }
+      : {};
+
+  try {
+    const reminders = await prisma.reminder.findMany({
+      where: {
+        userId,
+        remindAt: remindAtFilter,
+        ...upcomingVisibilityFilter,
+      },
+      orderBy: { remindAt: group === "overdue" ? "desc" : "asc" },
+      include: { application: true },
+    });
+
+    return { ok: true, value: reminders };
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
+}
+
 export async function getRemindersByApplicationId(
   applicationId: string,
 ): Promise<Result<Reminder[], GetRemindersByApplicationIdError>> {
@@ -160,6 +214,7 @@ export async function getRemindersByApplicationId(
 export async function addReminder(
   formData: FormData,
 ): Promise<Result<string, AddReminderError>> {
+  console.log(formData);
   const userId = await requireUserOrRedirectLogin();
   const parseResult = ReminderSchema.safeParse({
     applicationId: formData.get("applicationId"),

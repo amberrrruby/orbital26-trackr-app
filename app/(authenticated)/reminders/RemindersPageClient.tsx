@@ -16,10 +16,7 @@ import styles from "./page.module.css";
 
 const PREVIEW_LIMIT = 5;
 
-type RemindersResult = Result<
-  { reminders: ReminderWithApplication[]; totalCount: number },
-  GetRemindersError
->;
+type RemindersResult = Result<ReminderWithApplication[], GetRemindersError>;
 
 type RemindersClientProps = {
   todayResult: RemindersResult;
@@ -54,14 +51,13 @@ export default function RemindersPageClient({
     );
   }
 
-  const { reminders: todayReminders, totalCount: todayTotal } =
-    todayResult.value;
-  const { reminders: upcomingReminders, totalCount: upcomingTotal } =
-    upcomingResult.value;
-  const { reminders: overdueReminders, totalCount: overdueTotal } =
-    overdueResult.value;
+  const todayReminders = todayResult.value;
+  const todayTotal = todayReminders.length;
+  const upcomingReminders = upcomingResult.value;
+  const upcomingTotal = upcomingReminders.length;
+  const overdueReminders = overdueResult.value;
+  const overdueTotal = overdueReminders.length;
   const applications = applicationsResult.value;
-
   const grandTotal = todayTotal + upcomingTotal + overdueTotal;
 
   return (
@@ -129,9 +125,11 @@ export default function RemindersPageClient({
           count={todayTotal}
           showAll={showAllToday}
           onToggleShowAll={() => setShowAllToday((v) => !v)}
-          hasMore={todayTotal > PREVIEW_LIMIT}
         >
-          {todayReminders.map((r) => (
+          {(showAllToday
+            ? todayReminders
+            : todayReminders.slice(0, PREVIEW_LIMIT)
+          ).map((r) => (
             <div
               key={r.id}
               onClick={() => setEditingReminder(r)}
@@ -148,9 +146,11 @@ export default function RemindersPageClient({
           count={upcomingTotal}
           showAll={showAllUpcoming}
           onToggleShowAll={() => setShowAllUpcoming((v) => !v)}
-          hasMore={upcomingTotal > PREVIEW_LIMIT}
         >
-          {upcomingReminders.map((r) => (
+          {(showAllUpcoming
+            ? upcomingReminders
+            : upcomingReminders.slice(0, PREVIEW_LIMIT)
+          ).map((r) => (
             <div
               key={r.id}
               onClick={() => setEditingReminder(r)}
@@ -167,10 +167,12 @@ export default function RemindersPageClient({
           count={overdueTotal}
           showAll={showAllOverdue}
           onToggleShowAll={() => setShowAllOverdue((v) => !v)}
-          hasMore={overdueTotal > PREVIEW_LIMIT}
           variant="overdue"
         >
-          {overdueReminders.map((r) => (
+          {(showAllOverdue
+            ? overdueReminders
+            : overdueReminders.slice(0, PREVIEW_LIMIT)
+          ).map((r) => (
             <div
               key={r.id}
               onClick={() => setEditingReminder(r)}
@@ -197,7 +199,6 @@ function Section({
   children,
   showAll,
   onToggleShowAll,
-  hasMore,
   variant = "default",
 }: {
   title: string;
@@ -205,7 +206,6 @@ function Section({
   children: React.ReactNode;
   showAll: boolean;
   onToggleShowAll: () => void;
-  hasMore: boolean;
   variant?: "default" | "overdue";
 }) {
   if (count === 0) return null;
@@ -215,14 +215,13 @@ function Section({
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle}>{title}</h2>
         <span className={styles.sectionCount}>{count}</span>
+        {count > PREVIEW_LIMIT && (
+          <button onClick={onToggleShowAll} className={styles.showAllButton}>
+            {showAll ? "Show less" : `View all ${title.toLowerCase()}`}
+          </button>
+        )}
       </div>
-
       <div className={styles.sectionList}>{children}</div>
-      {hasMore && (
-        <button onClick={onToggleShowAll} className={styles.showAllButton}>
-          {showAll ? "Show less" : `View all ${title.toLowerCase()}`}
-        </button>
-      )}
     </section>
   );
 }
