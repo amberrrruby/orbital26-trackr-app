@@ -9,6 +9,7 @@ import { ACCEPTED_MIME } from "@/lib/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { Input, Textarea } from "./Input";
 import { Button } from "./Button";
+import { useToast } from "./Toast";
 import styles from "./ResumeFormComponent.module.css";
 
 type Props = {
@@ -25,6 +26,7 @@ export default function ResumeFormComponent({
 }: Props) {
   const isEditing = !!resume;
   const router = useRouter();
+  const { toast } = useToast();
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -47,7 +49,11 @@ export default function ResumeFormComponent({
         .upload(path, pendingFile, { contentType: pendingFile.type });
 
       if (uploadError) {
-        setErrMsg("File upload failed. Please try again.");
+        toast({
+          title: "File upload failed",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
 
@@ -72,7 +78,11 @@ export default function ResumeFormComponent({
         ? await updateResume(resume.id, formData)
         : await createResume(formData);
       if (!res.ok) {
-        setErrMsg("Something went wrong. Please try again.");
+        toast({
+          title: "Could not update resume details",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
       router.push(

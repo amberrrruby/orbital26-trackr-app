@@ -6,6 +6,7 @@ import { Resume } from "@/lib/generated/client";
 import { Pencil } from "lucide-react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 import EditApplicationModal, {
   ImportantDateValues,
 } from "../EditApplicationModal";
@@ -47,10 +48,10 @@ export default function ApplicationDetailsEditButton({
         description="Update the details of your job application below."
       >
         {!resumesResult.ok ? (
-          <p>
-            [TEMP ERROR COMPONENT] Failed to load resumes. Please refresh the
-            page and try again.
-          </p>
+          <ErrorDisplay
+            title="Failed to load resumes"
+            message="Please refresh the page and try again."
+          />
         ) : (
           <EditApplicationModal
             application={application}

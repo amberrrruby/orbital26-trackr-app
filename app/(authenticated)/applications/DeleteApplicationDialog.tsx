@@ -5,6 +5,7 @@ import { deleteApplication } from "@/app/actions/applications";
 import { Application } from "@/lib/generated/browser";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
+import { useToast } from "@/app/components/Toast";
 
 type DeleteApplicationProps = {
   application: Application;
@@ -17,6 +18,7 @@ export default function DeleteApplicationDialog({
 }: DeleteApplicationProps) {
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
 
   async function handleDelete() {
     setError(null);
@@ -24,7 +26,12 @@ export default function DeleteApplicationDialog({
 
     const result = await deleteApplication(application.id);
     if (!result.ok) {
-      setError("Something went wrong. Try again.");
+      toast({
+        title: "Could not delete application",
+        description: "Something went wrong. Please try again.",
+        variant: "danger",
+      });
+
       setIsDeleting(false);
       return;
     }
@@ -68,7 +75,6 @@ export default function DeleteApplicationDialog({
         <strong>{application.role}</strong> at{" "}
         <strong>{application.company}</strong>?
       </p>
-      {error && <p>{error}</p>}
     </Modal>
   );
 }

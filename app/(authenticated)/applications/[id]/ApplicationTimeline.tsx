@@ -11,6 +11,7 @@ import {
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
 import { Pencil, Trash2 } from "lucide-react";
 import AddManualTimelineEventModal from "./AddManualTimelineEventModal";
 
@@ -18,6 +19,8 @@ type ApplicationTimelineProps = {
   applicationId: string;
   timelineEvents: TimelineEventWithApplication[];
 };
+
+type FieldErrors = Partial<Record<"eventDate" | "description", string>>;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-SG", {
@@ -37,10 +40,11 @@ export default function ApplicationTimeline({
 }: ApplicationTimelineProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const eventToDelete = timelineEvents.find(
     (event) => event.id === deleteEventId,
@@ -48,20 +52,28 @@ export default function ApplicationTimeline({
 
   function handleUpdate(formData: FormData) {
     formData.set("applicationId", applicationId);
-    setError(null);
+    setFieldErrors({});
 
     startTransition(async () => {
       const res = await updateManualTimelineEvent(formData);
       if (!res.ok) {
         if (res.error.type === "VALIDATION") {
-          setError(res.error.message);
-        } else {
-          setError(
-            "Something went wrong while updating this timeline event. Please try again.",
-          );
+          setFieldErrors({ [res.error.param]: res.error.message });
         }
+
+        toast({
+          title: "Could not update timeline event",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+
+      toast({
+        title: "Timeline event updated",
+        description: "Your changes have been saved successfully.",
+        variant: "success",
+      });
 
       setEditingEventId(null);
       router.refresh();
@@ -71,14 +83,14 @@ export default function ApplicationTimeline({
   function handleDelete() {
     if (!deleteEventId) return;
 
-    setError(null);
-
     startTransition(async () => {
       const res = await deleteTimelineEvent(deleteEventId);
       if (!res.ok) {
-        setError(
-          "Something went wrong while deleting this timeline event. Please try again.",
-        );
+        toast({
+          title: "Could not delete timeline event",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
 
@@ -101,8 +113,6 @@ export default function ApplicationTimeline({
           + Add manual timeline event
         </Button>
       </div>
-
-      {error && <p>{error}</p>}
 
       {timelineEvents.length === 0 ? (
         <p className={styles.empty}>No timeline events yet.</p>
@@ -127,6 +137,7 @@ export default function ApplicationTimeline({
                       name="eventDate"
                       type="date"
                       defaultValue={formatDateForInput(event.eventDate)}
+                      error={fieldErrors.eventDate}
                       required
                     />
                   </div>
@@ -140,6 +151,7 @@ export default function ApplicationTimeline({
                       id={`timeline-description-${event.id}`}
                       name="description"
                       defaultValue={event.description}
+                      error={fieldErrors.description}
                       required
                       rows={2}
                     />

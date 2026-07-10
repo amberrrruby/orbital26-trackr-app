@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/app/components/Modal";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
 import { ReminderWithApplication } from "@/lib/types";
 import styles from "./ReminderModal.module.css";
 
@@ -28,11 +29,11 @@ export default function ReminderModal({
   applications,
   reminder,
 }: ReminderModalProps) {
+  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [comboOpen, setComboOpen] = useState(false);
   const [comboQuery, setComboQuery] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [genericError, setGenericError] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<Application | null>(
     reminder?.application ?? null,
   );
@@ -61,7 +62,7 @@ export default function ReminderModal({
 
   function handleSubmit(formData: FormData) {
     setFieldErrors({});
-    setGenericError(null);
+
     const remindAt = formData.get("remindAt") as string;
 
     if (reminderType === "FOLLOW_UP") {
@@ -87,11 +88,27 @@ export default function ReminderModal({
       if (!res.ok) {
         if (res.error.type === "VALIDATION") {
           setFieldErrors({ [res.error.param]: res.error.message });
-        } else {
-          setGenericError("Something went wrong. Please try again.");
         }
+        toast({
+          title:
+            mode === "create"
+              ? "Could not add reminder"
+              : "Could not update reminder",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+
+      toast({
+        title: mode === "create" ? "Reminder created" : "Reminder updated",
+        description:
+          mode === "create"
+            ? "The reminder has been created successfully."
+            : "Your changes have been saved successfully.",
+        variant: "success",
+      });
+
       onOpenChange(false);
       router.refresh();
     });
@@ -103,8 +120,6 @@ export default function ReminderModal({
       onOpenChange={onOpenChange}
       title={mode === "create" ? "Add reminder" : "Edit reminder"}
     >
-      {genericError && <div className={styles.error}>{genericError}</div>}
-
       <form action={handleSubmit} className={styles.form}>
         {/* Application combobox */}
         <div className={styles.field}>
@@ -247,6 +262,7 @@ export default function ReminderModal({
                     required
                     aria-invalid={!!fieldErrors.remindAt}
                     className={styles.dateInput}
+                    error={fieldErrors.remindAt}
                     defaultValue={
                       reminder?.remindAt
                         ? new Date(reminder.remindAt)
@@ -270,6 +286,7 @@ export default function ReminderModal({
                   <Input
                     type="date"
                     name="remindAt"
+                    error={fieldErrors.remindAt}
                     required
                     className={styles.dateInput}
                     defaultValue={
@@ -298,10 +315,6 @@ export default function ReminderModal({
               </>
             )}
           </div>
-
-          {fieldErrors.remindAt && (
-            <p className={styles.fieldError}>{fieldErrors.remindAt}</p>
-          )}
         </div>
 
         {/* Content */}
@@ -314,11 +327,9 @@ export default function ReminderModal({
             placeholder="e.g. Prepare problems for interview"
             defaultValue={reminder?.content ?? ""}
             aria-invalid={!!fieldErrors.content}
+            error={fieldErrors.content}
             className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring aria-[invalid=true]:border-destructive"
           />
-          {fieldErrors.content && (
-            <p className={styles.fieldError}>{fieldErrors.content}</p>
-          )}
         </div>
 
         {/* Actions */}

@@ -3,6 +3,7 @@ import styles from "./Kanban.module.css";
 import KanbanBoard from "./KanbanBoard";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 
 export default async function KanbanPage() {
   const result = await getApplications();
@@ -10,8 +11,10 @@ export default async function KanbanPage() {
   if (!result.ok) {
     return (
       <main className={styles.page}>
-        <h1>Kanban</h1>
-        <p>Applications could not be loaded. Please try again.</p>
+        <ErrorDisplay
+          title="Could not load applications"
+          message="Something went wrong. Please refresh the page and try again."
+        />
       </main>
     );
   }

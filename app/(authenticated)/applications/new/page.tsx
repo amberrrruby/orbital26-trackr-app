@@ -1,9 +1,9 @@
 import Link from "next/link.js";
 import AddApplicationForm from "../AddApplicationForm";
-import { Button } from "@/app/components/Button";
 import styles from "./page.module.css";
 import { getResumes } from "@/app/actions/resume";
 import { Suspense } from "react";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 
 export default async function NewApplicationPage() {
   const res = await getResumes();
@@ -18,10 +18,10 @@ export default async function NewApplicationPage() {
       <div>
         <Suspense>
           {!res.ok ? (
-            <p>
-              [TEMP ERROR COMPONENT] Failed to load resumes. Please refresh the
-              page and try again.
-            </p>
+            <ErrorDisplay
+              title="Failed to load resumes"
+              message="Please refresh the page and try again."
+            />
           ) : (
             <AddApplicationForm resumes={res.value.resumes} />
           )}

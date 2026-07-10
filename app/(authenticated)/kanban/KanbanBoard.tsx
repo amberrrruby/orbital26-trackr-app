@@ -9,7 +9,6 @@ import { useToast } from "@/app/components/Toast";
 import { Input } from "@/app/components/Input";
 import { Search } from "lucide-react";
 import styles from "./Kanban.module.css";
-import { Application } from "@/lib/generated/client";
 
 const KANBAN_COLUMNS = [
   {

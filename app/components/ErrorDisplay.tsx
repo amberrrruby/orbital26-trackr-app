@@ -1,11 +1,10 @@
 import { AlertTriangle } from "lucide-react";
 import styles from "./ErrorDisplay.module.css";
-import { StringFilter } from "@/lib/generated/commonInputTypes";
 
 type Props = {
   title?: string;
   message?: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 export default function ErrorDisplay({
