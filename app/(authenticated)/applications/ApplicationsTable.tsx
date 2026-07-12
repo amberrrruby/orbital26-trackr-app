@@ -20,7 +20,12 @@ import {
   type ColumnFiltersState,
   type PaginationState,
 } from "@tanstack/react-table";
-import { ApplicationWithDetails, GetResumesError, Result } from "@/lib/types";
+import {
+  ApplicationWithDetails,
+  GetResumesError,
+  Result,
+  SOURCE_OPTIONS,
+} from "@/lib/types";
 import { Resume } from "@/lib/generated/client";
 import { getImportantDateValues } from "./importantDatesUtils";
 import { Eye, Pencil, Trash2, Search } from "lucide-react";
@@ -74,6 +79,8 @@ export default function ApplicationsTable({
     {
       accessorKey: "source",
       header: "Source",
+      cell: ({ row }) =>
+        SOURCE_OPTIONS[row.original.source] ?? row.original.source,
     },
     {
       accessorKey: "status",

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -62,6 +62,11 @@ function makeFormData(fields: Record<string, string>): FormData {
   Object.entries(fields).forEach(([k, v]) => fd.append(k, v));
   return fd;
 }
+
+afterEach(async () => {
+  await prisma.reminder.deleteMany({ where: { userId: TEST_USER_ID } });
+  await prisma.reminder.deleteMany({ where: { userId: OTHER_USER_ID } });
+});
 
 // --- Tests ---
 
