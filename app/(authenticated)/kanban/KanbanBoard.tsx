@@ -178,7 +178,9 @@ export default function KanbanBoard({ initialApplications }: KanbanBoardProps) {
 
       <DragDropProvider onDragEnd={handleDragEnd}>
         <section
-          className={styles.board}
+          className={`${styles.board} ${
+            visibleColumns.length === 6 ? styles.boardCompact : ""
+          }`}
           style={
             {
               "--column-count": visibleColumns.length,
