@@ -22,7 +22,7 @@ export default function InsightsCard({
       </div>
       <div className={styles.content}>
         <p className={styles.label}>{title}</p>
-        <p className={styles.value}>{middle ?? "—"}</p>
+        <p className={styles.value}>{middle ?? "-"}</p>
         {bottom && <p className={styles.subMetric}>{bottom}</p>}
       </div>
     </div>

@@ -85,10 +85,6 @@ describe("getDashboardData", () => {
       const seeded = await prisma.reminder.findMany({
         where: { userId: TEST_USER_ID },
       });
-      console.log(
-        "seeded reminders:",
-        seeded.map((r) => r.remindAt.toISOString()),
-      );
 
       const { reminders } = await getDashboardData(TEST_USER_ID);
 

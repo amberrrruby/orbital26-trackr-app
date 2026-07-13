@@ -11,7 +11,7 @@ import DonutChartComponent from "@/app/components/dashboard/DonutChartComponent"
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function SummaryCard({
+export function SummaryCard({
   title,
   value,
   subtitle,
@@ -29,7 +29,7 @@ function SummaryCard({
   );
 }
 
-function ReminderRow({ item }: { item: Reminder }) {
+export function ReminderRow({ item }: { item: Reminder }) {
   return (
     <div className={styles.reminderRow}>
       <span className={styles.reminderTitle}>{item.content}</span>

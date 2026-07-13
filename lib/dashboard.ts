@@ -51,11 +51,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     return d;
   });
 
-  console.log(
-    "targetDates:",
-    targetDates.map((d) => d.toISOString()),
-  );
-
   const remindersQuery = await prisma.reminder.findMany({
     where: {
       userId,
@@ -65,10 +60,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       ],
     },
   });
-  console.log(
-    "remindersQuery:",
-    remindersQuery.map((r) => r.remindAt.toISOString()),
-  );
 
   const startOfTodayUTC = new Date(today);
   const endOfTodayUTC = new Date(today);
