@@ -20,7 +20,6 @@ export default function ReminderCard({
   variant = "default",
 }: ReminderCardProps) {
   const { toast } = useToast();
-  const [error, setError] = useState<string | null>(null);
   const [isDismissing, setIsDismissing] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const router = useRouter();
@@ -37,7 +36,6 @@ export default function ReminderCard({
 
   async function handleDismiss(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    setError(null);
     setIsDismissing(true);
 
     const result = await deleteReminder(reminder.id);
@@ -48,13 +46,14 @@ export default function ReminderCard({
         description: "Something went wrong. Please try again.",
         variant: "danger",
       });
+      return;
     }
+
     router.refresh();
   }
 
   async function handleComplete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    setError(null);
     setIsCompleting(true);
 
     const result = await completeReminder(reminder.id);
@@ -65,7 +64,9 @@ export default function ReminderCard({
         description: "Something went wrong. Please try again.",
         variant: "danger",
       });
+      return;
     }
+
     router.refresh();
   }
 

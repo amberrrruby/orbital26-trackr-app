@@ -7,7 +7,6 @@ import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
 import { useToast } from "@/app/components/Toast";
 import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 import { Resume } from "@/lib/generated/client";
 import ResumeSelector from "./ResumeSelector";
 import { useFormStatus } from "react-dom";

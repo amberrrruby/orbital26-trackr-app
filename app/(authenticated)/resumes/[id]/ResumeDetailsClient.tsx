@@ -35,7 +35,6 @@ export default function ResumeDetailsClient({
   recentApplicationsResult,
 }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteErrMsg, setDeleteErrMsg] = useState<string | null>(null);
   const [isDeleting, startDeleteTransition] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
@@ -81,8 +80,6 @@ export default function ResumeDetailsClient({
           </Button>
         </div>
       </div>
-
-      {deleteErrMsg && <p className={styles.errorMessage}>{deleteErrMsg}</p>}
 
       <Modal
         open={showDeleteModal}

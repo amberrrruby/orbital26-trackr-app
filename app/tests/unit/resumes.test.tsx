@@ -8,6 +8,7 @@ import ResumeDetailsClient from "@/app/(authenticated)/resumes/[id]/ResumeDetail
 import { useRouter } from "next/navigation";
 import type { AggregateStats } from "@/lib/types";
 import ResumeFormComponent from "@/app/components/ResumeFormComponent";
+import { ToastProvider } from "@/app/components/Toast";
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -117,6 +118,10 @@ function makeStats(overrides: Partial<AggregateStats> = {}): AggregateStats {
     TOTAL: 10,
     ...overrides,
   };
+}
+
+function renderWithToast(ui: React.ReactElement) {
+  return render(<ToastProvider>{ui}</ToastProvider>);
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -272,7 +277,7 @@ describe("ResumeDetailsClient", () => {
 
   describe("recent applications", () => {
     it("shows empty message when no applications are linked", () => {
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           recentApplicationsResult={{ ok: true, value: [] }}
@@ -285,7 +290,7 @@ describe("ResumeDetailsClient", () => {
 
     it("renders each application's company and role", () => {
       const apps = makeApplications(2);
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           recentApplicationsResult={{ ok: true, value: apps }}
@@ -301,7 +306,7 @@ describe("ResumeDetailsClient", () => {
 
     it("renders the status chip for each application", () => {
       const apps = makeApplications(2);
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           recentApplicationsResult={{ ok: true, value: apps }}
@@ -311,7 +316,7 @@ describe("ResumeDetailsClient", () => {
     });
 
     it("shows error message when applications fail to load", () => {
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           recentApplicationsResult={{ ok: false, error: { type: "FAILURE" } }}
@@ -327,7 +332,7 @@ describe("ResumeDetailsClient", () => {
 
   describe("stats", () => {
     it("shows empty message when TOTAL is 0", () => {
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           statsResult={{
@@ -351,7 +356,7 @@ describe("ResumeDetailsClient", () => {
     });
 
     it("renders APPLIED, INTERVIEW, OFFER counts", () => {
-      render(<ResumeDetailsClient {...defaultProps} />);
+      renderWithToast(<ResumeDetailsClient {...defaultProps} />);
       expect(screen.getByText("7")).toBeInTheDocument(); // APPLIED
       expect(screen.getByText("2")).toBeInTheDocument(); // INTERVIEW
       expect(screen.getByText("1")).toBeInTheDocument(); // OFFER
@@ -359,12 +364,12 @@ describe("ResumeDetailsClient", () => {
 
     it("renders the correct success percentage", () => {
       // (1 / 10) * 100 = 10.0%
-      render(<ResumeDetailsClient {...defaultProps} />);
+      renderWithToast(<ResumeDetailsClient {...defaultProps} />);
       expect(screen.getByText("10.0%")).toBeInTheDocument();
     });
 
     it("shows error message when stats fail to load", () => {
-      render(
+      renderWithToast(
         <ResumeDetailsClient
           {...defaultProps}
           statsResult={{ ok: false, error: { type: "FAILURE" } }}
@@ -378,7 +383,7 @@ describe("ResumeDetailsClient", () => {
 
   describe("signed URL", () => {
     it("renders a hyperlink to the signed URL", () => {
-      render(<ResumeDetailsClient {...defaultProps} />);
+      renderWithToast(<ResumeDetailsClient {...defaultProps} />);
       const link = screen.getByRole("link", {
         name: /software engineer resume/i,
       });
@@ -390,7 +395,9 @@ describe("ResumeDetailsClient", () => {
     });
 
     it("shows fallback message when signed URL is undefined", () => {
-      render(<ResumeDetailsClient {...defaultProps} signedUrl={undefined} />);
+      renderWithToast(
+        <ResumeDetailsClient {...defaultProps} signedUrl={undefined} />,
+      );
       expect(
         screen.getByText(
           "Failed to generate signed URL. Please refresh and try again.",
@@ -406,7 +413,7 @@ describe("ResumeDetailsClient", () => {
 
 describe("`/resumes/new` form", () => {
   it("shows an error when submitting without selecting a file", async () => {
-    render(<ResumeFormComponent userId="user-1" />);
+    renderWithToast(<ResumeFormComponent userId="user-1" />);
 
     fireEvent.change(screen.getByLabelText(/title/i), {
       target: { value: "My Resume" },
@@ -439,7 +446,7 @@ describe("`resumes/[id]/edit form", () => {
       notes: "For infra roles",
     });
 
-    render(
+    renderWithToast(
       <ResumeFormComponent
         userId="user-1"
         resume={resume}
@@ -455,7 +462,7 @@ describe("`resumes/[id]/edit form", () => {
   });
 
   it("shows a link to the current uploaded file", () => {
-    render(
+    renderWithToast(
       <ResumeFormComponent
         userId="user-1"
         resume={makeResume()}
@@ -471,7 +478,7 @@ describe("`resumes/[id]/edit form", () => {
   });
 
   it("returns to the resume details page when Cancel is clicked", () => {
-    render(
+    renderWithToast(
       <ResumeFormComponent
         userId="user-1"
         resume={makeResume()}
@@ -485,7 +492,7 @@ describe("`resumes/[id]/edit form", () => {
   });
 
   it("shows the Save Changes button in edit mode", () => {
-    render(
+    renderWithToast(
       <ResumeFormComponent
         userId="user-1"
         resume={makeResume()}

@@ -16,12 +16,10 @@ export default function DeleteApplicationDialog({
   application,
   onClose,
 }: DeleteApplicationProps) {
-  const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   async function handleDelete() {
-    setError(null);
     setIsDeleting(true);
 
     const result = await deleteApplication(application.id);
