@@ -50,9 +50,9 @@
 }
 
 .logoText {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: var(--weight-semi);
-  letter-spacing: -0.02em;
+  font-family: var(--font-brand);
   color: var(--color-text-primary);
   white-space: nowrap;
 }

@@ -46,6 +46,8 @@
 
 .brandText strong {
   font-size: var(--text-lg);
+  font-family: var(--font-brand);
+  font-weight: var(--weight-bold);
 }
 
 .brandText small {
