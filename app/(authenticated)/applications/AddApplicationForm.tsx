@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Resume } from "@/lib/generated/client";
 import ResumeSelector from "./ResumeSelector";
 import { useFormStatus } from "react-dom";
+import { SOURCE_OPTIONS } from "@/lib/types";
 
 const statusOptions = [
   { label: "Wishlist", value: "WISHLIST" },
@@ -81,7 +82,20 @@ export default function AddApplicationForm({ resumes }: Props) {
         required
       />
 
-      <Input label="Source" id="source" name="source" type="text" />
+      <label htmlFor="source" className={styles.label}>
+        Source
+      </label>
+      {/* There's a weird gap here, I don't know why. I just placed a label here... */}
+      <select id="source" name="source" defaultValue="">
+        <option value="" disabled>
+          Select a source
+        </option>
+        {Object.entries(SOURCE_OPTIONS).map(([key, label]) => (
+          <option key={key} value={key}>
+            {label}
+          </option>
+        ))}
+      </select>
 
       <div className={styles.field}>
         <label htmlFor="status">Status</label>

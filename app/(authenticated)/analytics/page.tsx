@@ -1,0 +1,47 @@
+import { requireUserOrRedirectLogin } from "@/lib/auth";
+import { getAnalyticsData } from "@/lib/analytics";
+
+import InsightsRow from "@/app/components/analytics/InsightsRow";
+import FunnelSection from "@/app/components/analytics/FunnelSection";
+import ApplicationTrendChart from "@/app/components/analytics/ApplicationTrendChart";
+import SourceBreakdownChart from "@/app/components/analytics/SourceBreakdownChart";
+import ResumeResponseRateChart from "@/app/components/analytics/ResumeResponseRateChart";
+
+// Data is per-user and changes often — do not statically cache this route.
+export const dynamic = "force-dynamic";
+
+export default async function AnalyticsPage() {
+  const userId = await requireUserOrRedirectLogin();
+
+  const analytics = await getAnalyticsData(userId);
+
+  // return <pre>{JSON.stringify(analytics, null, 2)}</pre>;
+  return (
+    <div>
+      <div>
+        <h1>Analytics</h1>
+        <InsightsRow data={analytics} />
+        <FunnelSection
+          funnelMetrics={analytics.funnelMetrics}
+          conversionMetrics={analytics.conversionMetrics}
+        />
+      </div>
+
+      <div>
+        <div>
+          <h2>Application Trend</h2>
+          <ApplicationTrendChart data={analytics.trend} />
+        </div>
+
+        <div>
+          <h2>Source Breakdown</h2>
+          <SourceBreakdownChart data={analytics.sourceBreakdown} />
+        </div>
+      </div>
+      <div>
+        <h2>Resume Response Rate</h2>
+        <ResumeResponseRateChart data={analytics.resumeResponseRate} />
+      </div>
+    </div>
+  );
+}

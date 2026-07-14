@@ -1034,6 +1034,22 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<
 >;
 
 /**
+ * Reference to a field of type 'Source'
+ */
+export type EnumSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Source"
+>;
+
+/**
+ * Reference to a field of type 'Source[]'
+ */
+export type ListEnumSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Source[]"
+>;
+
+/**
  * Reference to a field of type 'Status'
  */
 export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<

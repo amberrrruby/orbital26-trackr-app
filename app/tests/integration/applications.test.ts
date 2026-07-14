@@ -40,7 +40,7 @@ function makeFormData(fields: Record<string, string>): FormData {
 const validApplicationFields = {
   company: "Acme",
   role: "Engineer",
-  source: "LinkedIn",
+  source: "JOB_SEARCH_PLATFORM",
   status: Status.APPLIED,
   notes: "",
 };
@@ -93,7 +93,7 @@ describe("Applications", () => {
       await prisma.application.create({
         data: {
           ...validApplicationFields,
-          source: "",
+          source: "JOB_SEARCH_PLATFORM",
           notes: null,
           userId: OTHER_USER_ID,
         },

@@ -38,17 +38,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LuLayoutGrid /> },
   { label: "Table", href: "/applications", icon: <LuTable2 /> },
   { label: "Kanban", href: "/kanban", icon: <LuSquareKanban /> },
-  {
-    label: "Analytics",
-    href: "/analytics",
-    icon: <LuChartNoAxesCombined />,
-    disabled: true,
-  },
-  {
-    label: "Reminders",
-    href: "/reminders",
-    icon: <LuBell />,
-  },
+  { label: "Analytics", href: "/analytics", icon: <LuChartNoAxesCombined /> },
+  { label: "Reminders", href: "/reminders", icon: <LuBell /> },
   { label: "Resumes", href: "/resumes", icon: <LuFileText /> },
 ];
 

@@ -13,7 +13,7 @@ model User {
   email     String   @unique
   name      String?
   createdAt DateTime @default(now())
-  settings  Json?
+  settings Json? @default("{\"eventReminderDays\":[3,1],\"appliedFollowUpDays\":7,\"assessmentFollowUpDays\":7,\"interviewFollowUpDays\":7}")
 
   // 1:1 LINKS
 
@@ -33,12 +33,24 @@ enum Status {
   REJECTED
 }
 
+enum Source {
+  COMPANY_WEBSITE
+  JOB_SEARCH_PLATFORM
+  REFERRAL
+  SCHOOL_PORTAL
+  CAREER_FAIR
+  COMMUNITY_SOCIAL_MEDIA
+  NETWORKING
+  RECRUITER_OUTREACH
+  OTHER
+}
+
 model Application {
   // FIELDS
   id             String    @id @default(cuid())
   company        String
   role           String
-  source         String?
+  source         Source
   status         Status    @default(APPLIED)
   interviewRound Int?
   dateApplied    DateTime?

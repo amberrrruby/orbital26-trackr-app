@@ -38,7 +38,7 @@ export type ApplicationMinAggregateOutputType = {
   id: string | null;
   company: string | null;
   role: string | null;
-  source: string | null;
+  source: $Enums.Source | null;
   status: $Enums.Status | null;
   interviewRound: number | null;
   dateApplied: Date | null;
@@ -53,7 +53,7 @@ export type ApplicationMaxAggregateOutputType = {
   id: string | null;
   company: string | null;
   role: string | null;
-  source: string | null;
+  source: $Enums.Source | null;
   status: $Enums.Status | null;
   interviewRound: number | null;
   dateApplied: Date | null;
@@ -233,7 +233,7 @@ export type ApplicationGroupByOutputType = {
   id: string;
   company: string;
   role: string;
-  source: string | null;
+  source: $Enums.Source;
   status: $Enums.Status;
   interviewRound: number | null;
   dateApplied: Date | null;
@@ -270,7 +270,7 @@ export type ApplicationWhereInput = {
   id?: Prisma.StringFilter<"Application"> | string;
   company?: Prisma.StringFilter<"Application"> | string;
   role?: Prisma.StringFilter<"Application"> | string;
-  source?: Prisma.StringNullableFilter<"Application"> | string | null;
+  source?: Prisma.EnumSourceFilter<"Application"> | $Enums.Source;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
   interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
   dateApplied?:
@@ -297,7 +297,7 @@ export type ApplicationOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   company?: Prisma.SortOrder;
   role?: Prisma.SortOrder;
-  source?: Prisma.SortOrderInput | Prisma.SortOrder;
+  source?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
   interviewRound?: Prisma.SortOrderInput | Prisma.SortOrder;
   dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -321,7 +321,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.ApplicationWhereInput | Prisma.ApplicationWhereInput[];
     company?: Prisma.StringFilter<"Application"> | string;
     role?: Prisma.StringFilter<"Application"> | string;
-    source?: Prisma.StringNullableFilter<"Application"> | string | null;
+    source?: Prisma.EnumSourceFilter<"Application"> | $Enums.Source;
     status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
     interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
     dateApplied?:
@@ -350,7 +350,7 @@ export type ApplicationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   company?: Prisma.SortOrder;
   role?: Prisma.SortOrder;
-  source?: Prisma.SortOrderInput | Prisma.SortOrder;
+  source?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
   interviewRound?: Prisma.SortOrderInput | Prisma.SortOrder;
   dateApplied?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -378,10 +378,7 @@ export type ApplicationScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Application"> | string;
   company?: Prisma.StringWithAggregatesFilter<"Application"> | string;
   role?: Prisma.StringWithAggregatesFilter<"Application"> | string;
-  source?:
-    | Prisma.StringNullableWithAggregatesFilter<"Application">
-    | string
-    | null;
+  source?: Prisma.EnumSourceWithAggregatesFilter<"Application"> | $Enums.Source;
   status?: Prisma.EnumStatusWithAggregatesFilter<"Application"> | $Enums.Status;
   interviewRound?:
     | Prisma.IntNullableWithAggregatesFilter<"Application">
@@ -416,7 +413,7 @@ export type ApplicationCreateInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -434,7 +431,7 @@ export type ApplicationUncheckedCreateInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -452,7 +449,7 @@ export type ApplicationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -474,7 +471,7 @@ export type ApplicationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -496,7 +493,7 @@ export type ApplicationCreateManyInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -512,7 +509,7 @@ export type ApplicationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -530,7 +527,7 @@ export type ApplicationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -742,6 +739,10 @@ export type ApplicationCreatetagsInput = {
   set: string[];
 };
 
+export type EnumSourceFieldUpdateOperationsInput = {
+  set?: $Enums.Source;
+};
+
 export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status;
 };
@@ -931,7 +932,7 @@ export type ApplicationCreateWithoutUserInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -948,7 +949,7 @@ export type ApplicationUncheckedCreateWithoutUserInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1015,7 +1016,7 @@ export type ApplicationScalarWhereInput = {
   id?: Prisma.StringFilter<"Application"> | string;
   company?: Prisma.StringFilter<"Application"> | string;
   role?: Prisma.StringFilter<"Application"> | string;
-  source?: Prisma.StringNullableFilter<"Application"> | string | null;
+  source?: Prisma.EnumSourceFilter<"Application"> | $Enums.Source;
   status?: Prisma.EnumStatusFilter<"Application"> | $Enums.Status;
   interviewRound?: Prisma.IntNullableFilter<"Application"> | number | null;
   dateApplied?:
@@ -1035,7 +1036,7 @@ export type ApplicationCreateWithoutResumeInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1052,7 +1053,7 @@ export type ApplicationUncheckedCreateWithoutResumeInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1112,7 +1113,7 @@ export type ApplicationCreateWithoutRemindersInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1129,7 +1130,7 @@ export type ApplicationUncheckedCreateWithoutRemindersInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1174,7 +1175,7 @@ export type ApplicationUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1195,7 +1196,7 @@ export type ApplicationUncheckedUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1216,7 +1217,7 @@ export type ApplicationCreateWithoutTimelineEventsInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1233,7 +1234,7 @@ export type ApplicationUncheckedCreateWithoutTimelineEventsInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1278,7 +1279,7 @@ export type ApplicationUpdateWithoutTimelineEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1299,7 +1300,7 @@ export type ApplicationUncheckedUpdateWithoutTimelineEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1320,7 +1321,7 @@ export type ApplicationCreateManyUserInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1335,7 +1336,7 @@ export type ApplicationUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1356,7 +1357,7 @@ export type ApplicationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1377,7 +1378,7 @@ export type ApplicationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1396,7 +1397,7 @@ export type ApplicationCreateManyResumeInput = {
   id?: string;
   company: string;
   role: string;
-  source?: string | null;
+  source: $Enums.Source;
   status?: $Enums.Status;
   interviewRound?: number | null;
   dateApplied?: Date | string | null;
@@ -1411,7 +1412,7 @@ export type ApplicationUpdateWithoutResumeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1432,7 +1433,7 @@ export type ApplicationUncheckedUpdateWithoutResumeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1453,7 +1454,7 @@ export type ApplicationUncheckedUpdateManyWithoutResumeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company?: Prisma.StringFieldUpdateOperationsInput | string;
   role?: Prisma.StringFieldUpdateOperationsInput | string;
-  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source;
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status;
   interviewRound?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   dateApplied?:
@@ -1669,7 +1670,7 @@ export type $ApplicationPayload<
       id: string;
       company: string;
       role: string;
-      source: string | null;
+      source: $Enums.Source;
       status: $Enums.Status;
       interviewRound: number | null;
       dateApplied: Date | null;
@@ -2326,7 +2327,7 @@ export interface ApplicationFieldRefs {
   readonly id: Prisma.FieldRef<"Application", "String">;
   readonly company: Prisma.FieldRef<"Application", "String">;
   readonly role: Prisma.FieldRef<"Application", "String">;
-  readonly source: Prisma.FieldRef<"Application", "String">;
+  readonly source: Prisma.FieldRef<"Application", "Source">;
   readonly status: Prisma.FieldRef<"Application", "Status">;
   readonly interviewRound: Prisma.FieldRef<"Application", "Int">;
   readonly dateApplied: Prisma.FieldRef<"Application", "DateTime">;

@@ -70,7 +70,7 @@ export async function createApplication(
       data: {
         company,
         role,
-        source: source ?? "",
+        source,
         status,
         ...(dateApplied ? { dateApplied } : {}),
         ...(resumeId ? { resumeId } : {}),
@@ -257,7 +257,7 @@ export async function updateApplication(
       data: {
         company,
         role,
-        source: source ?? "",
+        source,
         status,
         ...(dateApplied ? { dateApplied } : {}),
         ...(resumeId ? { resumeId } : {}),
