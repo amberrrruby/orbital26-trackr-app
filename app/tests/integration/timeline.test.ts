@@ -1,4 +1,12 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeAll,
+  beforeEach,
+  afterEach,
+} from "vitest";
 import {
   addManualTimelineEvent,
   createOrUpdateImportantDateTimelineEvent,
@@ -41,6 +49,7 @@ async function seedApplication(userId: string) {
       company: "Acme Corp",
       role: "Software Engineer",
       status: "APPLIED",
+      source: "JOB_SEARCH_PLATFORM",
     },
   });
 }
@@ -75,6 +84,12 @@ function daysFromToday(offset: number): Date {
   d.setDate(d.getDate() + offset);
   return d;
 }
+
+afterEach(async () => {
+  await prisma.timelineEvent.deleteMany({ where: { userId: OTHER_USER_ID } });
+  await prisma.application.deleteMany({ where: { userId: OTHER_USER_ID } });
+  await prisma.reminder.deleteMany({ where: { userId: TEST_USER_ID } });
+});
 
 describe("Timeline Events", () => {
   describe("getTimelineEvents", () => {

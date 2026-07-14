@@ -19,6 +19,20 @@ export const Status = {
 
 export type Status = (typeof Status)[keyof typeof Status];
 
+export const Source = {
+  COMPANY_WEBSITE: "COMPANY_WEBSITE",
+  JOB_SEARCH_PLATFORM: "JOB_SEARCH_PLATFORM",
+  REFERRAL: "REFERRAL",
+  SCHOOL_PORTAL: "SCHOOL_PORTAL",
+  CAREER_FAIR: "CAREER_FAIR",
+  COMMUNITY_SOCIAL_MEDIA: "COMMUNITY_SOCIAL_MEDIA",
+  NETWORKING: "NETWORKING",
+  RECRUITER_OUTREACH: "RECRUITER_OUTREACH",
+  OTHER: "OTHER",
+} as const;
+
+export type Source = (typeof Source)[keyof typeof Source];
+
 export const ReminderType = {
   EVENT: "EVENT",
   FOLLOW_UP: "FOLLOW_UP",

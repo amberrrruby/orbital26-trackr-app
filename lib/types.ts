@@ -1,5 +1,5 @@
 import z, { ZodError } from "zod";
-import { Prisma } from "@/lib/generated/client";
+import { Prisma, Source } from "@/lib/generated/client";
 
 export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
@@ -15,6 +15,30 @@ export type ActionValidationError = {
   type: "VALIDATION";
   param: string;
   message: string;
+};
+
+export enum SOURCE_OPTIONS_KEYS {
+  COMPANY_WEBSITE = "COMPANY_WEBSITE",
+  JOB_SEARCH_PLATFORM = "JOB_SEARCH_PLATFORM",
+  REFERRAL = "REFERRAL",
+  SCHOOL_PORTAL = "SCHOOL_PORTAL",
+  CAREER_FAIR = "CAREER_FAIR",
+  COMMUNITY_SOCIAL_MEDIA = "COMMUNITY_SOCIAL_MEDIA",
+  NETWORKING = "NETWORKING",
+  RECRUITER_OUTREACH = "RECRUITER_OUTREACH",
+  OTHER = "OTHER",
+}
+
+export const SOURCE_OPTIONS: Record<Source, string> = {
+  COMPANY_WEBSITE: "Company Website",
+  JOB_SEARCH_PLATFORM: "Job Search Platform",
+  REFERRAL: "Referral",
+  SCHOOL_PORTAL: "School Portal",
+  CAREER_FAIR: "Career Fair",
+  COMMUNITY_SOCIAL_MEDIA: "Community / Social Media",
+  NETWORKING: "Networking",
+  RECRUITER_OUTREACH: "Recruiter Outreach",
+  OTHER: "Other",
 };
 
 // FileUpload component constants
@@ -59,10 +83,19 @@ export enum Status {
   REJECTED = "REJECTED",
 }
 
+export const STATUS_LABELS: Record<string, Status> = {
+  WISHLIST: Status.WISHLIST,
+  APPLIED: Status.APPLIED,
+  OA_ASSESSMENT: Status.OA_ASSESSMENT,
+  INTERVIEW: Status.INTERVIEW,
+  OFFER: Status.OFFER,
+  REJECTED: Status.REJECTED,
+};
+
 export const ApplicationSchema = z.object({
   company: z.string().min(1, "Company field is required"),
   role: z.string().min(1, "Role field is required"),
-  source: z.string().default(""),
+  source: z.enum(SOURCE_OPTIONS_KEYS, { error: "Invalid source selected" }),
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
   resumeId: z.cuid2().optional(),
@@ -221,13 +254,13 @@ export type ReminderWithApplication = Prisma.ReminderGetPayload<{
 export type Reminder = Prisma.ReminderGetPayload<Prisma.ReminderDefaultArgs>;
 
 // Actions: Timeline
-const TIMELINE_EVENT_TYPE = [
-  "APPLICATION_CREATED",
-  "STATUS_CHANGED",
-  "IMPORTANT_DATE",
-  "REMINDER_COMPLETED",
-  "MANUAL",
-] as const;
+// const TIMELINE_EVENT_TYPE = [
+//   "APPLICATION_CREATED",
+//   "STATUS_CHANGED",
+//   "IMPORTANT_DATE",
+//   "REMINDER_COMPLETED",
+//   "MANUAL",
+// ] as const;
 
 export type GetTimelineEventsError = ActionValidationError | ActionFailureError;
 

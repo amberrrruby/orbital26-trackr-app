@@ -12,6 +12,7 @@ import ApplicationTimeline from "./ApplicationTimeline";
 import ApplicationReminders from "./ApplicationReminders";
 import ApplicationDetailsEditButton from "./ApplicationDetailsEditButton";
 import styles from "./page.module.css";
+import { SOURCE_OPTIONS } from "@/lib/types";
 
 type ApplicationDetailsPageProps = {
   params: Promise<{
@@ -28,7 +29,7 @@ export default async function ApplicationDetailsPage({
   if (!result.ok) {
     return (
       <main className={styles.page}>
-        <Link href="/applications">← Back to Applications</Link>
+        <Link href="/applications">Back to Applications</Link>
 
         <h1>Application Details</h1>
         <p>Something went wrong while loading this application.</p>
@@ -95,7 +96,7 @@ export default async function ApplicationDetailsPage({
               <div className={styles.detailsRow}>
                 <span className={styles.detailLabel}>Source: </span>
                 <span className={styles.detailValue}>
-                  {application.source || "Not provided"}
+                  {SOURCE_OPTIONS[application.source]}
                 </span>
               </div>
 

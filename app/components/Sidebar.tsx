@@ -43,12 +43,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: <LuSquareKanban />,
     disabled: true,
   },
-  {
-    label: "Analytics",
-    href: "/analytics",
-    icon: <LuChartNoAxesCombined />,
-    disabled: true,
-  },
+  { label: "Analytics", href: "/analytics", icon: <LuChartNoAxesCombined /> },
   {
     label: "Reminders",
     href: "/reminders",
