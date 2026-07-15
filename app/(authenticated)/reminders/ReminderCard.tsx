@@ -6,18 +6,16 @@ import { deleteReminder, completeReminder } from "@/app/actions/reminders";
 import { useRouter } from "next/navigation";
 import { ReminderWithApplication } from "@/lib/types";
 import Link from "next/link";
+import { Check, X } from "lucide-react";
 import { Button } from "@/app/components/Button";
 import styles from "./ReminderCard.module.css";
 
 interface ReminderCardProps {
   reminder: ReminderWithApplication;
-  variant?: "default" | "overdue";
+  variant?: "today" | "upcoming" | "overdue";
 }
 
-export default function ReminderCard({
-  reminder,
-  variant = "default",
-}: ReminderCardProps) {
+export default function ReminderCard({ reminder, variant }: ReminderCardProps) {
   const [error, setError] = useState<string | null>(null);
   const [isDismissing, setIsDismissing] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -101,7 +99,14 @@ export default function ReminderCard({
             variant="ghost"
             size="sm"
           >
-            {isCompleting ? "Completing..." : "Mark as Completed"}
+            {isCompleting ? (
+              "Completing..."
+            ) : (
+              <span className={styles.actionContent}>
+                <Check size={15} aria-hidden="true" />
+                <span>Mark as Completed</span>
+              </span>
+            )}
           </Button>
 
           <Button
@@ -111,11 +116,17 @@ export default function ReminderCard({
             variant="ghost"
             size="sm"
           >
-            {isDismissing ? "Deleting..." : "Dismiss"}
+            {isDismissing ? (
+              "Deleting..."
+            ) : (
+              <span className={styles.actionContent}>
+                <X size={15} aria-hidden="true" />
+                <span>Dismiss</span>
+              </span>
+            )}
           </Button>
         </div>
       </div>
-
       {error && <p className={styles.error}>{error}</p>}
     </div>
   );

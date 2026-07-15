@@ -135,7 +135,7 @@ export default function RemindersPageClient({
               onClick={() => setEditingReminder(r)}
               className={styles.reminderItem}
             >
-              <ReminderCard key={r.id} reminder={r} />
+              <ReminderCard key={r.id} reminder={r} variant="today" />
             </div>
           ))}
         </Section>
@@ -156,7 +156,7 @@ export default function RemindersPageClient({
               onClick={() => setEditingReminder(r)}
               className={styles.reminderItem}
             >
-              <ReminderCard key={r.id} reminder={r} />
+              <ReminderCard key={r.id} reminder={r} variant="upcoming" />
             </div>
           ))}
         </Section>
