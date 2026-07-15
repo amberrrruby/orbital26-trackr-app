@@ -10,7 +10,7 @@ import {
 import {
   addManualTimelineEvent,
   createOrUpdateImportantDateTimelineEvent,
-  deleteManualTimelineEvent,
+  deleteTimelineEvent,
   getTimelineEvents,
   updateManualTimelineEvent,
 } from "@/app/actions/timeline";
@@ -308,7 +308,7 @@ describe("Timeline Events", () => {
     });
   });
 
-  describe("deleteManualTimelineEvent", () => {
+  describe("deleteTimelineEvent", () => {
     let appA: Awaited<ReturnType<typeof seedApplication>>;
 
     beforeAll(() => {
@@ -326,7 +326,7 @@ describe("Timeline Events", () => {
     it("deletes the event and returns ok", async () => {
       const event = await seedManualTimelineEvent(TEST_USER_ID, appA.id);
 
-      const result = await deleteManualTimelineEvent(event.id);
+      const result = await deleteTimelineEvent(event.id);
 
       expect(result.ok).toBe(true);
       const deleted = await prisma.timelineEvent.findUnique({
@@ -339,7 +339,7 @@ describe("Timeline Events", () => {
       const appB = await seedApplication(OTHER_USER_ID);
       const event = await seedManualTimelineEvent(OTHER_USER_ID, appB.id);
 
-      const result = await deleteManualTimelineEvent(event.id);
+      const result = await deleteTimelineEvent(event.id);
 
       expect(result.ok).toBe(false);
       if (result.ok) return;
@@ -350,21 +350,23 @@ describe("Timeline Events", () => {
       expect(stillExists).not.toBeNull();
     });
 
-    it("returns FAILURE when attempting to delete a non-MANUAL event", async () => {
+    it("deletes a non-MANUAL event belonging to the user", async () => {
       const event = await seedManualTimelineEvent(TEST_USER_ID, appA.id, {
         type: "APPLICATION_CREATED",
         description: "Application created",
       });
 
-      const result = await deleteManualTimelineEvent(event.id);
+      // Auto-generated timeline events are now allowed to be deleted
+      // This supports cleanup of noisy generated events
+      // For example, repeated status changes created while testing Kanban drag-and-drop
+      const result = await deleteTimelineEvent(event.id);
 
-      expect(result.ok).toBe(false);
-      if (result.ok) return;
-      expect(result.error.type).toBe("FAILURE");
-      const stillExists = await prisma.timelineEvent.findUnique({
+      expect(result.ok).toBe(true);
+      const deleted = await prisma.timelineEvent.findUnique({
         where: { id: event.id },
       });
-      expect(stillExists).not.toBeNull();
+
+      expect(deleted).toBeNull();
     });
   });
 

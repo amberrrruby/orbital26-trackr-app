@@ -1,12 +1,18 @@
 import styles from "./Badge.module.css";
 
-type BadgeVariant =
+export type BadgeVariant =
   | "default"
   | "success"
   | "warning"
   | "danger"
   | "info"
-  | "accent";
+  | "accent"
+  | "wishlist"
+  | "applied"
+  | "assessment"
+  | "interview"
+  | "offer"
+  | "rejected";
 
 type BadgeProps = {
   variant?: BadgeVariant;

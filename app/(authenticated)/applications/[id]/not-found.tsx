@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 
 export default function ApplicationNotFound() {
   return (
@@ -8,11 +9,10 @@ export default function ApplicationNotFound() {
         <Button>Back to Applications</Button>
       </Link>
 
-      <h1>Application not found</h1>
-      <p>
-        This application does not exist, or you don&apos;t have permission to
-        view it.
-      </p>
+      <ErrorDisplay
+        title="Application not found"
+        message="This application does not exist, or you don't have permission to view it."
+      />
     </main>
   );
 }

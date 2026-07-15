@@ -8,7 +8,8 @@ export default async function ResumeGalleryServer() {
   if (!res.ok) {
     return (
       <ErrorDisplay
-        errorMsg={`Something went wrong. Please try again.`}
+        title="Could not load resumes"
+        message="Something went wrong while loading your resumes. Please try again."
         icon={<FileText />}
       />
     );

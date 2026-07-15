@@ -72,6 +72,10 @@ export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
 
 export type UpdateApplicationError = ActionValidationError | ActionFailureError;
 
+export type UpdateApplicationStatusError =
+  | ActionValidationError
+  | ActionFailureError;
+
 export type DeleteApplicationError = ActionFailureError;
 
 export enum Status {
@@ -83,6 +87,71 @@ export enum Status {
   REJECTED = "REJECTED",
 }
 
+function emptyStringToUndefined(value: unknown) {
+  return value === "" ? undefined : value;
+}
+
+function optionalDateField() {
+  return z.preprocess(emptyStringToUndefined, z.coerce.date().optional());
+}
+
+function validateImportantDateOrder(
+  data: {
+    dateApplied?: Date;
+    oaAssessmentDate?: Date;
+    interviewDate?: Date;
+    offerExpiryDate?: Date;
+  },
+  ctx: z.RefinementCtx,
+) {
+  const { dateApplied, oaAssessmentDate, interviewDate, offerExpiryDate } =
+    data;
+
+  if (dateApplied && oaAssessmentDate && oaAssessmentDate < dateApplied) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["oaAssessmentDate"],
+      message: "OA/ Assessment date cannot be before the application date.",
+    });
+  }
+
+  if (dateApplied && interviewDate && interviewDate < dateApplied) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["interviewDate"],
+      message: "Interview date cannot be before the application date.",
+    });
+  }
+
+  if (dateApplied && offerExpiryDate && offerExpiryDate < dateApplied) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["offerExpiryDate"],
+      message: "Offer expiry date cannot be before the application date.",
+    });
+  }
+
+  if (
+    oaAssessmentDate &&
+    offerExpiryDate &&
+    offerExpiryDate < oaAssessmentDate
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["offerExpiryDate"],
+      message: "Offer expiry date cannot be before the OA/ Assessment date.",
+    });
+  }
+
+  if (interviewDate && offerExpiryDate && offerExpiryDate < interviewDate) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["offerExpiryDate"],
+      message: "Offer expiry date cannot be before the interview date.",
+    });
+  }
+}
+
 export const STATUS_LABELS: Record<string, Status> = {
   WISHLIST: Status.WISHLIST,
   APPLIED: Status.APPLIED,
@@ -92,23 +161,32 @@ export const STATUS_LABELS: Record<string, Status> = {
   REJECTED: Status.REJECTED,
 };
 
-export const ApplicationSchema = z.object({
+export const BaseApplicationSchema = z.object({
   company: z.string().min(1, "Company field is required"),
   role: z.string().min(1, "Role field is required"),
   source: z.enum(SOURCE_OPTIONS_KEYS, { error: "Invalid source selected" }),
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
   resumeId: z.cuid2().optional(),
-  dateApplied: z.coerce.date().optional(),
-  oaAssessmentDate: z.coerce.date().optional(),
-  interviewDate: z.coerce.date().optional(),
-  offerExpiryDate: z.coerce.date().optional(),
+  dateApplied: optionalDateField(),
+  oaAssessmentDate: optionalDateField(),
+  interviewDate: optionalDateField(),
+  offerExpiryDate: optionalDateField(),
   notes: z.string().max(1000, "Notes too long").default(""),
   // tags: z.array(z.string()).default([]),
 });
 
-export const EditApplicationSchema = ApplicationSchema.extend({
+export const ApplicationSchema = BaseApplicationSchema.superRefine(
+  validateImportantDateOrder,
+);
+
+export const EditApplicationSchema = BaseApplicationSchema.extend({
   id: z.string().min(1, "Application ID is required"),
+}).superRefine(validateImportantDateOrder);
+
+export const UpdateApplicationStatusSchema = z.object({
+  id: z.cuid2("Application ID is required"),
+  status: z.enum(Status),
 });
 
 export const ApplicationIdSchema = z.object({

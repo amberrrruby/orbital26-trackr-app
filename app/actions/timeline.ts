@@ -148,7 +148,7 @@ export async function updateManualTimelineEvent(
   }
 }
 
-export async function deleteManualTimelineEvent(
+export async function deleteTimelineEvent(
   id: string,
 ): Promise<Result<void, DeleteTimelineEventError>> {
   const userId = await requireUserOrRedirectLogin();
@@ -164,7 +164,6 @@ export async function deleteManualTimelineEvent(
       where: {
         id: parseResult.data.id,
         userId,
-        type: "MANUAL",
       },
     });
 

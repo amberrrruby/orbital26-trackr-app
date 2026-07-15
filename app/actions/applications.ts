@@ -13,7 +13,10 @@ import {
   Result,
   returnSchemaValidationError,
   UpdateApplicationError,
+  UpdateApplicationStatusError,
+  UpdateApplicationStatusSchema,
   ApplicationWithDetails,
+  Status,
 } from "@/lib/types";
 // import { Application } from "@/lib/generated/client";
 import {
@@ -42,6 +45,7 @@ export async function createApplication(
   });
 
   if (!parseResult.success) {
+    console.log(parseResult.error.issues);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),
@@ -316,6 +320,74 @@ export async function updateApplication(
     }
 
     revalidatePath(`/applications`);
+    return { ok: true, value: undefined };
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
+}
+
+export async function updateApplicationStatus(
+  id: string,
+  status: Status,
+): Promise<Result<void, UpdateApplicationStatusError>> {
+  const userId = await requireUserOrRedirectLogin();
+
+  const parseResult = UpdateApplicationStatusSchema.safeParse({
+    id,
+    status,
+  });
+
+  if (!parseResult.success) {
+    return {
+      ok: false,
+      error: returnSchemaValidationError(parseResult),
+    };
+  }
+
+  try {
+    const existingApplication = await prisma.application.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!existingApplication) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    if (existingApplication.status === parseResult.data.status) {
+      return {
+        ok: true,
+        value: undefined,
+      };
+    }
+
+    const result = await prisma.application.updateMany({
+      where: {
+        id: parseResult.data.id,
+        userId,
+      },
+      data: {
+        status: parseResult.data.status,
+      },
+    });
+
+    if (result.count === 0) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+
+    await createStatusChangeTimelineEvent({
+      applicationId: id,
+      userId,
+      fromStatus: existingApplication.status,
+      toStatus: parseResult.data.status,
+      eventDate: new Date(),
+    });
+
+    revalidatePath("/applications");
+    revalidatePath("/kanban");
+
     return { ok: true, value: undefined };
   } catch {
     return { ok: false, error: { type: "FAILURE" } };

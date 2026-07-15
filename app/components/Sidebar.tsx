@@ -37,18 +37,9 @@ const COLLAPSED_KEY = "sidebar:collapsed";
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LuLayoutGrid /> },
   { label: "Table", href: "/applications", icon: <LuTable2 /> },
-  {
-    label: "Kanban",
-    href: "/kanban",
-    icon: <LuSquareKanban />,
-    disabled: true,
-  },
+  { label: "Kanban", href: "/kanban", icon: <LuSquareKanban /> },
   { label: "Analytics", href: "/analytics", icon: <LuChartNoAxesCombined /> },
-  {
-    label: "Reminders",
-    href: "/reminders",
-    icon: <LuBell />,
-  },
+  { label: "Reminders", href: "/reminders", icon: <LuBell /> },
   { label: "Resumes", href: "/resumes", icon: <LuFileText /> },
 ];
 

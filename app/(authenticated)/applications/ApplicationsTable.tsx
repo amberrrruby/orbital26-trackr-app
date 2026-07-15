@@ -2,7 +2,7 @@
 
 import EditApplicationModal from "./EditApplicationModal";
 import DeleteApplicationDialog from "./DeleteApplicationDialog";
-import { use, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Input } from "@/app/components/Input";
@@ -29,6 +29,7 @@ import {
 import { Resume } from "@/lib/generated/client";
 import { getImportantDateValues } from "./importantDatesUtils";
 import { Eye, Pencil, Trash2, Search } from "lucide-react";
+import { ApplicationStatusBadge } from "@/app/components/ApplicationStatusBadge";
 
 type ApplicationsTableProps = {
   applications: ApplicationWithDetails[];
@@ -85,6 +86,9 @@ export default function ApplicationsTable({
     {
       accessorKey: "status",
       header: "Status",
+      cell: ({ row }) => (
+        <ApplicationStatusBadge status={row.original.status} />
+      ),
     },
     {
       accessorKey: "dateApplied",

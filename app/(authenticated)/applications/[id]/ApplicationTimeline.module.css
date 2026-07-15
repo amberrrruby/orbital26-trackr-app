@@ -1,4 +1,4 @@
-.manualItem:hover .descriptionContent {
+.editableItem:hover .descriptionContent {
   background: var(--color-bg-subtle);
 }
 
@@ -104,7 +104,7 @@
   transition: opacity var(--ease-default);
 }
 
-.manualItem:hover .eventActions {
+.editableItem:hover .eventActions {
   opacity: 1;
 }
 

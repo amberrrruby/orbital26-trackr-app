@@ -12,6 +12,7 @@ import {
   Result,
 } from "@/lib/types";
 import { Button } from "@/app/components/Button";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 import styles from "./page.module.css";
 
 const PREVIEW_LIMIT = 5;
@@ -45,9 +46,10 @@ export default function RemindersPageClient({
     !applicationsResult.ok
   ) {
     return (
-      <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-        Failed to load reminders. Please refresh the page.
-      </div>
+      <ErrorDisplay
+        title="Failed to load reminders"
+        message="Something went wrong. Please refresh the page and try again."
+      />
     );
   }
 
