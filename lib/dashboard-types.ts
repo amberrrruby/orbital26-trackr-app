@@ -1,5 +1,6 @@
-import { Application, Reminder } from "./generated/client";
+import { Application } from "./generated/client";
 import { Status } from "./generated/enums";
+import { ReminderWithApplication } from "./types";
 
 export interface StatusCount {
   status: Status;
@@ -13,8 +14,8 @@ export type DashboardData = {
   statusBreakdown: StatusCount[];
   recentApplications: Application[];
   reminders: {
-    overdue: Reminder[];
-    today: Reminder[];
-    upcoming: Reminder[];
+    overdue: ReminderWithApplication[];
+    today: ReminderWithApplication[];
+    upcoming: ReminderWithApplication[];
   };
 };

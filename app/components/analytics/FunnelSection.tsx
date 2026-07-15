@@ -1,6 +1,7 @@
 import { ConversionMetrics, FunnelMetrics } from "@/lib/analytics-types";
 import ConversionMetricCard from "./ConversionMetricCard";
 import AnalyticsFunnelChart from "./FunnelChart";
+import styles from "./FunnelSection.module.css";
 
 type FunnelSectionProps = {
   funnelMetrics: FunnelMetrics;
@@ -27,14 +28,14 @@ export default function FunnelSection({
   ];
 
   return (
-    <div>
-      <div>
-        <h2>Funnel Metrics</h2>
+    <div className={styles.section}>
+      <div className={styles.funnel}>
+        <p className={styles.heading}>Funnel Metrics</p>
         <AnalyticsFunnelChart data={funnelMetrics} />
       </div>
 
-      <div>
-        <h2>Conversion Metrics</h2>
+      <div className={styles.conversions}>
+        <p className={styles.heading}>Conversion Metrics</p>
         {entries.map((cm) => (
           <ConversionMetricCard
             key={cm.label}

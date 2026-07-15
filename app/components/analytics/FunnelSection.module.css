@@ -1,0 +1,28 @@
+.section {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  padding: 16px;
+}
+
+.funnel {
+  flex: 3;
+  min-width: 0;
+}
+
+.conversions {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.heading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin: 0 0 12px 0;
+}

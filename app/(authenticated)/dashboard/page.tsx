@@ -3,9 +3,9 @@ import { requireUserOrRedirectLogin } from "@/lib/auth";
 import LogoutButton from "../LogoutButton";
 import { prisma } from "@/lib/prisma";
 import styles from "./page.module.css";
-import { Reminder } from "@/lib/generated/client";
 import { getDashboardData } from "@/lib/dashboard";
 import DonutChartComponent from "@/app/components/dashboard/DonutChartComponent";
+import { ReminderWithApplication, SOURCE_OPTIONS } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -29,10 +29,12 @@ export function SummaryCard({
   );
 }
 
-export function ReminderRow({ item }: { item: Reminder }) {
+export function ReminderRow({ item }: { item: ReminderWithApplication }) {
   return (
     <div className={styles.reminderRow}>
-      <span className={styles.reminderTitle}>{item.content}</span>
+      <span className={styles.reminderTitle}>
+        {`${item.application?.company} - ${item.application?.role}: ${item.content}`}
+      </span>
     </div>
   );
 }
@@ -186,7 +188,7 @@ export default async function Dashboard() {
                       <tr key={app.id}>
                         <td>{app.company}</td>
                         <td>{app.role}</td>
-                        <td>{app.source ?? "—"}</td>
+                        <td>{SOURCE_OPTIONS[app.source] ?? "—"}</td>
                         <td>{app.status}</td>
                         <td>{app.updatedAt.toLocaleDateString()}</td>
                       </tr>

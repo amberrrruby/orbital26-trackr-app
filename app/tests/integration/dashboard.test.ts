@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getDashboardData } from "@/lib/dashboard";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { env } from "@/lib/env";
+import { Status } from "@/lib/generated/enums";
 
 const TEST_USER_ID = env.TEST_USER_ID;
 
@@ -15,6 +16,28 @@ async function seedReminder(remindAt: Date) {
       type: "EVENT",
       remindAt,
       userId: TEST_USER_ID,
+    },
+  });
+}
+
+async function seedReminderWithApplication(remindAt: Date) {
+  const application = await prisma.application.create({
+    data: {
+      company: "Acme",
+      role: "SWE",
+      source: "JOB_SEARCH_PLATFORM",
+      status: Status.APPLIED,
+      notes: "",
+      userId: TEST_USER_ID,
+    },
+  });
+  return prisma.reminder.create({
+    data: {
+      type: "EVENT",
+      remindAt,
+      userId: TEST_USER_ID,
+      applicationId: application.id,
+      content: "Follow up",
     },
   });
 }
@@ -91,6 +114,46 @@ describe("getDashboardData", () => {
       expect(reminders.overdue).toHaveLength(1);
       expect(reminders.today).toHaveLength(1);
       expect(reminders.upcoming).toHaveLength(1);
+    });
+
+    describe("ReminderWithApplication shape", () => {
+      it("returns application relation when reminder is linked to an application", async () => {
+        const now = new Date();
+        now.setUTCHours(0, 0, 0, 0);
+
+        await seedReminderWithApplication(now);
+
+        const { reminders } = await getDashboardData(TEST_USER_ID);
+        const reminder = reminders.today[0];
+
+        expect(reminder.application).not.toBeNull();
+        expect(reminder.application?.company).toBe("Acme");
+        expect(reminder.application?.role).toBe("SWE");
+      });
+
+      it("returns null application when reminder has no linked application", async () => {
+        const now = new Date();
+        now.setUTCHours(0, 0, 0, 0);
+
+        await seedReminder(now);
+
+        const { reminders } = await getDashboardData(TEST_USER_ID);
+        const reminder = reminders.today[0];
+
+        expect(reminder.application).toBeNull();
+      });
+
+      it("returns non-empty content on linked reminder", async () => {
+        const now = new Date();
+        now.setUTCHours(0, 0, 0, 0);
+
+        await seedReminderWithApplication(now);
+
+        const { reminders } = await getDashboardData(TEST_USER_ID);
+        const reminder = reminders.today[0];
+
+        expect(reminder.content).toBeTruthy();
+      });
     });
 
     it("places nothing in upcoming when no reminders match targetDates", async () => {

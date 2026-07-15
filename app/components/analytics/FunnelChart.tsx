@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
   LabelList,
   Tooltip,
+  Cell,
 } from "recharts";
 
 export default function AnalyticsFunnelChart({
@@ -14,6 +15,9 @@ export default function AnalyticsFunnelChart({
 }: {
   data: FunnelMetrics;
 }) {
+  // TODO: Remove hardcoded
+  const COLORS = ["#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe"];
+
   const chartData = [
     { name: "Submitted", value: data.submitted },
     { name: "Progressed", value: data.progressedBeyondApplied },
@@ -24,7 +28,15 @@ export default function AnalyticsFunnelChart({
   return (
     <ResponsiveContainer width="100%" height={300}>
       <FunnelChart>
-        <Tooltip />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "#1e293b",
+            border: "none",
+            borderRadius: "6px",
+            color: "#f8fafc",
+            fontSize: "0.8rem",
+          }}
+        />
         <Funnel
           dataKey="value"
           nameKey="name"
@@ -32,7 +44,15 @@ export default function AnalyticsFunnelChart({
           lastShapeType="rectangle"
           isAnimationActive={true}
         >
-          <LabelList dataKey="name" position="right" />
+          {chartData.map((_, i) => (
+            // TODO: Remove hardcoded
+            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+          ))}
+          <LabelList
+            dataKey="name"
+            position="inside"
+            style={{ fontSize: "0.8rem", fill: "#ffffcc" }}
+          />
         </Funnel>
       </FunnelChart>
     </ResponsiveContainer>

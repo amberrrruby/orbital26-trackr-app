@@ -17,6 +17,7 @@ Rejection rate - ??%
 
 import { AnalyticsData } from "@/lib/analytics-types";
 import InsightsCard from "./InsightsCard";
+import styles from "./InsightsRow.module.css";
 
 type InsightsRowProps = {
   data: Pick<
@@ -39,7 +40,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
   } = data;
   return (
     // TODO: styling
-    <div>
+    <div className={styles.row}>
       <InsightsCard
         title={"Best performing source"}
         middle={bestPerformingSource?.source ?? null}

@@ -1,35 +1,42 @@
 "use client";
 
 import { ResumeResponseRatePoint } from "@/lib/analytics-types";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import styles from "./ResumeResponseRateChart.module.css";
 
 export default function ResumeResponseRateChart({
   data,
 }: {
   data: ResumeResponseRatePoint[];
 }) {
-  // TODO: add applicationCount into graphics
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart
-        data={data}
-        layout="vertical"
-        margin={{ top: 5, right: 20, bottom: 5, left: 60 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-        <YAxis type="category" dataKey="title" width={55} />
-        <Tooltip formatter={(v) => `${v}%`} />
-        <Bar dataKey="responseRate" />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className={styles.wrapper}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th className={styles.th}>Resume Version</th>
+            <th className={styles.th}>Applications Used</th>
+            <th className={styles.th}></th>
+            <th className={styles.th}>Response Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row) => (
+            <tr key={row.title}>
+              <td className={styles.td}>{row.title}</td>
+              <td className={styles.td}>{row.applicationCount}</td>
+              <td className={styles.tdBar}>
+                <div className={styles.barTrack}>
+                  <div
+                    className={styles.barFill}
+                    style={{ width: `${row.responseRate}%` }}
+                  />
+                </div>
+              </td>
+              <td className={styles.tdRate}>{row.responseRate}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

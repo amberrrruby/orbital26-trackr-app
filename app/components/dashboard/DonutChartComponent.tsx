@@ -37,9 +37,16 @@ export default function DonutChartComponent({
               {statusBreakdown.map((entry) => (
                 <Cell key={entry.status} fill={STATUS_COLORS[entry.status]} />
               ))}
-              <Label value={total} position="center" />
+              <Label value="Total" position="center" dy={-10} />
+              <Label value={total} position="center" dy={10} />
             </Pie>
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-bg-raised)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "6px",
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

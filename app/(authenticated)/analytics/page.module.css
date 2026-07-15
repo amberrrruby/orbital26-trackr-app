@@ -1,0 +1,10 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.row > * {
+  flex: 1;
+  min-width: 0;
+}

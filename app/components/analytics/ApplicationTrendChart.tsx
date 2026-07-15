@@ -29,7 +29,16 @@ export default function ApplicationTrendChart({
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="weekStart" tickFormatter={formatWeek} />
         <YAxis allowDecimals={false} />
-        <Tooltip labelFormatter={formatWeek} />
+        <Tooltip
+          labelFormatter={formatWeek}
+          contentStyle={{
+            backgroundColor: "#1e293b",
+            border: "none",
+            borderRadius: "6px",
+            color: "#f8fafc",
+            fontSize: "0.8rem",
+          }}
+        />
         <Line
           dataKey="count"
           type="monotone"

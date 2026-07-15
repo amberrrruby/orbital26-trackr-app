@@ -59,6 +59,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
         { remindAt: { lte: today } }, // those that went off today or before
       ],
     },
+    include: { application: true },
   });
 
   const startOfTodayUTC = new Date(today);

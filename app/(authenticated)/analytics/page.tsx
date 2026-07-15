@@ -6,6 +6,7 @@ import FunnelSection from "@/app/components/analytics/FunnelSection";
 import ApplicationTrendChart from "@/app/components/analytics/ApplicationTrendChart";
 import SourceBreakdownChart from "@/app/components/analytics/SourceBreakdownChart";
 import ResumeResponseRateChart from "@/app/components/analytics/ResumeResponseRateChart";
+import styles from "./page.module.css";
 
 // Data is per-user and changes often — do not statically cache this route.
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export default async function AnalyticsPage() {
         />
       </div>
 
-      <div>
+      <div className={styles.row}>
         <div>
           <h2>Application Trend</h2>
           <ApplicationTrendChart data={analytics.trend} />
