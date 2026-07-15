@@ -16,6 +16,7 @@ import { FileText, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Badge } from "@/app/components/Badge";
+import { useToast } from "@/app/components/Toast";
 
 type Props = {
   resume: Resume;
@@ -34,18 +35,22 @@ export default function ResumeDetailsClient({
   recentApplicationsResult,
 }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteErrMsg, setDeleteErrMsg] = useState<string | null>(null);
   const [isDeleting, startDeleteTransition] = useTransition();
   const router = useRouter();
+  const { toast } = useToast();
 
   function handleDelete() {
     startDeleteTransition(async () => {
       const res = await deleteResume(resume.id, resume.filePath);
       if (!res.ok) {
-        setDeleteErrMsg("Failed to delete resume.");
-        setShowDeleteModal(false);
+        toast({
+          title: "Could not delete resume",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+      setShowDeleteModal(false);
       router.push("/resumes");
     });
   }
@@ -75,8 +80,6 @@ export default function ResumeDetailsClient({
           </Button>
         </div>
       </div>
-
-      {deleteErrMsg && <p className={styles.errorMessage}>{deleteErrMsg}</p>}
 
       <Modal
         open={showDeleteModal}

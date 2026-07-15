@@ -44,3 +44,39 @@
   color: var(--color-accent);
   border-color: var(--color-accent-border);
 }
+
+.wishlist {
+  background: var(--status-wishlist-subtle);
+  color: var(--status-wishlist);
+  border-color: var(--status-wishlist-border);
+}
+
+.applied {
+  background: var(--status-applied-subtle);
+  color: var(--status-applied);
+  border-color: var(--status-applied-border);
+}
+
+.assessment {
+  background: var(--status-assessment-subtle);
+  color: var(--status-assessment);
+  border-color: var(--status-assessment-border);
+}
+
+.interview {
+  background: var(--status-interview-subtle);
+  color: var(--status-interview);
+  border-color: var(--status-interview-border);
+}
+
+.offer {
+  background: var(--status-offer-subtle);
+  color: var(--status-offer);
+  border-color: var(--status-offer-border);
+}
+
+.rejected {
+  background: var(--status-rejected-subtle);
+  color: var(--status-rejected);
+  border-color: var(--status-rejected-border);
+}

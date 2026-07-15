@@ -8,6 +8,7 @@ import { ReminderWithApplication } from "@/lib/types";
 import ReminderModal from "@/app/(authenticated)/reminders/ReminderModal";
 import { Application } from "@/lib/generated/client";
 import { act } from "react";
+import { ToastProvider } from "@/app/components/Toast";
 
 // --- Mocks ---
 
@@ -96,6 +97,10 @@ function buildApplication(overrides: Partial<Application> = {}): Application {
   };
 }
 
+function renderWithToast(ui: React.ReactElement) {
+  return render(<ToastProvider>{ui}</ToastProvider>);
+}
+
 function renderModal(
   props: Partial<React.ComponentProps<typeof ReminderModal>> = {},
 ) {
@@ -104,7 +109,7 @@ function renderModal(
     onOpenChange: vi.fn(),
     applications: noApplications,
   };
-  return render(<ReminderModal {...defaults} {...props} />);
+  return renderWithToast(<ReminderModal {...defaults} {...props} />);
 }
 
 // --- Tests ---
@@ -118,14 +123,14 @@ describe("ReminderCard", () => {
 
   describe("description format", () => {
     it("shows date only when unlinked", () => {
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
       // "27 Jun 2026" — no application prefix
       expect(screen.getByText(/27 Jun 2026/i)).toBeInTheDocument();
       expect(screen.queryByText(/from/i)).not.toBeInTheDocument();
     });
 
     it("shows 'Company - Role' when linked", () => {
-      render(
+      renderWithToast(
         <ReminderCard
           reminder={buildReminder({
             applicationId: "app-1",
@@ -139,7 +144,7 @@ describe("ReminderCard", () => {
     });
 
     it("shows 'Was due' prefix on overdue variant", () => {
-      render(
+      renderWithToast(
         <ReminderCard
           reminder={buildReminder({ remindAt: new Date("2026-06-20") })}
           variant="overdue"
@@ -149,12 +154,12 @@ describe("ReminderCard", () => {
     });
 
     it("does not show 'Was due' on default variant", () => {
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
       expect(screen.queryByText(/was due/i)).not.toBeInTheDocument();
     });
 
     it("renders Application Details link when linked", () => {
-      render(
+      renderWithToast(
         <ReminderCard
           reminder={buildReminder({
             applicationId: "app-1",
@@ -179,7 +184,7 @@ describe("ReminderCard", () => {
   describe("mark as completed", () => {
     it("calls completeReminder and refreshes on success", async () => {
       const user = userEvent.setup();
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
 
       await user.click(
         screen.getByRole("button", { name: /mark as completed/i }),
@@ -192,7 +197,7 @@ describe("ReminderCard", () => {
     it("shows error and does not refresh on failure", async () => {
       mockComplete.mockResolvedValueOnce({ ok: false });
       const user = userEvent.setup();
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
 
       await user.click(
         screen.getByRole("button", { name: /mark as completed/i }),
@@ -209,7 +214,7 @@ describe("ReminderCard", () => {
       mockComplete.mockReturnValueOnce(new Promise((r) => (resolve = r)));
 
       const user = userEvent.setup();
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
       await user.click(
         screen.getByRole("button", { name: /mark as completed/i }),
       );
@@ -229,7 +234,7 @@ describe("ReminderCard", () => {
   describe("dismiss", () => {
     it("calls deleteReminder and refreshes on success", async () => {
       const user = userEvent.setup();
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
 
       await user.click(screen.getByRole("button", { name: /dismiss/i }));
 
@@ -240,7 +245,7 @@ describe("ReminderCard", () => {
     it("shows error and does not refresh on failure", async () => {
       mockDelete.mockResolvedValueOnce({ ok: false });
       const user = userEvent.setup();
-      render(<ReminderCard reminder={buildReminder()} />);
+      renderWithToast(<ReminderCard reminder={buildReminder()} />);
 
       await user.click(screen.getByRole("button", { name: /dismiss/i }));
 

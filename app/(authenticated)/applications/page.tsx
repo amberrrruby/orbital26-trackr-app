@@ -5,18 +5,18 @@ import ApplicationsTable from "./ApplicationsTable";
 import { Button } from "@/app/components/Button";
 import styles from "./page.module.css";
 import { getResumes } from "@/app/actions/resume";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 
 export default async function ApplicationsPage() {
   const result = await getApplications();
   const resumesResult = await getResumes();
 
-  // TODO: replace with proper error component
   if (!result.ok) {
     return (
-      <p>
-        [TEMPORARY ERROR COMPONENT] Something went wrong - refresh the page or
-        try again.
-      </p>
+      <ErrorDisplay
+        title="Could not load applications"
+        message="Something went wrong. Please refresh the page and try again."
+      />
     );
   }
 

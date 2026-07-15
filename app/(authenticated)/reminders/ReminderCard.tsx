@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ReminderWithApplication } from "@/lib/types";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
+import { useToast } from "@/app/components/Toast";
 import styles from "./ReminderCard.module.css";
 
 interface ReminderCardProps {
@@ -18,7 +19,7 @@ export default function ReminderCard({
   reminder,
   variant = "default",
 }: ReminderCardProps) {
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   const [isDismissing, setIsDismissing] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const router = useRouter();
@@ -35,29 +36,37 @@ export default function ReminderCard({
 
   async function handleDismiss(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    setError(null);
     setIsDismissing(true);
 
     const result = await deleteReminder(reminder.id);
     setIsDismissing(false);
     if (!result.ok) {
-      setError("Something went wrong. Please try again.");
+      toast({
+        title: "Could not dismiss reminder",
+        description: "Something went wrong. Please try again.",
+        variant: "danger",
+      });
       return;
     }
+
     router.refresh();
   }
 
   async function handleComplete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    setError(null);
     setIsCompleting(true);
 
     const result = await completeReminder(reminder.id);
     setIsCompleting(false);
     if (!result.ok) {
-      setError("Something went wrong. Please try again.");
+      toast({
+        title: "Could not mark reminder as completed",
+        description: "Something went wrong. Please try again.",
+        variant: "danger",
+      });
       return;
     }
+
     router.refresh();
   }
 
@@ -115,8 +124,6 @@ export default function ReminderCard({
           </Button>
         </div>
       </div>
-
-      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

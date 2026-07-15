@@ -22,7 +22,11 @@ export default async function EditResumeDetailPage({ params }: Props) {
 
   if (!resume) {
     return (
-      <ErrorDisplay errorMsg={"Resume can't be found."} icon={<FileText />} />
+      <ErrorDisplay
+        title="Resume not found."
+        message="This resume may have been deleted or you do not have access to it."
+        icon={<FileText />}
+      />
     );
   }
 

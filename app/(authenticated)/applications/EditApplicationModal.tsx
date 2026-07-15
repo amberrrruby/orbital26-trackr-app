@@ -5,6 +5,7 @@ import { updateApplication } from "@/app/actions/applications";
 import { Resume } from "@/lib/generated/client";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
 import styles from "./EditApplicationModal.module.css";
 import { ApplicationWithDetails } from "@/lib/types";
 import ResumeSelector from "./ResumeSelector";
@@ -41,24 +42,40 @@ export default function EditApplicationModal({
   importantDates,
   onClose,
 }: EditApplicationProps) {
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const { id, company, role, source, status, dateApplied, notes } = application;
 
   async function handleSubmit(formData: FormData) {
-    setError(null);
     const result = await updateApplication(formData);
     if (!result.ok) {
-      setError("Something went wrong. Try again.");
-      return;
+      if (result.error.type === "FAILURE") {
+        toast({
+          title: "Could not update application",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
+      }
+
+      if (result.error.type === "VALIDATION") {
+        setFieldErrors({
+          [result.error.param]: result.error.message,
+        });
+        return;
+      }
     }
+
+    toast({
+      title: "Application updated",
+      description: "Your changes have been saved successfully.",
+      variant: "success",
+    });
     onClose();
   }
 
   return (
     <div>
       <form action={handleSubmit} className={styles.form}>
-        {error && <p>{error}</p>}
-
         <input type="hidden" name="id" value={id} />
 
         <Input
@@ -67,6 +84,7 @@ export default function EditApplicationModal({
           name="company"
           type="text"
           defaultValue={company}
+          error={fieldErrors.company}
           required
         />
 
@@ -76,6 +94,7 @@ export default function EditApplicationModal({
           name="role"
           type="role"
           defaultValue={role}
+          error={fieldErrors.role}
           required
         />
 
@@ -120,6 +139,7 @@ export default function EditApplicationModal({
             name="oaAssessmentDate"
             type="date"
             defaultValue={importantDates.oaAssessmentDate ?? ""}
+            error={fieldErrors.oaAssessmentDate}
           />
 
           <Input
@@ -128,6 +148,7 @@ export default function EditApplicationModal({
             name="interviewDate"
             type="date"
             defaultValue={importantDates.interviewDate ?? ""}
+            error={fieldErrors.interviewDate}
           />
 
           <Input
@@ -136,6 +157,7 @@ export default function EditApplicationModal({
             name="offerExpiryDate"
             type="date"
             defaultValue={importantDates.offerExpiryDate ?? ""}
+            error={fieldErrors.offerExpiryDate}
           />
         </div>
 
@@ -144,6 +166,7 @@ export default function EditApplicationModal({
           id="notes"
           name="notes"
           defaultValue={notes ?? ""}
+          error={fieldErrors.notes}
         />
 
         <div className={styles.buttonRow}>

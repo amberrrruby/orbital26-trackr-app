@@ -6,6 +6,7 @@ import { addManualTimelineEvent } from "@/app/actions/timeline";
 import { Modal } from "@/app/components/Modal";
 import { Button } from "@/app/components/Button";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
 import styles from "./AddManualTimelineEventModal.module.css";
 
 type AddManualTimelineEventProps = {
@@ -23,8 +24,8 @@ export default function AddManualTimelineEventModal({
 }: AddManualTimelineEventProps) {
   const [isPending, startTransition] = useTransition();
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [genericError, setGenericError] = useState<string | null>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
   if (!open) {
     return null;
@@ -32,7 +33,6 @@ export default function AddManualTimelineEventModal({
 
   function handleSubmit(formData: FormData) {
     setFieldErrors({});
-    setGenericError(null);
 
     formData.set("applicationId", applicationId);
 
@@ -42,11 +42,21 @@ export default function AddManualTimelineEventModal({
       if (!res.ok) {
         if (res.error.type === "VALIDATION") {
           setFieldErrors({ [res.error.param]: res.error.message });
-        } else {
-          setGenericError("Something went wrong. Please try again.");
+          return;
         }
+        toast({
+          title: "Could not add timeline event",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+
+      toast({
+        title: "Timeline event added",
+        description: "The timeline event has been saved successfully.",
+        variant: "success",
+      });
 
       onOpenChange(false);
       router.refresh();
@@ -60,8 +70,6 @@ export default function AddManualTimelineEventModal({
       title="Add manual timeline event"
       description="Record a custom event in this application's timeline."
     >
-      {genericError && <p>{genericError}</p>}
-
       <form action={handleSubmit} className={styles.form}>
         <Input
           label="Date"

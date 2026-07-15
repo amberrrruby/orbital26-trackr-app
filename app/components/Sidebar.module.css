@@ -20,7 +20,7 @@
   position: relative;
   z-index: var(--z-raised);
   transition: width var(--ease-slow);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .sidebarCollapsed {

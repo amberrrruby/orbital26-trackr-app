@@ -6,11 +6,12 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   updateManualTimelineEvent,
-  deleteManualTimelineEvent,
+  deleteTimelineEvent,
 } from "@/app/actions/timeline";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Input, Textarea } from "@/app/components/Input";
+import { useToast } from "@/app/components/Toast";
 import { Pencil, Trash2 } from "lucide-react";
 import AddManualTimelineEventModal from "./AddManualTimelineEventModal";
 
@@ -18,6 +19,8 @@ type ApplicationTimelineProps = {
   applicationId: string;
   timelineEvents: TimelineEventWithApplication[];
 };
+
+type FieldErrors = Partial<Record<"eventDate" | "description", string>>;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-SG", {
@@ -37,10 +40,11 @@ export default function ApplicationTimeline({
 }: ApplicationTimelineProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const eventToDelete = timelineEvents.find(
     (event) => event.id === deleteEventId,
@@ -48,20 +52,28 @@ export default function ApplicationTimeline({
 
   function handleUpdate(formData: FormData) {
     formData.set("applicationId", applicationId);
-    setError(null);
+    setFieldErrors({});
 
     startTransition(async () => {
       const res = await updateManualTimelineEvent(formData);
       if (!res.ok) {
         if (res.error.type === "VALIDATION") {
-          setError(res.error.message);
-        } else {
-          setError(
-            "Something went wrong while updating this timeline event. Please try again.",
-          );
+          setFieldErrors({ [res.error.param]: res.error.message });
         }
+
+        toast({
+          title: "Could not update timeline event",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
+
+      toast({
+        title: "Timeline event updated",
+        description: "Your changes have been saved successfully.",
+        variant: "success",
+      });
 
       setEditingEventId(null);
       router.refresh();
@@ -71,14 +83,14 @@ export default function ApplicationTimeline({
   function handleDelete() {
     if (!deleteEventId) return;
 
-    setError(null);
-
     startTransition(async () => {
-      const res = await deleteManualTimelineEvent(deleteEventId);
+      const res = await deleteTimelineEvent(deleteEventId);
       if (!res.ok) {
-        setError(
-          "Something went wrong while deleting this timeline event. Please try again.",
-        );
+        toast({
+          title: "Could not delete timeline event",
+          description: "Something went wrong. Please try again.",
+          variant: "danger",
+        });
         return;
       }
 
@@ -102,8 +114,6 @@ export default function ApplicationTimeline({
         </Button>
       </div>
 
-      {error && <p>{error}</p>}
-
       {timelineEvents.length === 0 ? (
         <p className={styles.empty}>No timeline events yet.</p>
       ) : (
@@ -112,7 +122,7 @@ export default function ApplicationTimeline({
             const isManual = event.type === "MANUAL";
             const isEditing = editingEventId === event.id;
 
-            if (isEditing) {
+            if (isEditing && isManual) {
               return (
                 <form
                   key={event.id}
@@ -127,6 +137,7 @@ export default function ApplicationTimeline({
                       name="eventDate"
                       type="date"
                       defaultValue={formatDateForInput(event.eventDate)}
+                      error={fieldErrors.eventDate}
                       required
                     />
                   </div>
@@ -140,6 +151,7 @@ export default function ApplicationTimeline({
                       id={`timeline-description-${event.id}`}
                       name="description"
                       defaultValue={event.description}
+                      error={fieldErrors.description}
                       required
                       rows={2}
                     />
@@ -170,16 +182,16 @@ export default function ApplicationTimeline({
             return (
               <div
                 key={event.id}
-                className={`${styles.timelineItem} ${
-                  isManual ? styles.manualItem : ""
-                }`}
+                className={`${styles.timelineItem} ${styles.editableItem}`}
               >
                 <div
                   className={`${styles.date} ${
                     isManual ? styles.clickable : ""
                   }`}
                   onClick={() => {
-                    if (isManual) setEditingEventId(event.id);
+                    if (isManual) {
+                      setEditingEventId(event.id);
+                    }
                   }}
                 >
                   {formatDate(event.eventDate)}
@@ -195,16 +207,17 @@ export default function ApplicationTimeline({
                       isManual ? styles.clickable : ""
                     }`}
                     onClick={() => {
-                      if (isManual) setEditingEventId(event.id);
+                      if (isManual) {
+                        setEditingEventId(event.id);
+                      }
                     }}
                   >
                     <p>{event.description}</p>
-
-                    {isManual && (
-                      <div
-                        className={styles.eventActions}
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                    <div
+                      className={styles.eventActions}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {isManual && (
                         <Button
                           type="button"
                           variant="ghost"
@@ -213,17 +226,17 @@ export default function ApplicationTimeline({
                         >
                           <Pencil size={14}></Pencil>
                         </Button>
+                      )}
 
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => setDeleteEventId(event.id)}
-                          aria-label="Delete timeline event"
-                        >
-                          <Trash2 size={14}></Trash2>
-                        </Button>
-                      </div>
-                    )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setDeleteEventId(event.id)}
+                        aria-label="Delete timeline event"
+                      >
+                        <Trash2 size={14}></Trash2>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
