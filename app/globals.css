@@ -43,7 +43,7 @@
   --color-accent: #489df1;
   --color-accent-hover: #7db2ff;
   --color-accent-subtle: rgba(91, 157, 255, 0.1);
-  --color-accent-border: rgba(91, 157, 255, 0.25);
+  --color-accent-border: #5b9dff40;
 
   /* Semantic */
   --color-success: #4caf7d;
@@ -160,7 +160,13 @@
 /* ── Theme-invariant tokens ─────────────────────────────────── */
 :root {
   /* Typography */
-  --font-ui: var(--font-ui, "DM Sans", "Helvetica Neue", sans-serif);
+  --font-ui: var(--font-main, "Manrope", "Helvetica Neue", sans-serif);
+  --font-brand: var(
+    --font-montserrat,
+    "Montserrat",
+    "Helvetica Neue",
+    sans-serif
+  );
   --font-mono: var(--font-mono, "DM Mono", "Fira Code", monospace);
 
   --text-xs: 11px;
