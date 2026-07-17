@@ -1,22 +1,25 @@
 "use client";
 
-import { getResumes } from "@/app/actions/resume";
+import { getResumesWithThumbnails } from "@/app/actions/resume";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ResumeCard from "./ResumeCard";
 import { useInfiniteScroll } from "react-infinite-scroll-component";
-import { Resume } from "@/lib/generated/client";
-import { SORTABLE_FIELDS, SortableField } from "@/lib/types";
+import {
+  ResumeWithThumbnail,
+  SORTABLE_FIELDS,
+  SortableField,
+} from "@/lib/types";
 import styles from "./ResumeGallery.module.css";
 
 type Props = {
-  initialResumes: Resume[];
+  initialResumes: ResumeWithThumbnail[];
   totalCount: number;
 };
 
 const PAGE_SIZE = 12;
 
 export default function ResumeGallery({ initialResumes, totalCount }: Props) {
-  const [resumes, setResumes] = useState<Resume[]>(initialResumes);
+  const [resumes, setResumes] = useState<ResumeWithThumbnail[]>(initialResumes);
   const [page, setPage] = useState(1); // starts at 1. can be interpreted as "what's the next starting point that is a multiple of PAGE_SIZE to fetch?"
   const [orderKey, setOrderKey] = useState<SortableField>("updatedAt");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
@@ -30,7 +33,12 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
       return;
     }
 
-    const res = await getResumes(orderKey, order, page * PAGE_SIZE, PAGE_SIZE);
+    const res = await getResumesWithThumbnails(
+      orderKey,
+      order,
+      page * PAGE_SIZE,
+      PAGE_SIZE,
+    );
     if (!res.ok) {
       setErrMsg(`Something went wrong. Please try again.`);
       return;
@@ -45,7 +53,7 @@ export default function ResumeGallery({ initialResumes, totalCount }: Props) {
   useEffect(() => {
     async function refetch() {
       setErrMsg(null);
-      const res = await getResumes(orderKey, order, 0, PAGE_SIZE);
+      const res = await getResumesWithThumbnails(orderKey, order, 0, PAGE_SIZE);
       if (!res.ok) {
         setErrMsg(`Something went wrong. Please try again.`);
         return;

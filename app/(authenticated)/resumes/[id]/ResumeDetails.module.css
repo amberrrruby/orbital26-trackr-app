@@ -161,8 +161,9 @@
 }
 
 .thumbnailWrapper {
+  position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 210 / 297;
   overflow: hidden;
   background: var(--color-bg-inset);
   border-radius: var(--radius-md);

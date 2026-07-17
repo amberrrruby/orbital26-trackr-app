@@ -1,10 +1,10 @@
-import { getResumes } from "@/app/actions/resume";
+import { getResumesWithThumbnails } from "@/app/actions/resume";
 import ResumeGallery from "./ResumeGallery";
 import ErrorDisplay from "@/app/components/ErrorDisplay";
 import { FileText } from "lucide-react";
 
 export default async function ResumeGalleryServer() {
-  const res = await getResumes();
+  const res = await getResumesWithThumbnails();
   if (!res.ok) {
     return (
       <ErrorDisplay
@@ -14,7 +14,6 @@ export default async function ResumeGalleryServer() {
       />
     );
   }
-  // TODO: might have other external components here, or else collapse to just one async component
   return (
     <ResumeGallery
       initialResumes={res.value.resumes}

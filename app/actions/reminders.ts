@@ -214,7 +214,6 @@ export async function getRemindersByApplicationId(
 export async function addReminder(
   formData: FormData,
 ): Promise<Result<string, AddReminderError>> {
-  console.log(formData);
   const userId = await requireUserOrRedirectLogin();
   const parseResult = ReminderSchema.safeParse({
     applicationId: formData.get("applicationId"),
@@ -225,8 +224,6 @@ export async function addReminder(
     content: formData.get("content"),
   });
   if (!parseResult.success) {
-    console.log(`[dbg] addReminder parseResult fail`);
-    console.log(parseResult.error.message);
     return {
       ok: false,
       error: returnSchemaValidationError(parseResult),

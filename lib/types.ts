@@ -1,5 +1,5 @@
 import z, { ZodError } from "zod";
-import { Prisma, Source } from "@/lib/generated/client";
+import { Prisma, Resume, Source } from "@/lib/generated/client";
 
 export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
@@ -52,6 +52,9 @@ export const ACCEPTED_MIME: Record<string, "pdf" | "docx"> = {
 export const ACCEPTED_EXTENSIONS = ".pdf,.docx";
 export const MAX_SIZE_MB = 10;
 export const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+export type ResumeWithThumbnail = Resume & {
+  signedThumbnailUrl: string | null;
+};
 
 // Actions: Applications
 
@@ -60,8 +63,7 @@ export type CreateApplicationError = ActionValidationError | ActionFailureError;
 export type GetApplicationsError = ActionFailureError;
 
 export type GetApplicationByIdError =
-  | ActionValidationError
-  | ActionFailureError;
+  ActionValidationError | ActionFailureError;
 
 export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
   include: {
@@ -73,8 +75,7 @@ export type ApplicationWithDetails = Prisma.ApplicationGetPayload<{
 export type UpdateApplicationError = ActionValidationError | ActionFailureError;
 
 export type UpdateApplicationStatusError =
-  | ActionValidationError
-  | ActionFailureError;
+  ActionValidationError | ActionFailureError;
 
 export type DeleteApplicationError = ActionFailureError;
 
@@ -203,13 +204,12 @@ export type GetAggregateStatsError = ActionFailureError;
 
 export type GetTopKRecentApplicationsError = ActionFailureError;
 
-export type AddResumeError = // TODO: naming convention: add -> create
+export type AddResumeError =
+  // TODO: naming convention: add -> create
   ActionValidationError | ActionFailureError | AppUploadError;
 
 export type UpdateResumeError =
-  | ActionValidationError
-  | ActionFailureError
-  | AppUploadError;
+  ActionValidationError | ActionFailureError | AppUploadError;
 
 export type DeleteResumeError = ActionFailureError;
 
@@ -284,8 +284,7 @@ export type GetRemindersError =
   | ActionFailureError;
 
 export type GetRemindersByApplicationIdError =
-  | ActionValidationError
-  | ActionFailureError;
+  ActionValidationError | ActionFailureError;
 
 export type AddReminderError = ActionValidationError | ActionFailureError;
 
@@ -345,8 +344,7 @@ export type GetTimelineEventsError = ActionValidationError | ActionFailureError;
 export type AddTimelineEventError = ActionValidationError | ActionFailureError;
 
 export type UpdateTimelineEventError =
-  | ActionValidationError
-  | ActionFailureError;
+  ActionValidationError | ActionFailureError;
 
 export type DeleteTimelineEventError = ActionFailureError;
 
@@ -453,5 +451,4 @@ export const ReminderSettingsSchema = z.object({
 export type ReminderSettings = z.infer<typeof ReminderSettingsSchema>;
 
 export type UpdateReminderSettingsError =
-  | ActionValidationError
-  | ActionFailureError;
+  ActionValidationError | ActionFailureError;
