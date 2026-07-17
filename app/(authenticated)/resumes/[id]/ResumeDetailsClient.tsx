@@ -17,10 +17,12 @@ import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Badge } from "@/app/components/Badge";
 import { useToast } from "@/app/components/Toast";
+import Image from "next/image";
 
 type Props = {
   resume: Resume;
-  signedUrl: string | undefined;
+  signedFileUrl: string | undefined;
+  signedThumbnailUrl: string | null;
   statsResult: Result<AggregateStats, GetAggregateStatsError>;
   recentApplicationsResult: Result<
     Application[],
@@ -30,7 +32,8 @@ type Props = {
 
 export default function ResumeDetailsClient({
   resume,
-  signedUrl,
+  signedFileUrl,
+  signedThumbnailUrl,
   statsResult,
   recentApplicationsResult,
 }: Props) {
@@ -158,12 +161,6 @@ export default function ResumeDetailsClient({
                 ))}
               </ul>
             )}
-            {/* <Link
-              href={`/applications?resumeId=${resume.id}`}
-              className={styles.viewAll}
-            >
-              [View all -&lt;]
-            </Link> */}
           </section>
         </div>
 
@@ -171,24 +168,32 @@ export default function ResumeDetailsClient({
         <div className={styles.right}>
           <section className={`${styles.card} ${styles.fileCard}`}>
             <div className={styles.thumbnailWrapper}>
-              {/* {resume.thumbnailPath ? (
+              {resume.thumbnailStatus === "ready" &&
+              signedThumbnailUrl !== null ? (
                 <Image
-                  src={resume.thumbnailPath}
-                  alt={`Thumbnail for ${resume.title}`}
-                  className={styles.thumbnail}
+                  src={signedThumbnailUrl}
+                  alt={resume.title}
+                  fill
+                  className="object-cover"
+                  loading="eager"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                ) : (
-                <div className={styles.thumbnailPlaceholder} />
-              )} */}
-              <div className={styles.thumbnailPlaceholder}>
-                <FileText className={styles.fileIcon} />
-                <span>{resume.fileType.toUpperCase()}</span>
-              </div>
+              ) : (
+                <div className={styles.thumbnailPlaceholder}>
+                  <FileText className={styles.fileIcon} />
+                  <span>{resume.fileType.toUpperCase()}</span>
+                </div>
+              )}
             </div>
 
             <div className={styles.fileInformation}>
-              {signedUrl ? (
-                <a href={signedUrl} target="_blank" rel="noopener noreferrer">
+              {signedFileUrl ? (
+                <a
+                  href={signedFileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {resume.title}.{resume.fileType.toLowerCase()}
                 </a>
               ) : (

@@ -28,11 +28,17 @@ export default async function ResumeDetailsComponent({ id }: Props) {
     );
   }
 
-  const { data } = await supabase.storage
+  const { data: fileData } = await supabase.storage
     .from(`resumes`)
     .createSignedUrl(resume.filePath, 3600);
 
-  const signedUrl = data?.signedUrl ?? undefined;
+  const signedFileUrl = fileData?.signedUrl ?? undefined;
+
+  const { data: thumbnailData } = await supabase.storage
+    .from(`resumes`)
+    .createSignedUrl(resume.thumbnailPath, 3600);
+
+  const signedThumbnailUrl = thumbnailData?.signedUrl ?? null;
 
   const statsResult = await getAggregateStats(resume.id);
 
@@ -44,7 +50,8 @@ export default async function ResumeDetailsComponent({ id }: Props) {
   return (
     <ResumeDetailsClient
       resume={resume}
-      signedUrl={signedUrl}
+      signedFileUrl={signedFileUrl}
+      signedThumbnailUrl={signedThumbnailUrl}
       statsResult={statsResult}
       recentApplicationsResult={recentApplicationsResult}
     />

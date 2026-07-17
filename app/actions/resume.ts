@@ -18,9 +18,16 @@ import {
   OrderType,
   returnSchemaValidationError,
   GenerateThumbnailError,
+  ResumeWithThumbnail,
 } from "@/lib/types";
 import { Application, Resume, Status } from "@/lib/generated/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
+import { createId } from "@paralleldrive/cuid2";
+import { revalidatePath } from "next/cache";
+// import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+// import { createCanvas } from "@napi-rs/canvas";
+import { resolve } from "path";
+import { pathToFileURL } from "url";
 
 export async function getResumes(
   orderKey: SortableField = "updatedAt",
@@ -61,6 +68,48 @@ export async function getResumes(
       error: { type: "FAILURE" },
     };
   }
+}
+
+export async function getResumesWithThumbnails(
+  orderKey: SortableField = "updatedAt",
+  order: OrderType = "desc",
+  pageNumber: number = 0,
+  pageSize: number = 12,
+): Promise<
+  Result<
+    { resumes: ResumeWithThumbnail[]; totalCount: number },
+    GetResumesError
+  >
+> {
+  const res = await getResumes(orderKey, order, pageNumber, pageSize);
+  if (!res.ok) {
+    return res;
+  }
+
+  const { resumes, totalCount } = res.value;
+
+  const supabase = await createSupabaseServerClient();
+  const thumbnailPaths = resumes
+    .filter((r) => r.thumbnailStatus === "ready" && r.thumbnailPath !== "")
+    .map((r) => r.thumbnailPath);
+
+  const signedUrlMap = new Map<string, string>();
+  if (thumbnailPaths.length > 0) {
+    const { data } = await supabase.storage
+      .from("resumes")
+      .createSignedUrls(thumbnailPaths, 60 * 60);
+    data?.forEach((item) => {
+      if (item.signedUrl && item.path)
+        signedUrlMap.set(item.path, item.signedUrl);
+    });
+  }
+
+  const resumesWithThumbnails = resumes.map((r) => ({
+    ...r,
+    signedThumbnailUrl: signedUrlMap.get(r.thumbnailPath) ?? null,
+  }));
+
+  return { ok: true, value: { resumes: resumesWithThumbnails, totalCount } };
 }
 
 export async function getAggregateStats(
@@ -115,14 +164,84 @@ export async function getTopKRecentApplications(
 }
 
 export async function generateThumbnail(
-  _fileUrl: string,
-  _userId: string,
+  filePath: string,
+  userId: string,
+  resumeId: string,
 ): Promise<Result<string, GenerateThumbnailError>> {
-  // TEMPORARY
-  return {
-    ok: false,
-    error: { type: "FAILURE" },
-  };
+  const [pdfjsLib, { createCanvas }] = await Promise.all([
+    import("pdfjs-dist/legacy/build/pdf.mjs"),
+    import("@napi-rs/canvas"),
+  ]);
+  try {
+    // Step 1: Download the PDF from Supabase Storage
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.storage
+      .from("resumes")
+      .download(filePath);
+    if (error || !data) {
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+    const pdfBuffer = await data.arrayBuffer();
+    console.log("passed step 1");
+
+    // Step 2: Load into PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = pathToFileURL(
+      resolve(
+        process.cwd(),
+        "node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs",
+      ),
+    ).toString();
+    const pdfDoc = await pdfjsLib.getDocument({
+      data: new Uint8Array(pdfBuffer),
+      useWorkerFetch: false,
+      useSystemFonts: true,
+      disableFontFace: true,
+    }).promise;
+    console.log("passed step 2");
+
+    // Step 3: Get page 1
+    const page = await pdfDoc.getPage(1);
+    console.log("passed step 3");
+
+    // Step 4: Make canvas
+    const scale = 1.5;
+    const viewport = page.getViewport({ scale });
+    const canvas = createCanvas(viewport.width, viewport.height);
+    const context = canvas.getContext("2d");
+    console.log("passed step 4");
+
+    // Step 5: Render page on canvas
+    await page.render({
+      canvasContext: context as unknown as CanvasRenderingContext2D,
+      canvas: canvas as unknown as HTMLCanvasElement,
+      viewport,
+    }).promise;
+    console.log("passed step 5");
+
+    // Step 6: Encode canvas as JPEG
+    const imageBuffer = await canvas.encode("jpeg", 90);
+    console.log("passed step 6");
+
+    // Step 7: Upload
+    const thumbnailPath = `thumbnails/${userId}/${resumeId}.jpg`;
+    const { error: uploadError } = await supabase.storage
+      .from("resumes")
+      .upload(thumbnailPath, imageBuffer, {
+        contentType: "image/jpeg",
+        upsert: true,
+      });
+    if (uploadError) {
+      console.log(uploadError.message);
+      return { ok: false, error: { type: "FAILURE" } };
+    }
+    console.log("passed step 7");
+
+    // Step 8: Return path
+    return { ok: true, value: thumbnailPath }; // temporary
+  } catch (err) {
+    console.log(err);
+    return { ok: false, error: { type: "FAILURE" } };
+  }
 }
 
 // Form provides file path to bucket storage, then a signed URL is generated, expires in 1 hour
@@ -146,48 +265,47 @@ export async function createResume(
   const { title, notes, tags, filePath, fileType } = parseResult.data;
 
   // 1. Upload file (should be handled by a component)
-  // const resumeUrlResult = await uploadResumeFile(file, userId);
-  // if (!resumeUrlResult.ok) {
-  //   return resumeUrlResult;
-  // }
-  // const resumeUrl = resumeUrlResult.value;
 
-  // 2. Generate thumbnail (CURRENTLY DISABLED)
-  // let thumbnailPath: string | null = null;
-  const thumbnailPath: string = "DUMMY"; // i forgor to do String? in schema :wilted_rose:
-  // if (fileType === "pdf") {
+  // 2. Generate thumbnail
+  // Because we need the resume ID here already,
+  // we'd just generate a CUID here instead of letting the DB generate it.
+  const resumeId = createId();
 
-  //   TODO: resumeUrl to be changed with getting a signedUrl
-
-  //   const thumbnailPathResult = await generateThumbnail(resumeUrl, userId);
-  //   if (!thumbnailPathResult.ok) {
-  //     // non-fatal - just null
-  //     console.log(
-  //       `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
-  //     );
-  //   } else {
-  //     thumbnailPath = thumbnailPathResult.value;
-  //   }
-  // }
+  let thumbnailPath: string | null = null;
+  if (fileType === "pdf") {
+    const thumbnailPathResult = await generateThumbnail(
+      filePath,
+      userId,
+      resumeId,
+    );
+    if (!thumbnailPathResult.ok) {
+      // non-fatal - just null
+      console.log(
+        `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
+      );
+    } else {
+      thumbnailPath = thumbnailPathResult.value;
+    }
+  }
 
   // 3. Write DB record
   try {
     const resume = await prisma.resume.create({
       data: {
+        id: resumeId, // use our own CUID
         userId,
         title,
         notes,
         tags,
         filePath,
         fileType,
-        thumbnailPath, // will always be "DUMMY" for now
-        // will always be "failed" for now
-        thumbnailStatus: "failed",
-        // fileType === "docx"
-        //   ? "ready"
-        //   : thumbnailPath !== null
-        //     ? "ready"
-        //     : "failed",
+        thumbnailPath: thumbnailPath ?? "",
+        thumbnailStatus:
+          fileType === "docx"
+            ? "ready"
+            : thumbnailPath !== null
+              ? "ready"
+              : "failed",
       },
     });
     return { ok: true, value: resume.id };
@@ -221,32 +339,32 @@ export async function updateResume(
 
   const { title, notes, tags, filePath, fileType } = parseResult.data;
 
-  const thumbnailPath: string = "DUMMY"; // i forgor
-  const thumbnailStatus: string = "failed";
+  let thumbnailPath: string | null = null;
+  let thumbnailStatus: string | undefined;
 
-  // let thumbnailPath: string | null = null;
-  // let thumbnailStatus: string | undefined;
-
-  // TODO: resumeUrl to be changed with getting a signedUrl
-
-  // if (resumeUrl !== undefined && fileType !== undefined) {
-  //   if (fileType === "pdf") {
-  //     const thumbnailResult = await generateThumbnail(resumeUrl, userId);
-  //     if (!thumbnailResult.ok) {
-  //       console.log(
-  //         `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
-  //       );
-  //     } else {
-  //       thumbnailPath = thumbnailResult.value;
-  //     }
-  //   }
-  //   thumbnailStatus =
-  //     fileType === "docx"
-  //       ? "ready"
-  //       : thumbnailPath !== null
-  //         ? "ready"
-  //         : "failed";
-  // }
+  if (filePath !== undefined && fileType !== undefined) {
+    if (fileType === "pdf") {
+      const thumbnailResult = await generateThumbnail(
+        filePath,
+        userId,
+        resumeId,
+      );
+      if (!thumbnailResult.ok) {
+        // non-fatal - just null
+        console.log(
+          `[NOTE] Called generateThumbnail. Hardcoded failure correctly returned.`,
+        );
+      } else {
+        thumbnailPath = thumbnailResult.value;
+      }
+    }
+    thumbnailStatus =
+      fileType === "docx"
+        ? "ready"
+        : thumbnailPath !== null
+          ? "ready"
+          : "failed";
+  }
 
   try {
     const result = await prisma.resume.updateMany({
@@ -258,7 +376,7 @@ export async function updateResume(
         ...(filePath !== undefined && { filePath }),
         ...(fileType !== undefined && { fileType }),
         ...(thumbnailStatus !== undefined && {
-          thumbnailPath,
+          thumbnailPath: thumbnailPath ?? "",
           thumbnailStatus,
         }),
       },
@@ -266,7 +384,8 @@ export async function updateResume(
     if (result.count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
-    // revalidatePath(`/applications`);
+    revalidatePath(`/resumes/${resumeId}`);
+    revalidatePath(`/resumes`);
     return { ok: true, value: undefined };
   } catch {
     return {
@@ -284,9 +403,11 @@ export async function deleteResume(
   const userId = await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
   try {
+    const thumbnailPath = `thumbnails/${userId}/${resumeId}.jpg`;
+
     const { error: storageError } = await supabase.storage
       .from(_bucket)
-      .remove([filePath]);
+      .remove([filePath, thumbnailPath]);
 
     if (storageError) {
       return { ok: false, error: { type: "FAILURE" } };
@@ -301,7 +422,8 @@ export async function deleteResume(
     if (count === 0) {
       return { ok: false, error: { type: "FAILURE" } };
     }
-    // revalidatePath(`/applications`);
+    revalidatePath(`/resumes/${resumeId}`);
+    revalidatePath(`/resumes`);
     return { ok: true, value: undefined };
   } catch {
     return {

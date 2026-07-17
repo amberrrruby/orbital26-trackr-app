@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import ResumeGallery from "@/app/(authenticated)/resumes/ResumeGallery";
-import { getResumes, deleteResume } from "@/app/actions/resume";
+import { getResumesWithThumbnails } from "@/app/actions/resume";
 import { useInfiniteScroll } from "react-infinite-scroll-component";
 import type { Resume, Application } from "@/lib/generated/client";
 import ResumeDetailsClient from "@/app/(authenticated)/resumes/[id]/ResumeDetailsClient";
 import { useRouter } from "next/navigation";
-import type { AggregateStats } from "@/lib/types";
+import type { AggregateStats, ResumeWithThumbnail } from "@/lib/types";
 import ResumeFormComponent from "@/app/components/ResumeFormComponent";
 import { ToastProvider } from "@/app/components/Toast";
 
@@ -26,7 +26,7 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-const mockGetResumes = vi.mocked(getResumes);
+const mockGetResumes = vi.mocked(getResumesWithThumbnails);
 const mockUseInfiniteScroll = vi.mocked(useInfiniteScroll);
 
 vi.mock("next/navigation", () => ({
@@ -43,7 +43,7 @@ const mockUseRouter = vi.mocked(useRouter);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function makeResumes(count: number): Resume[] {
+function makeResumes(count: number): ResumeWithThumbnail[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `resume-${i}`,
     title: `Resume ${i}`,
@@ -56,6 +56,7 @@ function makeResumes(count: number): Resume[] {
     userId: `user-0`,
     createdAt: new Date(),
     updatedAt: new Date(),
+    signedThumbnailUrl: null,
   }));
 }
 
@@ -69,11 +70,19 @@ function stubInfiniteScroll(overrides: { isLoading?: boolean } = {}) {
   });
 }
 
-// For getResumes
-type GetResumesResult = Awaited<ReturnType<typeof getResumes>>;
+// For getResumesWithThumbnails
+type GetResumesWithThumbnailsResult = Awaited<
+  ReturnType<typeof getResumesWithThumbnails>
+>;
 
-function stubGetResumes(resumes: Resume[] = [], totalCount = 0) {
-  const result: GetResumesResult = { ok: true, value: { resumes, totalCount } };
+function stubGetResumesWithThumbnails(
+  resumes: ResumeWithThumbnail[] = [],
+  totalCount = 0,
+) {
+  const result: GetResumesWithThumbnailsResult = {
+    ok: true,
+    value: { resumes, totalCount },
+  };
   mockGetResumes.mockResolvedValue(result);
 }
 
@@ -130,7 +139,7 @@ describe("ResumeGallery", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     stubInfiniteScroll();
-    stubGetResumes();
+    stubGetResumesWithThumbnails();
   });
 
   // ── Empty state ─────────────────────────────────────────────────────────────
@@ -261,7 +270,8 @@ describe("ResumeGallery", () => {
 describe("ResumeDetailsClient", () => {
   const defaultProps = {
     resume: makeResume(),
-    signedUrl: "https://example.com/signed/resume-1.pdf",
+    signedFileUrl: "https://example.com/signed/resume-1.pdf",
+    signedThumbnailUrl: "", // TODO: add if tested with mock
     statsResult: { ok: true, value: makeStats() } as const,
     recentApplicationsResult: { ok: true, value: makeApplications(2) } as const,
   };
@@ -270,7 +280,7 @@ describe("ResumeDetailsClient", () => {
     vi.clearAllMocks();
     mockUseRouter.mockReturnValue({
       push: vi.fn(),
-    } as unknown as ReturnType<typeof useRouter>); // TS sorcery type s**t that I don't get how and why
+    } as unknown as ReturnType<typeof useRouter>); // TS sorcery that I don't get how and why
   });
 
   // ── Recent Applications ───────────────────────────────────────────────────
@@ -394,9 +404,9 @@ describe("ResumeDetailsClient", () => {
       expect(link).toHaveAttribute("target", "_blank");
     });
 
-    it("shows fallback message when signed URL is undefined", () => {
+    it("shows fallback message when signed file URL is undefined", () => {
       renderWithToast(
-        <ResumeDetailsClient {...defaultProps} signedUrl={undefined} />,
+        <ResumeDetailsClient {...defaultProps} signedFileUrl={undefined} />,
       );
       expect(
         screen.getByText(
