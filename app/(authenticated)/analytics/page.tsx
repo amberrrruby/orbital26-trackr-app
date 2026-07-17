@@ -18,9 +18,13 @@ export default async function AnalyticsPage() {
 
   // return <pre>{JSON.stringify(analytics, null, 2)}</pre>;
   return (
-    <div>
-      <div>
+    <main className={styles.page}>
+      <section className={styles.header}>
         <h1>Analytics</h1>
+        <p>Understand your performance and improve your job search strategy.</p>
+      </section>
+      <hr />
+      <div>
         <InsightsRow data={analytics} />
         <FunnelSection
           funnelMetrics={analytics.funnelMetrics}
@@ -43,6 +47,6 @@ export default async function AnalyticsPage() {
         <h2>Resume Response Rate</h2>
         <ResumeResponseRateChart data={analytics.resumeResponseRate} />
       </div>
-    </div>
+    </main>
   );
 }

@@ -66,7 +66,7 @@ export async function getAnalyticsData(userId: string): Promise<AnalyticsData> {
         MIN("eventDate") FILTER (WHERE status = 'INTERVIEW')     AS reached_interview,
         MIN("eventDate") FILTER (WHERE status = 'OFFER')         AS reached_offer
       FROM public."TimelineEvent"
-      WHERE type = 'STATUS_CHANGED'
+      WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
         AND "userId" = ${userId}
       GROUP BY "applicationId"
     ),

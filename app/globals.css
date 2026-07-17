@@ -86,6 +86,14 @@
   --status-rejected: #e05555;
   --status-rejected-subtle: rgba(224, 85, 85, 0.12);
   --status-rejected-border: rgba(224, 85, 85, 0.28);
+
+  /* Chart Colors */
+  --chart-blue-1: #1d4ed8;
+  --chart-blue-2: #2563eb;
+  --chart-blue-3: #3b82f6;
+  --chart-blue-4: #60a5fa;
+
+  --chart-funnel-stroke: rgba(248, 250, 252, 0.2);
 }
 
 /* ── Light theme ────────────────────────────────────────────── */
@@ -155,6 +163,13 @@
   --status-rejected: #c93535;
   --status-rejected-subtle: rgba(201, 53, 53, 0.1);
   --status-rejected-border: rgba(201, 53, 53, 0.22);
+
+  --chart-blue-1: #2563eb;
+  --chart-blue-2: #3b82f6;
+  --chart-blue-3: #60a5fa;
+  --chart-blue-4: #93c5fd;
+
+  --chart-funnel-stroke: rgba(30, 64, 175, 0.2);
 }
 
 /* ── Theme-invariant tokens ─────────────────────────────────── */
