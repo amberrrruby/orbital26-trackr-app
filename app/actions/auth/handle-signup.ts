@@ -1,9 +1,28 @@
 "use server";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import { SignupSchema } from "@/lib/types";
+import { AuthError } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
-type AuthState = { error: string } | null;
+function mapSupabaseError(error: AuthError): string {
+  switch (error.code) {
+    case "user_already_exists":
+    case "email_exists":
+      return "An account with this email already exists.";
+    case "weak_password":
+      return "Password does not meet security requirements.";
+    case "over_email_send_rate_limit":
+      return "Too many attempts. Please try again shortly.";
+    default:
+      return "Something went wrong. Please try again.";
+  }
+}
+
+// type AuthState = { error: string } | null;
+type AuthState = {
+  formError?: string;
+  fieldErrors?: Partial<Record<"name" | "email" | "password", string[]>>;
+} | null;
 
 export async function signupAction(prevState: AuthState, formData: FormData) {
   const supabase = await createSupabaseServerClient();
@@ -14,12 +33,10 @@ export async function signupAction(prevState: AuthState, formData: FormData) {
   });
 
   if (!parseResult.success) {
-    redirect(`/signup/?error=invalid-input`);
+    return { fieldErrors: parseResult.error.flatten().fieldErrors };
   }
 
-  const {
-    data: { name, email, password },
-  } = parseResult;
+  const { name, email, password } = parseResult.data;
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -28,11 +45,11 @@ export async function signupAction(prevState: AuthState, formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { formError: mapSupabaseError(error) };
   }
 
   if (!data.user) {
-    return { error: "Signup failed" };
+    return { formError: "Signup failed" };
   }
 
   redirect("/signup/confirm-email");
