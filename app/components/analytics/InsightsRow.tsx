@@ -17,6 +17,7 @@ Rejection rate - ??%
 
 import { AnalyticsData } from "@/lib/analytics-types";
 import InsightsCard from "./InsightsCard";
+import { Trophy, FileText, TrendingDown, CircleX } from "lucide-react";
 import styles from "./InsightsRow.module.css";
 
 type InsightsRowProps = {
@@ -39,9 +40,9 @@ export default function InsightsRow({ data }: InsightsRowProps) {
     rejectionRate,
   } = data;
   return (
-    // TODO: styling
     <div className={styles.row}>
       <InsightsCard
+        icon={Trophy}
         title={"Best performing source"}
         middle={bestPerformingSource?.source ?? null}
         bottom={
@@ -52,6 +53,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
       />
 
       <InsightsCard
+        icon={FileText}
         title={"Best performing resume"}
         middle={bestPerformingResume?.title ?? null}
         bottom={
@@ -62,6 +64,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
       />
 
       <InsightsCard
+        icon={TrendingDown}
         title={"Biggest drop-off stage"}
         middle={biggestDropOffStage}
         bottom={
@@ -73,8 +76,9 @@ export default function InsightsRow({ data }: InsightsRowProps) {
       />
 
       <InsightsCard
+        icon={CircleX}
         title={"Rejection rate"}
-        middle={rejectionRate ? `${rejectionRate}%` : `-`}
+        middle={rejectionRate !== null ? `${rejectionRate}%` : `-`}
         bottom={`applications with current status Rejected`}
       />
     </div>

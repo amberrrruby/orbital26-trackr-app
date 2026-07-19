@@ -1,66 +1,94 @@
 .wrapper {
-  padding: 16px;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  table-layout: fixed;
+}
+
+.th:nth-child(1),
+.td:nth-child(1) {
+  width: 220px;
+}
+
+.th:nth-child(2),
+.td:nth-child(2) {
+  width: 140px;
+}
+
+.th:nth-child(4),
+.tdRate {
+  width: 120px;
 }
 
 .th {
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #64748b;
-  padding: 6px 12px 10px 0;
-  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--color-text-secondary);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.td {
-  padding: 10px 12px 10px 0;
-  color: #0f172a;
-  white-space: nowrap;
+.td,
+.tdBar,
+.tdRate {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  vertical-align: middle;
 }
 
 .tdBar {
-  width: 100%;
-  padding: 10px 16px 10px 0;
+  padding-inline: var(--space-5);
+}
+
+.tdRate {
+  font-weight: var(--weight-semi);
+  white-space: nowrap;
 }
 
 .barTrack {
-  width: 100%;
-  height: 12px;
-  background-color: #f1f5f9;
-  border-radius: 6px;
+  width: min(100%, 640px);
+  height: 10px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .barFill {
   height: 100%;
-  background-color: #6366f1;
-  border-radius: 6px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    90deg,
+    var(--chart-blue-4) 0%,
+    var(--chart-blue-2) 100%
+  );
+  transition: width var(--ease-default);
 }
 
-.tdRate {
-  padding: 10px 0;
-  color: #0f172a;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-@media (prefers-color-scheme: dark) {
-  .th {
-    color: #94a3b8;
-    border-bottom-color: #334155;
+@media (max-width: 760px) {
+  .th:nth-child(1),
+  .td:nth-child(1) {
+    width: 160px;
   }
 
-  .td,
+  .th:nth-child(2),
+  .td:nth-child(2) {
+    width: 110px;
+  }
+
+  .th:nth-child(4),
   .tdRate {
-    color: #f8fafc;
+    width: 90px;
   }
 
-  .barTrack {
-    background-color: #1e293b;
+  .tdBar {
+    padding-inline: var(--space-3);
   }
 }

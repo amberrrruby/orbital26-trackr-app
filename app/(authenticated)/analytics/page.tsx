@@ -3,10 +3,11 @@ import { getAnalyticsData } from "@/lib/analytics";
 
 import InsightsRow from "@/app/components/analytics/InsightsRow";
 import FunnelSection from "@/app/components/analytics/FunnelSection";
-import ApplicationTrendChart from "@/app/components/analytics/ApplicationTrendChart";
+import AnalyticsChartCard from "@/app/components/analytics/AnalyticsChartCard";
 import SourceBreakdownChart from "@/app/components/analytics/SourceBreakdownChart";
 import ResumeResponseRateChart from "@/app/components/analytics/ResumeResponseRateChart";
 import styles from "./page.module.css";
+import ApplicationTrendChart from "@/app/components/analytics/ApplicationTrendChart";
 
 // Data is per-user and changes often — do not statically cache this route.
 export const dynamic = "force-dynamic";
@@ -18,9 +19,13 @@ export default async function AnalyticsPage() {
 
   // return <pre>{JSON.stringify(analytics, null, 2)}</pre>;
   return (
-    <div>
-      <div>
+    <main className={styles.page}>
+      <section className={styles.header}>
         <h1>Analytics</h1>
+        <p>Understand your performance and improve your job search strategy.</p>
+      </section>
+      <hr />
+      <div>
         <InsightsRow data={analytics} />
         <FunnelSection
           funnelMetrics={analytics.funnelMetrics}
@@ -29,20 +34,29 @@ export default async function AnalyticsPage() {
       </div>
 
       <div className={styles.row}>
-        <div>
-          <h2>Application Trend</h2>
+        <AnalyticsChartCard
+          title="Application Trend"
+          description="Applications submitted per week over the past month."
+        >
           <ApplicationTrendChart data={analytics.trend} />
-        </div>
+        </AnalyticsChartCard>
 
-        <div>
-          <h2>Source Breakdown</h2>
+        <AnalyticsChartCard
+          title="Source Breakdown"
+          description="Response rate by application source."
+        >
           <SourceBreakdownChart data={analytics.sourceBreakdown} />
-        </div>
+        </AnalyticsChartCard>
       </div>
+
       <div>
-        <h2>Resume Response Rate</h2>
-        <ResumeResponseRateChart data={analytics.resumeResponseRate} />
+        <AnalyticsChartCard
+          title="Resume Response Rate"
+          description="Response rate by resume used."
+        >
+          <ResumeResponseRateChart data={analytics.resumeResponseRate} />
+        </AnalyticsChartCard>
       </div>
-    </div>
+    </main>
   );
 }
