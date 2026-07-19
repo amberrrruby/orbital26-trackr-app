@@ -32,18 +32,21 @@ export default function FunnelSection({
     reachedOffer: getRate(funnelMetrics.reachedOffer, submitted),
   };
 
-  const entries: { label: string; value: number | null }[] = [
+  const entries: { label: string; value: number | null; helper: string }[] = [
     {
-      label: "Submitted to Progressed",
+      label: "Submitted → Progressed",
       value: conversionMetrics.submittedToProgressed,
+      helper: "Moved beyond Applied",
     },
     {
-      label: "OA to Interview conversion",
+      label: "OA/ Assessment → Interview",
       value: conversionMetrics.oaToInterview,
+      helper: "Conversion from Assessment to Interview",
     },
     {
-      label: "Interview to Offer conversion",
+      label: "Interview → Offer",
       value: conversionMetrics.interviewToOffer,
+      helper: "Conversion from Interview to Offer",
     },
   ];
 
@@ -102,12 +105,19 @@ export default function FunnelSection({
       </div>
 
       <div className={styles.conversions}>
-        <p className={styles.heading}>Conversion Metrics</p>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Conversion Rates</h2>
+          <p className={styles.description}>
+            Stage-to-stage rates showing how applications move between key
+            milestones.
+          </p>
+        </div>
         {entries.map((cm) => (
           <ConversionMetricCard
             key={cm.label}
             label={cm.label}
             value={cm.value}
+            helper={cm.helper}
           />
         ))}
       </div>

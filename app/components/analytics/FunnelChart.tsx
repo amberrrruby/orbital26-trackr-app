@@ -58,19 +58,28 @@ export default function AnalyticsFunnelChart({
               x2="1"
               y2="1"
             >
-              <stop offset="0%" stopColor={color} stopOpacity={0.95} />
-              <stop offset="100%" stopColor={color} stopOpacity={0.75} />
+              <stop offset="0%" stopColor={color} />
+              <stop offset="100%" stopColor={color} />
             </linearGradient>
           ))}
         </defs>
 
         <Tooltip
           contentStyle={{
-            backgroundColor: "var(--color-bg-overlay)",
-            border: "1px solid var(--color-border)",
+            backgroundColor: "var(--chart-tooltip-bg)",
+            border: "1px solid var(--chart-tooltip-border)",
             borderRadius: "var(--radius-md)",
-            color: "var(--color-text-primary)",
+            boxShadow: "var(--shadow-md)",
             fontSize: "0.8rem",
+          }}
+          labelStyle={{
+            color: "var(--chart-tooltip-label)",
+            fontWeight: "var(--weight-medium)",
+            marginBottom: "var(--space-1)",
+          }}
+          itemStyle={{
+            color: "var(--chart-tooltip-value)",
+            fontWeight: "var(--weight-medium)",
           }}
         />
         <Funnel

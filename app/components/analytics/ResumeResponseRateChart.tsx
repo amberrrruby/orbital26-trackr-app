@@ -28,7 +28,7 @@ export default function ResumeResponseRateChart({
                 <div className={styles.barTrack}>
                   <div
                     className={styles.barFill}
-                    style={{ width: `${row.responseRate}%` }}
+                    style={{ width: `${Math.min(row.responseRate, 100)}%` }}
                   />
                 </div>
               </td>

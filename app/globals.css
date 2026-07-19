@@ -94,6 +94,11 @@
   --chart-blue-4: #60a5fa;
 
   --chart-funnel-stroke: rgba(248, 250, 252, 0.2);
+
+  --chart-tooltip-bg: #f8fafc;
+  --chart-tooltip-border: rgba(15, 23, 42, 0.12);
+  --chart-tooltip-label: #111827;
+  --chart-tooltip-value: var(--chart-blue-4);
 }
 
 /* ── Light theme ────────────────────────────────────────────── */
@@ -164,12 +169,18 @@
   --status-rejected-subtle: rgba(201, 53, 53, 0.1);
   --status-rejected-border: rgba(201, 53, 53, 0.22);
 
+  /* Chart Colors */
   --chart-blue-1: #2563eb;
   --chart-blue-2: #3b82f6;
   --chart-blue-3: #60a5fa;
   --chart-blue-4: #93c5fd;
 
   --chart-funnel-stroke: rgba(30, 64, 175, 0.2);
+
+  --chart-tooltip-bg: #1e293b;
+  --chart-tooltip-border: rgba(248, 250, 252, 0.12);
+  --chart-tooltip-label: #f8fafc;
+  --chart-tooltip-value: var(--color-accent);
 }
 
 /* ── Theme-invariant tokens ─────────────────────────────────── */
