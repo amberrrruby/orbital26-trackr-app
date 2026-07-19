@@ -31,6 +31,18 @@ type InsightsRowProps = {
   >;
 };
 
+function formatDropOffStage(stage: string | null) {
+  if (!stage) return null;
+
+  const labels: Record<string, string> = {
+    submittedToProgressed: "Submitted → Progressed",
+    oaToInterview: "OA/Assessment → Interview",
+    interviewToOffer: "Interview → Offer",
+  };
+
+  return labels[stage] ?? stage;
+}
+
 export default function InsightsRow({ data }: InsightsRowProps) {
   const {
     bestPerformingSource,
@@ -66,7 +78,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
       <InsightsCard
         icon={TrendingDown}
         title={"Biggest drop-off stage"}
-        middle={biggestDropOffStage}
+        middle={formatDropOffStage(biggestDropOffStage)}
         bottom={
           biggestDropOffStage &&
           (conversionMetrics[biggestDropOffStage] !== null

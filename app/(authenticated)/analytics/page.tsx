@@ -24,8 +24,9 @@ export default async function AnalyticsPage() {
         <h1>Analytics</h1>
         <p>Understand your performance and improve your job search strategy.</p>
       </section>
-      <hr />
-      <div>
+      <hr className={styles.divider} />
+
+      <div className={styles.stack}>
         <InsightsRow data={analytics} />
         <FunnelSection
           funnelMetrics={analytics.funnelMetrics}
@@ -43,7 +44,7 @@ export default async function AnalyticsPage() {
 
         <AnalyticsChartCard
           title="Source Breakdown"
-          description="Response rate by application source."
+          description="Compares which application sources led to progress beyond Applied."
         >
           <SourceBreakdownChart data={analytics.sourceBreakdown} />
         </AnalyticsChartCard>
@@ -52,7 +53,7 @@ export default async function AnalyticsPage() {
       <div>
         <AnalyticsChartCard
           title="Resume Response Rate"
-          description="Response rate by resume used."
+          description="Shows which resume versions helped applications move beyond Applied."
         >
           <ResumeResponseRateChart data={analytics.resumeResponseRate} />
         </AnalyticsChartCard>
