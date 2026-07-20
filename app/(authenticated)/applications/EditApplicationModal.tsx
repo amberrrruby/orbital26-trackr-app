@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { updateApplication } from "@/app/actions/applications";
 import { Resume } from "@/lib/generated/client";
 import { Button } from "@/app/components/Button";
-import { Input, Textarea } from "@/app/components/Input";
+import { Input, Textarea, Select } from "@/app/components/Input";
 import { useToast } from "@/app/components/Toast";
 import styles from "./EditApplicationModal.module.css";
-import { ApplicationWithDetails } from "@/lib/types";
+import { ApplicationWithDetails, SOURCE_OPTIONS } from "@/lib/types";
 import ResumeSelector from "./ResumeSelector";
 
 const statusOptions = [
@@ -36,6 +37,16 @@ function formatDateForInput(date: Date | string) {
   return new Date(date).toISOString().split("T")[0];
 }
 
+function SaveButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Saving..." : "Save changes"}
+    </Button>
+  );
+}
+
 export default function EditApplicationModal({
   application,
   resumes,
@@ -55,6 +66,7 @@ export default function EditApplicationModal({
           description: "Something went wrong. Please try again.",
           variant: "danger",
         });
+        return;
       }
 
       if (result.error.type === "VALIDATION") {
@@ -78,104 +90,120 @@ export default function EditApplicationModal({
       <form action={handleSubmit} className={styles.form}>
         <input type="hidden" name="id" value={id} />
 
-        <Input
-          label="Company"
-          id="company"
-          name="company"
-          type="text"
-          defaultValue={company}
-          error={fieldErrors.company}
-          required
-        />
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Basic Details</h2>
 
-        <Input
-          label="Role"
-          id="role"
-          name="role"
-          type="role"
-          defaultValue={role}
-          error={fieldErrors.role}
-          required
-        />
+          <div className={styles.twoColumn}>
+            <Input
+              label="Company"
+              id="company"
+              name="company"
+              type="text"
+              defaultValue={company}
+              error={fieldErrors.company}
+              required
+            />
 
-        <Input
-          label="Source"
-          id="source"
-          name="source"
-          type="text"
-          defaultValue={source ?? ""}
-        />
+            <Input
+              label="Role"
+              id="role"
+              name="role"
+              type="role"
+              defaultValue={role}
+              error={fieldErrors.role}
+              required
+            />
+          </div>
 
-        <div className={styles.field}>
-          <label htmlFor="status" className={styles.label}>
-            Status
-          </label>
-          <select id="status" name="status" required defaultValue={status}>
-            {statusOptions.map((st) => (
-              <option key={st.value} value={st.value}>
-                {st.label}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className={styles.twoColumn}>
+            <Select
+              label="Source"
+              id="source"
+              name="source"
+              required
+              defaultValue={source}
+              error={fieldErrors.source}
+              options={[
+                { label: "Select a source", value: "", disabled: true },
+                ...Object.entries(SOURCE_OPTIONS).map(([key, label]) => ({
+                  label,
+                  value: key,
+                })),
+              ]}
+            />
 
-        <ResumeSelector
-          resumes={resumes}
-          defaultValue={application.resumeId ?? ""}
-        />
+            <Select
+              label="Status"
+              id="status"
+              name="status"
+              required
+              defaultValue={status}
+              error={fieldErrors.status}
+              options={statusOptions}
+            />
+          </div>
 
-        <Input
-          label="Date Applied"
-          id="dateApplied"
-          name="dateApplied"
-          type="date"
-          defaultValue={dateApplied ? formatDateForInput(dateApplied) : ""}
-        />
+          <ResumeSelector
+            resumes={resumes}
+            defaultValue={application.resumeId ?? ""}
+          />
+        </section>
 
-        <div className={styles.importantDates}>
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Important Dates</h2>
           <Input
-            label="OA/Assessment Date"
-            id="oaAssessmentDate"
-            name="oaAssessmentDate"
+            label="Date Applied"
+            id="dateApplied"
+            name="dateApplied"
             type="date"
-            defaultValue={importantDates.oaAssessmentDate ?? ""}
-            error={fieldErrors.oaAssessmentDate}
+            defaultValue={dateApplied ? formatDateForInput(dateApplied) : ""}
           />
 
-          <Input
-            label="Interview Date"
-            id="interviewDate"
-            name="interviewDate"
-            type="date"
-            defaultValue={importantDates.interviewDate ?? ""}
-            error={fieldErrors.interviewDate}
-          />
+          <div className={styles.importantDates}>
+            <Input
+              label="OA/Assessment Date"
+              id="oaAssessmentDate"
+              name="oaAssessmentDate"
+              type="date"
+              defaultValue={importantDates.oaAssessmentDate ?? ""}
+              error={fieldErrors.oaAssessmentDate}
+            />
 
-          <Input
-            label="Offer Expiry Date"
-            id="offerExpiryDate"
-            name="offerExpiryDate"
-            type="date"
-            defaultValue={importantDates.offerExpiryDate ?? ""}
-            error={fieldErrors.offerExpiryDate}
-          />
-        </div>
+            <Input
+              label="Interview Date"
+              id="interviewDate"
+              name="interviewDate"
+              type="date"
+              defaultValue={importantDates.interviewDate ?? ""}
+              error={fieldErrors.interviewDate}
+            />
 
-        <Textarea
-          label="Notes"
-          id="notes"
-          name="notes"
-          defaultValue={notes ?? ""}
-          error={fieldErrors.notes}
-        />
+            <Input
+              label="Offer Expiry Date"
+              id="offerExpiryDate"
+              name="offerExpiryDate"
+              type="date"
+              defaultValue={importantDates.offerExpiryDate ?? ""}
+              error={fieldErrors.offerExpiryDate}
+            />
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <Textarea
+            label="Notes"
+            id="notes"
+            name="notes"
+            defaultValue={notes ?? ""}
+            error={fieldErrors.notes}
+          />
+        </section>
 
         <div className={styles.buttonRow}>
           <Button type="button" variant="secondary" size="md" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="md">
-            Save Changes
-          </Button>
+          <SaveButton />
         </div>
       </form>
     </div>
