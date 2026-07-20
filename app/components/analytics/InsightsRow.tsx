@@ -55,6 +55,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
     <div className={styles.row}>
       <InsightsCard
         icon={Trophy}
+        href="#source-breakdown"
         title={"Best performing source"}
         middle={bestPerformingSource?.source ?? null}
         bottom={
@@ -66,6 +67,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
 
       <InsightsCard
         icon={FileText}
+        href="#resume-response-rate"
         title={"Best performing resume"}
         middle={bestPerformingResume?.title ?? null}
         bottom={
@@ -77,6 +79,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
 
       <InsightsCard
         icon={TrendingDown}
+        href="#funnel-metrics"
         title={"Biggest drop-off stage"}
         middle={formatDropOffStage(biggestDropOffStage)}
         bottom={

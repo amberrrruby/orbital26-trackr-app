@@ -5,13 +5,29 @@
   padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: linear-gradient(
-    0deg,
-    var(--color-bg-raised),
-    var(--color-accent-subtle) 80%
-  );
-  box-shadow: var(--shadow-md);
+  background:
+    radial-gradient(
+      circle at top left,
+      var(--color-accent-subtle) 0%,
+      transparent 55%
+    ),
+    var(--color-bg-raised);
+  box-shadow: var(--shadow-sm);
   min-width: 0;
+  transition:
+    transform var(--ease-default),
+    box-shadow var(--ease-default),
+    border-color var(--ease-default);
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent-border);
+}
+
+.html {
+  scroll-behavior: smooth;
 }
 
 .iconWrap {
@@ -19,8 +35,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--space-10);
-  height: var(--space-10);
+  width: var(--space-8);
+  height: var(--space-8);
   background: transparent;
   color: var(--color-accent);
   border-radius: var(--radius-sm);

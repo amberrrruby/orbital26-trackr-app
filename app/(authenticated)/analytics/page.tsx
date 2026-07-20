@@ -28,10 +28,12 @@ export default async function AnalyticsPage() {
 
       <div className={styles.stack}>
         <InsightsRow data={analytics} />
-        <FunnelSection
-          funnelMetrics={analytics.funnelMetrics}
-          conversionMetrics={analytics.conversionMetrics}
-        />
+        <div id="funnel-metrics">
+          <FunnelSection
+            funnelMetrics={analytics.funnelMetrics}
+            conversionMetrics={analytics.conversionMetrics}
+          />
+        </div>
       </div>
 
       <div className={styles.row}>
@@ -42,15 +44,17 @@ export default async function AnalyticsPage() {
           <ApplicationTrendChart data={analytics.trend} />
         </AnalyticsChartCard>
 
-        <AnalyticsChartCard
-          title="Source Breakdown"
-          description="Compares which application sources led to progress beyond Applied."
-        >
-          <SourceBreakdownChart data={analytics.sourceBreakdown} />
-        </AnalyticsChartCard>
+        <div id="source-breakdown">
+          <AnalyticsChartCard
+            title="Source Breakdown"
+            description="Compares which application sources led to progress beyond Applied."
+          >
+            <SourceBreakdownChart data={analytics.sourceBreakdown} />
+          </AnalyticsChartCard>
+        </div>
       </div>
 
-      <div>
+      <div id="resume-response-rate">
         <AnalyticsChartCard
           title="Resume Response Rate"
           description="Shows which resume versions helped applications move beyond Applied."
