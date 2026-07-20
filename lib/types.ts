@@ -215,29 +215,6 @@ export type DeleteResumeError = ActionFailureError;
 
 export type GenerateThumbnailError = ActionFailureError;
 
-// export type GenerateThumbnailError
-// TODO: resolve after thumbnail generation service is confirmed
-
-// const ACCEPTED_FILE_TYPES = [
-//   "application/pdf",
-//   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-// ];
-// const MAX_FILE_SIZE_MB = 10;
-
-// const ResumeFileSchema = z.object({
-//   file: z
-//     .instanceof(File)
-//     .refine((f) => f.size > 0, "File is required")
-//     .refine(
-//       (f) => f.size <= MAX_FILE_SIZE_MB * 1024 * 1024,
-//       `File must be under ${MAX_FILE_SIZE_MB} MB`,
-//     )
-//     .refine(
-//       (f) => ACCEPTED_FILE_TYPES.includes(f.type),
-//       "Only PDF or DOCX files are currently accepted",
-//     ),
-// });
-
 export const SORTABLE_FIELDS = ["createdAt", "updatedAt"] as const;
 export const ORDERS = ["asc", "desc"] as const;
 export type SortableField = (typeof SORTABLE_FIELDS)[number];

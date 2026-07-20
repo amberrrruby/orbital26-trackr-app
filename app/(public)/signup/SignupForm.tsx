@@ -25,11 +25,32 @@ export default function SignupForm({ errorMessage }: Props) {
         {errorMessage && <p>{errorMessage}</p>}
 
         <form action={formAction} className={styles.signupForm}>
-          <Input label="Display name:" name="displayName" type="text" />
-          <Input label="Email:" name="email" type="email" />
-          <Input label="Password:" name="password" type="password" />
+          {state?.formError && (
+            <p className={styles.error}>{state.formError}</p>
+          )}
 
-          {state?.error && <p>{state.error}</p>}
+          <Input label="Display name:" name="displayName" type="text" />
+          {state?.fieldErrors?.name?.map((msg) => (
+            <p key={msg} className={styles.fieldError}>
+              {msg}
+            </p>
+          ))}
+
+          <Input label="Email:" name="email" type="email" />
+          {state?.fieldErrors?.email?.map((msg) => (
+            <p key={msg} className={styles.fieldError}>
+              {msg}
+            </p>
+          ))}
+
+          <Input label="Password:" name="password" type="password" />
+          {state?.fieldErrors?.password?.map((msg) => (
+            <p key={msg} className={styles.fieldError}>
+              {msg}
+            </p>
+          ))}
+
+          {/* {state?.error && <p>{state.error}</p>} */}
 
           <Button type="submit" disabled={isPending} variant="primary">
             {isPending ? "Processing..." : "Sign up"}

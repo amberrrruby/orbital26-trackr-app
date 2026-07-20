@@ -22,6 +22,7 @@ import {
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 const supabaseAdmin = createClient(
   env.NEXT_PUBLIC_SUPABASE_URL,
@@ -105,6 +106,7 @@ export async function changeEmail(
     return { ok: false, error: { type: "FAILURE" } };
   }
 
+  revalidatePath("layout");
   redirect(`/settings/account?success=email-updated`);
 }
 
@@ -132,6 +134,7 @@ export async function editProfile(
     data: { name },
   });
 
+  revalidatePath("layout");
   // Only a boolean `true` here because the page only does one thing, which is edit profile information
   redirect(`/settings/profile?success=true`);
 }
