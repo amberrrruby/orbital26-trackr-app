@@ -24,13 +24,16 @@ export default async function AnalyticsPage() {
         <h1>Analytics</h1>
         <p>Understand your performance and improve your job search strategy.</p>
       </section>
-      <hr />
-      <div>
+      <hr className={styles.divider} />
+
+      <div className={styles.stack}>
         <InsightsRow data={analytics} />
-        <FunnelSection
-          funnelMetrics={analytics.funnelMetrics}
-          conversionMetrics={analytics.conversionMetrics}
-        />
+        <div id="funnel-metrics">
+          <FunnelSection
+            funnelMetrics={analytics.funnelMetrics}
+            conversionMetrics={analytics.conversionMetrics}
+          />
+        </div>
       </div>
 
       <div className={styles.row}>
@@ -41,18 +44,20 @@ export default async function AnalyticsPage() {
           <ApplicationTrendChart data={analytics.trend} />
         </AnalyticsChartCard>
 
-        <AnalyticsChartCard
-          title="Source Breakdown"
-          description="Response rate by application source."
-        >
-          <SourceBreakdownChart data={analytics.sourceBreakdown} />
-        </AnalyticsChartCard>
+        <div id="source-breakdown">
+          <AnalyticsChartCard
+            title="Source Breakdown"
+            description="Compares which application sources led to progress beyond Applied."
+          >
+            <SourceBreakdownChart data={analytics.sourceBreakdown} />
+          </AnalyticsChartCard>
+        </div>
       </div>
 
-      <div>
+      <div id="resume-response-rate">
         <AnalyticsChartCard
           title="Resume Response Rate"
-          description="Response rate by resume used."
+          description="Shows which resume versions helped applications move beyond Applied."
         >
           <ResumeResponseRateChart data={analytics.resumeResponseRate} />
         </AnalyticsChartCard>

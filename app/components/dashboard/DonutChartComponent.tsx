@@ -9,12 +9,20 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { STATUS_COLORS } from "./constants";
 import styles from "./DonutChartComponent.module.css";
 
 type DonutChartComponentProps = {
   total: number;
   statusBreakdown: StatusCount[];
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  WISHLIST: "var(--status-wishlist)",
+  APPLIED: "var(--status-applied)",
+  OA_ASSESSMENT: "var(--status-assessment)",
+  INTERVIEW: "var(--status-interview)",
+  OFFER: "var(--status-offer)",
+  REJECTED: "var(--status-rejected)",
 };
 
 export default function DonutChartComponent({
@@ -24,7 +32,7 @@ export default function DonutChartComponent({
   return (
     <div className={styles.wrapper}>
       <div className={styles.chart}>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={statusBreakdown}
@@ -35,7 +43,12 @@ export default function DonutChartComponent({
               paddingAngle={2}
             >
               {statusBreakdown.map((entry) => (
-                <Cell key={entry.status} fill={STATUS_COLORS[entry.status]} />
+                <Cell
+                  key={entry.status}
+                  fill={
+                    STATUS_COLORS[entry.status] ?? "var(--color-text-tertiary)"
+                  }
+                />
               ))}
               <Label value="Total" position="center" dy={-10} />
               <Label value={total} position="center" dy={10} />
@@ -56,9 +69,12 @@ export default function DonutChartComponent({
           <li key={status} className={styles.legendItem}>
             <span
               className={styles.legendDot}
-              style={{ backgroundColor: STATUS_COLORS[status] }}
+              style={{
+                backgroundColor:
+                  STATUS_COLORS[status] ?? "var(--color-text-tertiary)",
+              }}
             />
-            {status}
+            <span className={styles.legendLabel}>{status}</span>
             <span className={styles.legendCount}>{count}</span>
           </li>
         ))}

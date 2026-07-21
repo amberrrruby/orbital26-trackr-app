@@ -63,17 +63,17 @@
   --shadow-xl: 0 16px 56px rgba(0, 0, 0, 0.6);
 
   /* Status Colors */
-  --status-wishlist: #f59e0b;
-  --status-wishlist-subtle: rgba(245, 158, 11, 0.12);
-  --status-wishlist-border: rgba(245, 158, 11, 0.28);
+  --status-wishlist: #22d3ee;
+  --status-wishlist-subtle: rgba(34, 211, 238, 0.12);
+  --status-wishlist-border: rgba(34, 211, 238, 0.28);
 
   --status-applied: #489df1;
   --status-applied-subtle: rgba(72, 157, 241, 0.12);
   --status-applied-border: rgba(72, 157, 241, 0.28);
 
-  --status-assessment: #22d3ee;
-  --status-assessment-subtle: rgba(34, 211, 238, 0.12);
-  --status-assessment-border: rgba(34, 211, 238, 0.28);
+  --status-assessment: #f59e0b;
+  --status-assessment-subtle: rgba(245, 158, 11, 0.12);
+  --status-assessment-border: rgba(245, 158, 11, 0.28);
 
   --status-interview: #a78bfa;
   --status-interview-subtle: rgba(167, 139, 250, 0.12);
@@ -145,17 +145,17 @@
   --shadow-xl: 0 16px 56px rgba(0, 0, 0, 0.15);
 
   /* Status Colors */
-  --status-wishlist: #b45309;
-  --status-wishlist-subtle: rgba(180, 83, 9, 0.1);
-  --status-wishlist-border: rgba(180, 83, 9, 0.22);
+  --status-wishlist: #0e7490;
+  --status-wishlist-subtle: rgba(14, 116, 144, 0.1);
+  --status-wishlist-border: rgba(14, 116, 144, 0.22);
 
   --status-applied: #005bd1;
   --status-applied-subtle: rgba(0, 91, 209, 0.1);
   --status-applied-border: rgba(0, 91, 209, 0.22);
 
-  --status-assessment: #0e7490;
-  --status-assessment-subtle: rgba(14, 116, 144, 0.1);
-  --status-assessment-border: rgba(14, 116, 144, 0.22);
+  --status-assessment: #cf610d;
+  --status-assessment-subtle: rgba(180, 83, 9, 0.1);
+  --status-assessment-border: rgba(180, 83, 9, 0.22);
 
   --status-interview: #6d28d9;
   --status-interview-subtle: rgba(109, 40, 217, 0.1);

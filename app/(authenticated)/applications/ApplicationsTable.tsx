@@ -92,13 +92,21 @@ export default function ApplicationsTable({
     },
     {
       accessorKey: "dateApplied",
-      header: ({ column }) => (
-        <button onClick={column.getToggleSortingHandler()}>
-          Date Applied
-          {column.getIsSorted() === "asc" && " ↑"}
-          {column.getIsSorted() === "desc" && " ↓"}
-        </button>
-      ),
+      header: ({ column }) => {
+        const sorted = column.getIsSorted();
+
+        return (
+          <button
+            onClick={column.getToggleSortingHandler()}
+            className={tableStyles.sortButton}
+          >
+            Date Applied
+            <span className={tableStyles.sortIcon}>
+              {sorted === "asc" ? " ↑" : sorted === "desc" ? " ↓" : " ↕"}
+            </span>
+          </button>
+        );
+      },
       enableSorting: true,
       cell: ({ row }) =>
         row.original.dateApplied
@@ -107,25 +115,41 @@ export default function ApplicationsTable({
     },
     {
       accessorKey: "createdAt",
-      header: ({ column }) => (
-        <button onClick={column.getToggleSortingHandler()}>
-          Created At
-          {column.getIsSorted() === "asc" && " ↑"}
-          {column.getIsSorted() === "desc" && " ↓"}
-        </button>
-      ),
+      header: ({ column }) => {
+        const sorted = column.getIsSorted();
+
+        return (
+          <button
+            onClick={column.getToggleSortingHandler()}
+            className={tableStyles.sortButton}
+          >
+            Created At
+            <span className={tableStyles.sortIcon}>
+              {sorted === "asc" ? " ↑" : sorted === "desc" ? " ↓" : " ↕"}
+            </span>
+          </button>
+        );
+      },
       enableSorting: true,
       cell: ({ row }) => row.original.createdAt.toLocaleDateString(),
     },
     {
       accessorKey: "updatedAt",
-      header: ({ column }) => (
-        <button onClick={column.getToggleSortingHandler()}>
-          Updated At
-          {column.getIsSorted() === "asc" && " ↑"}
-          {column.getIsSorted() === "desc" && " ↓"}
-        </button>
-      ),
+      header: ({ column }) => {
+        const sorted = column.getIsSorted();
+
+        return (
+          <button
+            onClick={column.getToggleSortingHandler()}
+            className={tableStyles.sortButton}
+          >
+            Updated At
+            <span className={tableStyles.sortIcon}>
+              {sorted === "asc" ? " ↑" : sorted === "desc" ? " ↓" : " ↕"}
+            </span>
+          </button>
+        );
+      },
       cell: ({ row }) => row.original.updatedAt.toLocaleDateString(),
     },
     {
@@ -223,56 +247,58 @@ export default function ApplicationsTable({
         </div>
       </div>
 
-      <table>
-        <thead className={tableStyles.tableHead}>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className={
-                    header.column.id === "company"
-                      ? tableStyles.companyColumn
-                      : header.column.id === "role"
-                        ? tableStyles.roleColumn
-                        : header.column.id === "source"
-                          ? tableStyles.sourceColumn
-                          : undefined
-                  }
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      <div className={tableStyles.tableWrapper}>
+        <table className={tableStyles.table}>
+          <thead className={tableStyles.tableHead}>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className={
+                      header.column.id === "company"
+                        ? tableStyles.companyColumn
+                        : header.column.id === "role"
+                          ? tableStyles.roleColumn
+                          : header.column.id === "source"
+                            ? tableStyles.sourceColumn
+                            : undefined
+                    }
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className={
-                    cell.column.id === "company"
-                      ? tableStyles.companyColumn
-                      : cell.column.id === "role"
-                        ? tableStyles.roleColumn
-                        : cell.column.id === "source"
-                          ? tableStyles.sourceColumn
-                          : undefined
-                  }
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className={
+                      cell.column.id === "company"
+                        ? tableStyles.companyColumn
+                        : cell.column.id === "role"
+                          ? tableStyles.roleColumn
+                          : cell.column.id === "source"
+                            ? tableStyles.sourceColumn
+                            : undefined
+                    }
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className={tableStyles.pagination}>
         <Button

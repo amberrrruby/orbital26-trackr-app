@@ -6,6 +6,7 @@ interface InsightCardProps {
   middle: string | null;
   bottom: string | null;
   icon: LucideIcon;
+  href?: string;
 }
 
 export default function InsightsCard({
@@ -13,9 +14,10 @@ export default function InsightsCard({
   middle,
   bottom,
   icon: Icon,
+  href,
 }: InsightCardProps) {
-  return (
-    <div className={styles.card}>
+  const content = (
+    <>
       <div className={styles.iconWrap} aria-hidden="true">
         <Icon className={styles.icon} strokeWidth={1.8} />
       </div>
@@ -25,6 +27,16 @@ export default function InsightsCard({
         <p className={styles.value}>{middle ?? "-"}</p>
         {bottom && <p className={styles.subMetric}>{bottom}</p>}
       </div>
-    </div>
+    </>
   );
+
+  if (href) {
+    return (
+      <a href={href} className={styles.card}>
+        {content}
+      </a>
+    );
+  }
+
+  return <div className={styles.card}>{content}</div>;
 }

@@ -164,7 +164,12 @@ export const STATUS_LABELS: Record<string, Status> = {
 export const BaseApplicationSchema = z.object({
   company: z.string().min(1, "Company field is required"),
   role: z.string().min(1, "Role field is required"),
-  source: z.enum(SOURCE_OPTIONS_KEYS, { error: "Invalid source selected" }),
+  source: z.preprocess(
+    emptyStringToUndefined,
+    z.enum(SOURCE_OPTIONS_KEYS, {
+      error: "Source is required",
+    }),
+  ),
   status: z.enum(Status).default(Status.APPLIED),
   // possible to be passed in as null since date is picked through calendar pop-up, not text field
   resumeId: z.cuid2().optional(),

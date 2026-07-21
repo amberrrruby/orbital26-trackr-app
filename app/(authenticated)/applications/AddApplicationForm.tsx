@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createApplication } from "@/app/actions/applications";
 import styles from "./AddApplicationForm.module.css";
 import { Button } from "@/app/components/Button";
-import { Input, Textarea } from "@/app/components/Input";
+import { Input, Textarea, Select } from "@/app/components/Input";
 import { useToast } from "@/app/components/Toast";
 import { useRouter } from "next/navigation";
 import { Resume } from "@/lib/generated/client";
@@ -64,92 +64,129 @@ export default function AddApplicationForm({ resumes }: Props) {
 
   return (
     <form action={handleSubmit} className={styles.form}>
-      <Input
-        label="Company"
-        id="company"
-        name="company"
-        type="text"
-        error={fieldErrors.company}
-        required
-      />
+      <section className={styles.section}>
+        <div className={styles.sectionIntro}>
+          <h2 className={styles.sectionTitle}>Basic Details</h2>
+          <p className={styles.sectionDescription}>
+            Fill in the main details used to track this application across
+            Trackr.
+          </p>
+        </div>
 
-      <Input
-        label="Role"
-        id="role"
-        name="role"
-        type="role"
-        error={fieldErrors.role}
-        required
-      />
+        <div className={styles.sectionContent}>
+          <div className={styles.twoColumn}>
+            <Input
+              label="Company"
+              id="company"
+              name="company"
+              type="text"
+              error={fieldErrors.company}
+              required
+            />
 
-      <label htmlFor="source" className={styles.label}>
-        Source
-      </label>
-      {/* There's a weird gap here, I don't know why. I just placed a label here... */}
-      <select id="source" name="source" defaultValue="">
-        <option value="" disabled>
-          Select a source
-        </option>
-        {Object.entries(SOURCE_OPTIONS).map(([key, label]) => (
-          <option key={key} value={key}>
-            {label}
-          </option>
-        ))}
-      </select>
+            <Input
+              label="Role"
+              id="role"
+              name="role"
+              type="role"
+              error={fieldErrors.role}
+              required
+            />
+          </div>
 
-      <div className={styles.field}>
-        <label htmlFor="status">Status</label>
-        <select id="status" name="status" required defaultValue="APPLIED">
-          {statusOptions.map((status) => (
-            <option key={status.value} value={status.value}>
-              {status.label}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className={styles.twoColumn}>
+            <Select
+              label="Source"
+              id="source"
+              name="source"
+              required
+              defaultValue=""
+              error={fieldErrors.source}
+              options={[
+                { label: "Select a source", value: "", disabled: true },
+                ...Object.entries(SOURCE_OPTIONS).map(([key, label]) => ({
+                  label,
+                  value: key,
+                })),
+              ]}
+            />
 
-      <ResumeSelector resumes={resumes} defaultValue={""} />
+            <Select
+              label="Status"
+              id="status"
+              name="status"
+              required
+              defaultValue="APPLIED"
+              error={fieldErrors.status}
+              options={statusOptions}
+            />
+          </div>
 
-      <Input
-        label="Date Applied"
-        id="dateApplied"
-        name="dateApplied"
-        type="date"
-        error={fieldErrors.dateApplied}
-      />
+          <ResumeSelector resumes={resumes} defaultValue={""} />
+        </div>
+      </section>
 
-      <div className={styles.importantDates}>
-        <Input
-          label="OA/Assessment Date"
-          id="oaAssessmentDate"
-          name="oaAssessmentDate"
-          type="date"
-          error={fieldErrors.oaAssessmentDate}
-        />
+      <section className={styles.section}>
+        <div className={styles.sectionIntro}>
+          <h2 className={styles.sectionTitle}>Important Dates</h2>
+          <p className={styles.sectionDescription}>
+            Dates used for reminders and timeline events.
+          </p>
+        </div>
 
-        <Input
-          label="Interview Date"
-          id="interviewDate"
-          name="interviewDate"
-          type="date"
-          error={fieldErrors.interviewDate}
-        />
+        <div className={styles.sectionContent}>
+          <Input
+            label="Date Applied"
+            id="dateApplied"
+            name="dateApplied"
+            type="date"
+            error={fieldErrors.dateApplied}
+          />
 
-        <Input
-          label="Offer Expiry Date"
-          id="offerExpiryDate"
-          name="offerExpiryDate"
-          type="date"
-          error={fieldErrors.offerExpiryDate}
-        />
-      </div>
+          <div className={styles.importantDates}>
+            <Input
+              label="OA/Assessment Date"
+              id="oaAssessmentDate"
+              name="oaAssessmentDate"
+              type="date"
+              error={fieldErrors.oaAssessmentDate}
+            />
 
-      <Textarea
-        label="Notes"
-        id="notes"
-        name="notes"
-        error={fieldErrors.notes}
-      />
+            <Input
+              label="Interview Date"
+              id="interviewDate"
+              name="interviewDate"
+              type="date"
+              error={fieldErrors.interviewDate}
+            />
+
+            <Input
+              label="Offer Expiry Date"
+              id="offerExpiryDate"
+              name="offerExpiryDate"
+              type="date"
+              error={fieldErrors.offerExpiryDate}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionIntro}>
+          <h2 className={styles.sectionTitle}>Notes</h2>
+          <p className={styles.sectionDescription}>
+            Add any extra details, contacts, or next steps for this application.
+          </p>
+        </div>
+        <div className={styles.sectionContent}>
+          <Textarea
+            label="Notes"
+            id="notes"
+            name="notes"
+            error={fieldErrors.notes}
+          />
+        </div>
+      </section>
 
       <div className={styles.createButton}>
         <SubmitButton />

@@ -1,6 +1,10 @@
 .layout {
   display: flex;
-  min-height: 100vh;
+  flex-direction: column;
+  padding: var(--content-padding);
+  max-width: var(--content-max-w);
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Main wrapper */
@@ -16,20 +20,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1.75rem;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.pageTitle {
-  font-size: 1.375rem;
-  font-weight: 600;
+.title {
   margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+}
+
+.description {
+  margin-bottom: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
 }
 
 .topbarRight {
   display: flex;
   align-items: center;
   gap: 1rem;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
 }
 
 .userMeta {
@@ -50,10 +64,10 @@
 
 .content {
   flex: 1;
-  padding: 1.25rem 1.75rem 2rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-4);
 }
 
 .summaryRow {
@@ -63,36 +77,70 @@
 }
 
 .summaryCard {
-  padding: 1.125rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      var(--color-accent-subtle) 0,
+      transparent 34%
+    ),
+    var(--color-bg-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.summaryCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 12% 20%,
+    var(--color-accent-subtle) 0,
+    transparent 28%
+  );
+  pointer-events: none;
 }
 
 .summaryCardTitle {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  margin: 0 0 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
 }
 
 .summaryCardValue {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
   line-height: 1;
-  margin: 0 0 0.375rem;
+  margin: 0 0 var(--space-2);
 }
 
 .summaryCardSubtitle {
-  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
   margin: 0;
 }
 
 .midRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  align-items: start;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.midRow > .panel {
+  height: 100%;
 }
 
 .panel {
-  padding: 1.125rem 1.25rem;
+  padding: var(--space-4);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
 }
 
 .panelHeader {
@@ -108,13 +156,26 @@
   margin: 0;
 }
 
+.chartContent {
+  height: calc(100% - 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .viewAll {
   font-size: 0.8125rem;
   text-decoration: none;
 }
 
+.remindersContent {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: var(--space-1);
+}
+
 .reminderGroup {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
 }
 
 .reminderGroup:last-child {
@@ -122,37 +183,75 @@
 }
 
 .reminderGroupTitle {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-1);
 }
 
 .reminderRow {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.4rem 0;
+  gap: var(--space-3);
+  padding: 6px var(--space-3);
+  margin-bottom: 6px;
+  border-left: 3px solid var(--reminder-accent);
+  border-right: 1px solid var(--color-border-strong);
+  border-top: 1px solid var(--color-border-strong);
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.reminderUpcomingAlerts {
+  --reminder-accent: var(--color-accent);
+}
+
+.reminderToday {
+  --reminder-accent: var(--color-success);
+}
+
+.reminderOverdue {
+  --reminder-accent: var(--color-warning);
+}
+
+.reminderContent {
+  min-width: 0;
+  flex: 1;
 }
 
 .reminderTitle {
-  font-size: 0.875rem;
-  flex: 1;
-  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--color-text-primary);
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.reminderCompany {
-  font-size: 0.75rem;
+.reminderMeta {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.reminderDate {
+  color: var(--color-text-secondary);
   flex-shrink: 0;
+  font-size: var(--text-xs);
+  white-space: nowrap;
 }
 
 .emptyState {
-  font-size: 0.8125rem;
-  margin: 0;
-  padding: 0.25rem 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  padding: var(--space-2);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
 }
 
 .tableWrapper {
@@ -163,19 +262,19 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .table th {
   text-align: left;
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-1) var(--space-2);
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .table td {
-  padding: 0.625rem 0.75rem;
+  padding: var(--space-1) var(--space-2);
   vertical-align: middle;
 }
 
@@ -183,4 +282,56 @@
   text-align: center;
   padding: 1.5rem 0.75rem;
   font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding-inline: var(--space-4);
+  }
+
+  .topbarRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .content {
+    padding-inline: var(--space-4);
+  }
+
+  .midRow {
+    grid-template-columns: 1fr;
+  }
+
+  .remindersContent {
+    max-height: 360px;
+  }
+}
+
+@media (max-width: 520px) {
+  .summaryRow {
+    grid-template-columns: 1fr;
+  }
+
+  .content {
+    padding-inline: 0;
+  }
+
+  .panel {
+    padding: var(--space-4);
+  }
+
+  .topbar {
+    padding-inline: 0;
+  }
+
+  .topbarRight {
+    align-items: flex-start;
+  }
+
+  .userMeta {
+    align-items: flex-start;
+  }
 }
