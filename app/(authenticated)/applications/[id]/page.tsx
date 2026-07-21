@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ApplicationStatusBadge } from "@/app/components/ApplicationStatusBadge";
 import { Button } from "@/app/components/Button";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 import { getApplicationById } from "@/app/actions/applications";
 import { getTimelineEvents } from "@/app/actions/timeline";
 import { getRemindersByApplicationId } from "@/app/actions/reminders";
@@ -31,8 +32,10 @@ export default async function ApplicationDetailsPage({
       <main className={styles.page}>
         <Link href="/applications">Back to Applications</Link>
 
-        <h1>Application Details</h1>
-        <p>Something went wrong while loading this application.</p>
+        <ErrorDisplay
+          title="Could not load application"
+          message="Something went wrong while loading this application. Please try again."
+        />
       </main>
     );
   }

@@ -1,0 +1,220 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: var(--content-padding);
+  max-width: var(--content-max-w);
+  margin: 0 auto;
+}
+
+.title {
+  width: 180px;
+  height: 28px;
+  margin: var(--space-1);
+}
+
+.subtitle {
+  width: 240px;
+  height: 18px;
+  margin-bottom: var(--space-1);
+}
+
+.addButton {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.addButtonSkeleton {
+  width: 160px;
+  height: 32px;
+  border-radius: var(--radius-md);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.searchInput {
+  width: 280px;
+  height: 36px;
+  border-radius: var(--radius-md);
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.filterLabel {
+  width: 100px;
+  height: 20px;
+}
+
+.filterSelect {
+  width: 140px;
+  height: 40px;
+  border-radius: var(--radius-md);
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.tableHeader,
+.tableRow {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1.2fr)
+    minmax(160px, 1.3fr)
+    minmax(140px, 1.1fr)
+    minmax(140px, 1fr)
+    minmax(100px, 1fr)
+    minmax(80px, 1fr)
+    minmax(90px, 1fr)
+    100px;
+  align-items: center;
+  column-gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}
+
+.tableHeader {
+  min-height: 44px;
+  background: var(--color-bg-inset);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableRow {
+  min-height: 48px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.companyHeader,
+.roleHeader,
+.sourceHeader,
+.statusHeader,
+.dateHeader,
+.actionsHeader {
+  height: 16px;
+}
+
+.companyHeader {
+  width: 90px;
+}
+
+.roleHeader {
+  width: 70px;
+}
+
+.sourceHeader {
+  width: 80px;
+}
+
+.statusHeader {
+  width: 60px;
+}
+
+.dateHeader {
+  width: 90px;
+}
+
+.actionsHeader {
+  width: 80px;
+}
+
+.companyCell,
+.roleCell,
+.sourceCell,
+.dateCell {
+  height: 20px;
+}
+
+.companyCell {
+  width: 120px;
+}
+
+.roleCell {
+  width: 120px;
+}
+
+.sourceCell {
+  width: 120px;
+}
+
+.statusCell {
+  width: 80px;
+  height: 22px;
+  border-radius: var(--radius-full);
+}
+
+.dateCell {
+  width: 68px;
+}
+
+.actionIcons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  white-space: nowrap;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.pageButton {
+  width: 36px;
+  height: 30px;
+  border-radius: var(--radius-md);
+}
+
+.pageText {
+  width: 88px;
+  height: 20px;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .searchInput,
+  .filterSelect {
+    width: 100%;
+  }
+
+  .filterGroup {
+    justify-content: space-between;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+  }
+
+  .tableHeader,
+  .tableRow {
+    min-width: 1100px;
+  }
+}
