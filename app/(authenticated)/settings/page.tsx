@@ -7,11 +7,6 @@ export default async function SettingsPage() {
       <section className={styles.header}>
         <h1>Settings</h1>
         <p>Manage your account preferences and security settings.</p>
-        {/*<p>
-        This should be a wrapped sidebar / navigation bar. All visits to
-        `/settings` should be considered to be redirected to `/settings/profile`
-        in the future
-      </p>*/}
       </section>
       <hr />
 

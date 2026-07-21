@@ -5,30 +5,12 @@ import { User as DBUser } from "@/lib/generated/client";
 import styles from "../Settings.module.css";
 import { ReminderSettingsSchema } from "@/lib/types";
 
-type Props = {
-  searchParams: Promise<{
-    success?: string;
-  }>;
-};
-
-function getSuccessMessage(success?: string): string | null {
-  switch (success) {
-    case "true":
-      return "Profile information edited sucessfully.";
-    default:
-      return null;
-  }
-}
-
-export default async function EditProfilePage({ searchParams }: Props) {
+export default async function EditProfilePage() {
   // NOTE: if needed, wrap into `requireAppUser: () => DBUser` if reuses exist
   const userId = await requireUserOrRedirectLogin();
   const userProfile: DBUser | null = await prisma.user.findUnique({
     where: { id: userId },
   });
-
-  const { success } = await searchParams;
-  const successMessage = getSuccessMessage(success);
 
   if (!userProfile) {
     // this means: current session user passed auth check (has User record in auth DB, but does NOT have a record in the public User DB.)
@@ -43,19 +25,10 @@ export default async function EditProfilePage({ searchParams }: Props) {
   const userSettings = ReminderSettingsSchema.safeParse(
     userProfile.settings,
   ).data;
-  // if (!userSettings) { // shouldn't happen
-  //   userSettings = {
-  //     eventReminderDays: [],
-  //     appliedFollowUpDays: 7,
-  //     assessmentFollowUpDays: 7,
-  //     interviewFollowUpDays: 7,
-  //   };
-  // }
 
-  // Forceful `!` because the internal JSON that's being passed around shouldn't cause an issue...
+  // Forceful `!` because the internal JSON that's being passed around shouldn't be null, hence causing an issue...
   return (
     <main className={styles.page}>
-      {successMessage && <div className={styles.toast}>{successMessage}</div>}
       <EditProfileForm userProfile={userProfile} userSettings={userSettings!} />
     </main>
   );

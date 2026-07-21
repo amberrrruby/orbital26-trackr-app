@@ -2,31 +2,33 @@
 
 import { changePassword } from "@/app/actions/settings";
 import styles from "../Settings.module.css";
-import { useState } from "react";
 import { Input } from "@/app/components/Input";
 import { Button } from "@/app/components/Button";
+import { useToast } from "@/app/components/Toast";
 
 export default function ChangePasswordForm() {
-  const [errMsg, setErrMsg] = useState<string | null>(null);
+  const { toast } = useToast();
 
   async function handleSubmit(formData: FormData) {
-    setErrMsg(null);
     const result = await changePassword(formData);
 
     if (!result.ok) {
       const { error } = result;
-      if (error.type === "FAILURE") {
-        setErrMsg("Something went wrong, please refresh and try again.");
-        return;
-      }
-      setErrMsg(`${error.param}: ${error.message}`);
+      toast({
+        title:
+          error.type === "FAILURE" ? "Something went wrong" : "Invalid input",
+        description:
+          error.type === "FAILURE"
+            ? "Please refresh and try again."
+            : `${error.param}: ${error.message}`,
+        variant: "danger",
+      });
     }
+    toast({ title: "Password updated successfully.", variant: "success" });
   }
 
   return (
     <form action={handleSubmit} className={styles.form}>
-      {errMsg && <div>{errMsg}</div>}
-
       <Input
         label="New password"
         name="password"

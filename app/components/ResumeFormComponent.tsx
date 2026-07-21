@@ -110,7 +110,8 @@ export default function ResumeFormComponent({
         <label htmlFor="file">
           {isEditing
             ? "Replace file (PDF or DOCX)"
-            : "Resume file (PDF or DOCX)"}
+            : "Resume file (PDF or DOCX) *"}
+          {/* ugly patchy solution for "required" visual indicator */}
         </label>
 
         {isEditing && signedUrl && resume?.fileType && (
