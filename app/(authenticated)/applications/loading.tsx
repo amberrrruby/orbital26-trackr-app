@@ -2,7 +2,7 @@ import { Skeleton } from "@/app/components/Skeleton";
 import styles from "./loading.module.css";
 
 export default function LoadingApplicationsPage() {
-  const rows = Array.from({ length: 6 }, (val, idx) => idx);
+  const rows = Array.from({ length: 5 }, (val, idx) => idx);
   return (
     <main className={styles.page}>
       <section className={styles.header}>

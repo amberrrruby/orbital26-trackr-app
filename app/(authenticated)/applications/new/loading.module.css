@@ -1,3 +1,34 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--content-max-w);
+  padding: var(--content-padding);
+}
+
+.backLink {
+  width: 150px;
+  height: 20px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+}
+
+.title {
+  width: 180px;
+  height: 22px;
+}
+
+.subtitle {
+  width: 320px;
+  height: 18px;
+}
+
 .form {
   width: min(100%, 920px);
   margin: 0 auto;
@@ -31,17 +62,18 @@
 }
 
 .sectionTitle {
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
-  color: var(--color-text-primary);
-  margin: 0;
+  width: 150px;
+  height: 24px;
 }
 
-.sectionDescription {
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  line-height: var(--leading-normal);
-  margin: 0;
+.descriptionLine {
+  width: 180px;
+  height: 16px;
+}
+
+.descriptionShort {
+  width: 100px;
+  height: 16px;
 }
 
 .sectionContent {
@@ -56,9 +88,22 @@
   gap: var(--space-4);
 }
 
-.createButton {
+.fieldSkeleton {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  width: 90px;
+  height: 16px;
+}
+
+.fieldInput {
+  width: 100%;
+  height: 36px;
+  border-radius: var(--radius-md);
 }
 
 .importantDates {
@@ -67,10 +112,21 @@
   gap: var(--space-3);
 }
 
-.field {
+.textarea {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+}
+
+.createButton {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.submitButton {
+  width: 140px;
+  height: 36px;
+  border-radius: var(--radius-md);
 }
 
 @media (max-width: 899px) {
@@ -103,5 +159,13 @@
 
   .twoColumn {
     grid-template-columns: 1fr;
+  }
+
+  .createButton {
+    justify-content: stretch;
+  }
+
+  .submitButton {
+    width: 100%;
   }
 }
