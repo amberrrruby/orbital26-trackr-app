@@ -45,6 +45,10 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
+  const startOfTodayUTC = new Date(today);
+  const endOfTodayUTC = new Date(today);
+  endOfTodayUTC.setUTCHours(23, 59, 59, 999);
+
   const targetDates = eventReminderDays.map((days) => {
     const d = new Date(today);
     d.setUTCDate(d.getDate() + days);
@@ -55,16 +59,35 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     where: {
       userId,
       OR: [
-        { remindAt: { in: targetDates } }, // those that go off at i days
-        { remindAt: { lte: today } }, // those that went off today or before
+        // show all reminders once they are due or overdue
+        // including system-generated follow-up reminders
+        {
+          remindAt: {
+            lte: endOfTodayUTC,
+          },
+        },
+        // upcoming alerts: EVENT reminders, manually created FOLLOW_UP reminders
+        // system-generated FOLLOW_UP reminders remain hidden until their calculated due date
+        // similar to Reminders page
+        {
+          remindAt: {
+            in: targetDates,
+            gt: endOfTodayUTC,
+          },
+          OR: [
+            {
+              type: "EVENT",
+            },
+            {
+              type: "FOLLOW_UP",
+              source: null,
+            },
+          ],
+        },
       ],
     },
     include: { application: true },
   });
-
-  const startOfTodayUTC = new Date(today);
-  const endOfTodayUTC = new Date(today);
-  endOfTodayUTC.setUTCHours(23, 59, 59, 999);
 
   const reminders = {
     overdue: remindersQuery.filter((r) => r.remindAt < startOfTodayUTC),
