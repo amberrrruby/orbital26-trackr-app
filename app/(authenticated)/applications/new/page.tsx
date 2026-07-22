@@ -1,4 +1,4 @@
-import Link from "next/link.js";
+import Link from "next/link";
 import AddApplicationForm from "../AddApplicationForm";
 import styles from "./page.module.css";
 import { getResumes } from "@/app/actions/resume";

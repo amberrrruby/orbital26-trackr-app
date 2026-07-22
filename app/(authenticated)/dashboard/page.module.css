@@ -70,6 +70,7 @@
   gap: var(--space-4);
 }
 
+/* Summary cards */
 .summaryRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -125,6 +126,7 @@
   margin: 0;
 }
 
+/* Middle row */
 .midRow {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -156,6 +158,7 @@
   margin: 0;
 }
 
+/* Chart */
 .chartContent {
   height: calc(100% - 2rem);
   display: flex;
@@ -163,6 +166,7 @@
   justify-content: center;
 }
 
+/* Reminders needing attention */
 .viewAll {
   font-size: var(--text-base);
   text-decoration: none;
@@ -252,6 +256,12 @@
   padding: var(--space-2);
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
+}
+
+/* Recent applications table */
+.tableEmpty {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
 }
 
 .tableWrapper {

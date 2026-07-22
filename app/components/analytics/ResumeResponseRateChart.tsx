@@ -28,11 +28,13 @@ export default function ResumeResponseRateChart({
                 <div className={styles.barTrack}>
                   <div
                     className={styles.barFill}
-                    style={{ width: `${Math.min(row.responseRate, 100)}%` }}
+                    style={{
+                      width: `${Math.min(Math.round(row.responseRate), 100)}%`,
+                    }}
                   />
                 </div>
               </td>
-              <td className={styles.tdRate}>{row.responseRate}%</td>
+              <td className={styles.tdRate}>{Math.round(row.responseRate)}%</td>
             </tr>
           ))}
         </tbody>
