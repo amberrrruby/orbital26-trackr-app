@@ -61,13 +61,37 @@ export async function getAnalyticsData(userId: string): Promise<AnalyticsData> {
     WITH "stageFromEvents" AS (
       SELECT
         "applicationId",
-        MIN("eventDate") FILTER (WHERE status = 'APPLIED')       AS reached_applied,
-        MIN("eventDate") FILTER (WHERE status = 'OA_ASSESSMENT') AS reached_oa,
-        MIN("eventDate") FILTER (WHERE status = 'INTERVIEW')     AS reached_interview,
-        MIN("eventDate") FILTER (WHERE status = 'OFFER')         AS reached_offer
+        MIN("eventDate") FILTER (WHERE status = 'APPLIED') AS reached_applied,
+        
+        -- OA evidence can come from either:
+        -- 1. the application reaching OA_ASSESSMENT status, or
+        -- 2. the user recording an OA/Assessment date.
+        -- This is important because some applications may be created directly at Interview
+        -- while still having an OA/Assessment date filled in.
+        MIN("eventDate") FILTER (
+          WHERE (
+            type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
+            AND status = 'OA_ASSESSMENT'
+          )
+          OR (
+            type = 'IMPORTANT_DATE'
+            AND "sourceKey" = 'OA_ASSESSMENT_DATE'
+          )
+        ) AS reached_oa,
+
+        -- Interview evidence comes from status-based timeline events.
+        -- Interview does NOT imply OA, because some applications skip OA/Assessment.
+        MIN("eventDate") FILTER (
+          WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
+            AND status = 'INTERVIEW')     
+        AS reached_interview,
+
+        MIN("eventDate") FILTER (
+        WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
+          AND status = 'OFFER'
+        ) AS reached_offer
       FROM public."TimelineEvent"
-      WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
-        AND "userId" = ${userId}
+      WHERE "userId" = ${userId}
       GROUP BY "applicationId"
     ),
     "appToStageDate" AS (
@@ -97,8 +121,10 @@ export async function getAnalyticsData(userId: string): Promise<AnalyticsData> {
       COUNT(*) FILTER (WHERE reached_interview IS NOT NULL)                                            AS reached_interview,
       COUNT(*) FILTER (WHERE reached_offer     IS NOT NULL)                                            AS reached_offer,
       -- OA->Interview: ordering matters per spec
+      -- Among applications with OA/ Assessment evidence, how many also reached Interview?
+      -- Users may record dates after creating/ updating the application.
       COUNT(*) FILTER (WHERE reached_oa IS NOT NULL
-                         AND reached_interview > reached_oa)                                           AS oa_to_interview_num,
+                         AND reached_interview IS NOT NULL)                                           AS oa_to_interview_num,
       -- Interview->Offer: no ordering constraint per spec (furthest stage wins)
       COUNT(*) FILTER (WHERE reached_interview IS NOT NULL
                          AND reached_offer     IS NOT NULL)                                            AS interview_to_offer_num
@@ -200,7 +226,7 @@ export async function getAnalyticsData(userId: string): Promise<AnalyticsData> {
     WITH "progressed" AS (
       SELECT DISTINCT "applicationId"
       FROM public."TimelineEvent"
-      WHERE type = 'STATUS_CHANGED'
+      WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
         AND "userId" = ${userId}
         AND status IN ('OA_ASSESSMENT', 'INTERVIEW', 'OFFER')
     )
@@ -234,7 +260,7 @@ export async function getAnalyticsData(userId: string): Promise<AnalyticsData> {
     WITH "progressed" AS (
       SELECT DISTINCT "applicationId"
       FROM public."TimelineEvent"
-      WHERE type = 'STATUS_CHANGED'
+      WHERE type IN ('APPLICATION_CREATED', 'STATUS_CHANGED')
         AND "userId" = ${userId}
         AND status IN ('OA_ASSESSMENT', 'INTERVIEW', 'OFFER')
     )

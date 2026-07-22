@@ -1,0 +1,163 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--content-max-w);
+  padding: var(--content-padding);
+  gap: var(--space-6);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.backLink {
+  width: 150px;
+  height: 20px;
+}
+
+.company {
+  width: 220px;
+  height: 32px;
+}
+
+.role {
+  width: 180px;
+  height: 24px;
+}
+
+.badge {
+  width: 90px;
+  height: 28px;
+  border-radius: var(--radius-full);
+}
+
+.editButton {
+  width: 130px;
+  height: 36px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(320px, 2fr) minmax(0, 3fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.card {
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+
+.sectionTitle {
+  width: 180px;
+  height: 28px;
+  margin-bottom: var(--space-4);
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailRow {
+  width: 100%;
+  height: 20px;
+  margin-bottom: var(--space-2);
+}
+
+.remindersSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.remindersTitle {
+  width: 230px;
+  height: 28px;
+}
+
+.subHeading {
+  width: 90px;
+  height: 20px;
+}
+
+.reminderCard {
+  width: 100%;
+  height: 54px;
+}
+
+.timelineColumn {
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.timelineButton {
+  width: 200px;
+  height: 36px;
+  border-radius: var(--radius-md);
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+}
+
+.timelineRow {
+  width: 72%;
+  height: 28px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .timelineColumn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .card,
+  .timelineColumn {
+    padding: var(--space-3);
+  }
+}

@@ -67,15 +67,21 @@ export function ReminderRow({
   item: ReminderWithApplication;
   group: "overdue" | "today" | "upcoming_alerts";
 }) {
+  const application = item.application;
+  const reminderMessage = getReminderMessage(item, group);
   return (
     <div
       className={[styles.reminderRow, REMINDER_ACCENT_CLASSES[group]].join(" ")}
     >
       <div className={styles.reminderContent}>
         <p className={styles.reminderTitle}>
-          {item.application?.company}: {getReminderMessage(item, group)}
+          {application
+            ? `${application.company} : ${reminderMessage}`
+            : reminderMessage}
         </p>
-        <p className={styles.reminderMeta}>{`${item.application?.role}`}</p>
+        {application?.role && (
+          <p className={styles.reminderMeta}>{`${application.role}`}</p>
+        )}
       </div>
 
       <span className={styles.reminderDate}>

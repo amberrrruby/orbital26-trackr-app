@@ -25,15 +25,14 @@
 }
 
 .title {
-  margin: 0;
-  font-size: var(--text-xl);
-  font-weight: var(--weight-bold);
+  width: 150px;
+  height: 28px;
+  margin: var(--space-1);
 }
 
-.description {
-  margin-bottom: var(--space-1);
-  color: var(--color-text-secondary);
-  font-size: var(--text-base);
+.subtitle {
+  width: 240px;
+  height: 18px;
 }
 
 .topbarRight {
@@ -50,16 +49,22 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.125rem;
+  gap: var(--space-2);
 }
 
 .userName {
-  font-size: 0.875rem;
-  font-weight: 500;
+  width: 64px;
+  height: 14px;
 }
 
 .userEmail {
-  font-size: 0.75rem;
+  width: 140px;
+  height: 12px;
+}
+
+.logoutButton {
+  width: 112px;
+  height: 32px;
 }
 
 .content {
@@ -106,24 +111,20 @@
 }
 
 .summaryCardTitle {
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semi);
-  text-transform: uppercase;
-  margin: 0 0 var(--space-3);
+  width: 60%;
+  height: 14px;
+  margin-bottom: var(--space-5);
 }
 
 .summaryCardValue {
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-bold);
-  line-height: 1;
-  margin: 0 0 var(--space-2);
+  width: 42px;
+  height: 32px;
+  margin-bottom: var(--space-3);
 }
 
 .summaryCardSubtitle {
-  color: var(--color-text-tertiary);
-  font-size: var(--text-sm);
-  margin: 0;
+  width: 70%;
+  height: 14px;
 }
 
 /* Middle row */
@@ -153,25 +154,82 @@
 }
 
 .panelTitle {
-  font-size: var(--text-md);
-  font-weight: var(--weight-medium);
-  margin: 0;
+  width: 180px;
+  height: 18px;
+}
+
+.viewAll {
+  width: 56px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 /* Chart */
 .chartContent {
   height: calc(100% - 2rem);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--space-8);
+}
+
+.chartDonut {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+}
+
+.chartDonut::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-full);
+}
+
+.chartLegend {
+  list-style: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-6);
+}
+
+.chartLegendItem {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chartLegendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.chartLegendLabel {
+  width: 70%;
+  height: 12px;
+}
+
+.chartLegendValue {
+  width: 18px;
+  height: 12px;
+}
+
+.reminderContent {
+  min-width: 0;
+  flex: 1;
 }
 
 /* Reminders needing attention */
-.viewAll {
-  font-size: var(--text-base);
-  text-decoration: none;
-}
-
 .remindersContent {
   max-height: 400px;
   overflow-y: auto;
@@ -187,83 +245,49 @@
 }
 
 .reminderGroupTitle {
-  display: flex;
-  align-items: center;
+  height: 12px;
+  width: 100px;
   gap: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semi);
-  color: var(--color-text-secondary);
   margin: 0 0 var(--space-1);
 }
 
 .reminderRow {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
   padding: 6px var(--space-3);
   margin-bottom: 6px;
-  border-left: 3px solid var(--reminder-accent);
-  border-right: 1px solid var(--color-border-strong);
-  border-top: 1px solid var(--color-border-strong);
-  border-bottom: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
-}
-
-.reminderUpcomingAlerts {
-  --reminder-accent: var(--color-accent);
-}
-
-.reminderToday {
-  --reminder-accent: var(--color-success);
-}
-
-.reminderOverdue {
-  --reminder-accent: var(--color-warning);
 }
 
 .reminderContent {
   min-width: 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .reminderTitle {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semi);
-  color: var(--color-text-primary);
+  width: min(52%, 360px);
+  height: 14px;
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .reminderMeta {
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  margin: 0;
+  width: 100px;
+  height: 10px;
 }
 
 .reminderDate {
-  color: var(--color-text-secondary);
+  width: 42px;
+  height: 12px;
   flex-shrink: 0;
-  font-size: var(--text-xs);
-  white-space: nowrap;
-}
-
-.emptyState {
-  color: var(--color-text-tertiary);
-  font-size: var(--text-sm);
-  padding: var(--space-2);
-  border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-md);
 }
 
 /* Recent applications table */
-.tableEmpty {
-  color: var(--color-text-tertiary);
-  font-size: var(--text-sm);
-}
-
 .tableWrapper {
   overflow-x: auto;
   margin-top: 0.25rem;
@@ -271,27 +295,80 @@
 
 .table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
-  font-size: var(--text-sm);
+  table-layout: fixed;
 }
 
 .table th {
   text-align: left;
-  padding: var(--space-1) var(--space-2);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  white-space: nowrap;
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .table td {
   padding: var(--space-1) var(--space-2);
   vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.tableEmpty {
-  text-align: center;
-  padding: 1.5rem 0.75rem;
-  font-size: 0.875rem;
+.tableHeaderCompany,
+.tableHeaderRole,
+.tableHeaderSource,
+.tableHeaderStatus,
+.tableHeaderDate {
+  height: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.tableHeaderCompany {
+  width: 70px;
+}
+
+.tableHeaderRole {
+  width: 45px;
+}
+
+.tableHeaderSource {
+  width: 55px;
+}
+
+.tableHeaderStatus {
+  width: 50px;
+}
+
+.tableHeaderDate {
+  width: 82px;
+}
+
+.tableCompany {
+  width: 58%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.tableRole {
+  width: 68%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.tableSource {
+  width: 62%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.tableStatus {
+  width: 86px;
+  height: 20px;
+  border-radius: var(--radius-full);
+}
+
+.tableDate {
+  width: 82px;
+  height: 14px;
+  border-radius: var(--radius-sm);
 }
 
 @media (max-width: 900px) {

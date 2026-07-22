@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
 import { Input } from "@/app/components/Input";
+import ErrorDisplay from "@/app/components/ErrorDisplay";
 import Link from "next/link";
 import tableStyles from "./ApplicationsTable.module.css";
 import {
