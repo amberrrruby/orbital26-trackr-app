@@ -26,3 +26,21 @@
 .chartWrap {
   min-width: 0;
 }
+
+/* Loading state */
+.skeletonTitle {
+  width: 190px;
+  height: 22px;
+}
+
+.skeletonDescription {
+  width: min(520px, 80%);
+  height: 13px;
+  margin-top: var(--space-2);
+}
+
+.skeletonChart {
+  width: 100%;
+  min-height: 320px;
+  border-radius: var(--radius-md);
+}

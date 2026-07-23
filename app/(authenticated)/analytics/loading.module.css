@@ -1,0 +1,181 @@
+.pageTitle {
+  width: 180px;
+  height: 28px;
+  margin: var(--space-1);
+}
+
+.pageSubtitle {
+  width: 240px;
+  height: 18px;
+  margin-bottom: var(--space-1);
+}
+
+.insightCard {
+  pointer-events: none;
+}
+
+.insightContent {
+  flex: 1;
+  width: 100%;
+}
+
+.insightIcon {
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-sm);
+}
+
+.insightLabel {
+  width: 78%;
+  height: 10px;
+  margin-bottom: var(--space-1);
+}
+
+.insightValue {
+  width: 78%;
+  height: 18px;
+  margin-bottom: var(--space-1);
+}
+
+.insightSubmetric {
+  width: 60%;
+  height: 10px;
+}
+
+.sectionTitle {
+  width: 160px;
+  height: 22px;
+}
+
+.sectionDescription {
+  width: min(620px, 75%);
+  height: 12px;
+  margin-top: var(--space-2);
+}
+
+.conversionDescription {
+  width: 90%;
+  height: 12px;
+  margin-top: var(--space-2);
+}
+
+.conversionDescriptionShort {
+  width: 68%;
+  height: 12px;
+  margin-top: var(--space-2);
+}
+
+.funnelChart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  padding-inline: var(--space-2);
+}
+
+.funnelStage {
+  height: 60px;
+  flex-shrink: 0;
+
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+}
+
+.funnelStageOne {
+  width: 100%;
+}
+
+.funnelStageTwo {
+  width: 68%;
+}
+
+.funnelStageThree {
+  width: 44%;
+}
+
+.funnelStageFour {
+  width: 24%;
+}
+
+.percentSkeleton {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+}
+
+.explanationCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  min-width: 0;
+  padding-top: var(--space-1);
+}
+
+.explanationTitle {
+  width: min(180px, 85%);
+  height: 14px;
+}
+
+.explanationText {
+  width: min(220px, 100%);
+  height: 10px;
+}
+
+.explanationTextShort {
+  width: min(160px, 75%);
+  height: 10px;
+}
+
+.conversionValue {
+  width: 72px;
+  height: 36px;
+}
+
+.conversionLabel {
+  width: 82%;
+  height: 14px;
+}
+
+.conversionHelper {
+  width: 68%;
+  height: 12px;
+}
+
+.resumeHeaderTitle {
+  width: 120px;
+  height: 12px;
+}
+
+.resumeHeaderCount {
+  width: 125px;
+  height: 12px;
+}
+
+.resumeHeaderRate {
+  width: 95px;
+  height: 12px;
+}
+
+.resumeName {
+  width: 100px;
+  height: 14px;
+}
+
+.resumeCount {
+  width: 24px;
+  height: 14px;
+}
+
+.resumeBar {
+  width: min(640px, 100%);
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.resumeRate {
+  width: 42px;
+  height: 14px;
+}

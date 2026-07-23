@@ -90,7 +90,6 @@
   color: var(--color-text-primary);
   font-size: var(--text-md);
   font-weight: var(--weight-semi);
-  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
