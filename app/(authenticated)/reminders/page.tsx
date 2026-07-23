@@ -5,15 +5,7 @@ import styles from "./page.module.css";
 
 // const PREVIEW_LIMIT = 5;
 
-function wait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 export default async function RemindersPage() {
-  await wait(3000);
-
   // const todayRemindersResult = await getReminders(0, PREVIEW_LIMIT, "today");
   const todayRemindersResult = await getAllGroupReminders("today");
   // const upcomingRemindersResult = await getReminders(

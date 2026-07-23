@@ -43,38 +43,40 @@ export default function RemindersLoading() {
         <Skeleton className={styles.addButtonSkeleton} />
       </section>
 
-      <div className={styles.statsRow}>
-        {STAT_CARDS.map((_, index) => (
-          <div key={`stat-${index}`} className={styles.statCard}>
-            <Skeleton className={styles.statLabel} />
-            <Skeleton className={styles.statValue} />
-          </div>
-        ))}
-      </div>
+      <section className={styles.pageContent}>
+        <div className={styles.statsRow}>
+          {STAT_CARDS.map((_, index) => (
+            <div key={`stat-${index}`} className={styles.statCard}>
+              <Skeleton className={styles.statLabel} />
+              <Skeleton className={styles.statValue} />
+            </div>
+          ))}
+        </div>
 
-      <div className={styles.reminderList}>
-        {REMINDER_SECTIONS.map((_, sectionIndex) => (
-          <section
-            key={`section-${sectionIndex}`}
-            className={styles.reminderSection}
-          >
-            <div className={styles.sectionHeader}>
-              <Skeleton className={styles.sectionTitle} />
-              <Skeleton className={styles.sectionCount} />
-            </div>
-            <div className={styles.sectionList}>
-              {REMINDER_CARDS.map((_, reminderIndex) => (
-                <div
-                  key={`reminder-${sectionIndex}-${reminderIndex}`}
-                  className={styles.reminderItem}
-                >
-                  <ReminderCardSkeleton />
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+        <div className={styles.reminderList}>
+          {REMINDER_SECTIONS.map((_, sectionIndex) => (
+            <section
+              key={`section-${sectionIndex}`}
+              className={styles.reminderSection}
+            >
+              <div className={styles.sectionHeader}>
+                <Skeleton className={styles.sectionTitle} />
+                <Skeleton className={styles.sectionCount} />
+              </div>
+              <div className={styles.sectionList}>
+                {REMINDER_CARDS.map((_, reminderIndex) => (
+                  <div
+                    key={`reminder-${sectionIndex}-${reminderIndex}`}
+                    className={styles.reminderItem}
+                  >
+                    <ReminderCardSkeleton />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

@@ -3,7 +3,6 @@
   flex-direction: column;
   padding: var(--content-padding);
   width: 100%;
-  max-width: 960px;
   margin-inline: auto;
 }
 
@@ -30,6 +29,15 @@
   width: 132px;
   height: 36px;
   border-radius: var(--radius-md);
+}
+
+.pageContent {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .statsRow {
@@ -150,6 +158,8 @@
   flex-direction: column;
   gap: var(--space-1);
   min-width: 0;
+  flex: 1;
+  width: 100%;
 }
 
 .contentLine {
@@ -165,7 +175,7 @@
 }
 
 .applicationLine {
-  width: min(220px, 48%);
+  width: min(220px, 50%);
   height: 10px;
 }
 
@@ -205,8 +215,22 @@
     width: 100%;
   }
 
+  .mainRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
     width: 100%;
-    justify-content: flex-end;
+  }
+
+  .completeButton,
+  .dismissButton {
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
   }
 }

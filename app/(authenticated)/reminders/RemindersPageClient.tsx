@@ -90,101 +90,103 @@ export default function RemindersPageClient({
       </section>
 
       {/* Stats row */}
-      <div className={styles.statsRow}>
-        {[
-          {
-            label: "Today",
-            value: todayTotal,
-            variant: "today",
-          },
-          {
-            label: "Upcoming",
-            value: upcomingTotal,
-            variant: "upcoming",
-          },
-          {
-            label: "Overdue",
-            value: overdueTotal,
-            variant: "overdue",
-          },
-          {
-            label: "Total",
-            value: grandTotal,
-            variant: "total",
-          },
-        ].map(({ label, value, variant }) => (
-          <div key={label} className={styles.statCard} data-stat={variant}>
-            <p className={styles.statLabel}>{label}</p>
-            <p className={styles.statValue}>{value}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className={styles.reminderList}>
-        {/* Today */}
-        <Section
-          title="Today"
-          count={todayTotal}
-          showAll={showAllToday}
-          onToggleShowAll={() => setShowAllToday((v) => !v)}
-        >
-          {(showAllToday
-            ? todayReminders
-            : todayReminders.slice(0, PREVIEW_LIMIT)
-          ).map((r) => (
-            <div
-              key={r.id}
-              onClick={() => setEditingReminder(r)}
-              className={styles.reminderItem}
-            >
-              <ReminderCard key={r.id} reminder={r} />
+      <section className={styles.pageContent}>
+        <div className={styles.statsRow}>
+          {[
+            {
+              label: "Today",
+              value: todayTotal,
+              variant: "today",
+            },
+            {
+              label: "Upcoming",
+              value: upcomingTotal,
+              variant: "upcoming",
+            },
+            {
+              label: "Overdue",
+              value: overdueTotal,
+              variant: "overdue",
+            },
+            {
+              label: "Total",
+              value: grandTotal,
+              variant: "total",
+            },
+          ].map(({ label, value, variant }) => (
+            <div key={label} className={styles.statCard} data-stat={variant}>
+              <p className={styles.statLabel}>{label}</p>
+              <p className={styles.statValue}>{value}</p>
             </div>
           ))}
-        </Section>
+        </div>
 
-        {/* Upcoming */}
-        <Section
-          title="Upcoming"
-          count={upcomingTotal}
-          showAll={showAllUpcoming}
-          onToggleShowAll={() => setShowAllUpcoming((v) => !v)}
-        >
-          {(showAllUpcoming
-            ? upcomingReminders
-            : upcomingReminders.slice(0, PREVIEW_LIMIT)
-          ).map((r) => (
-            <div
-              key={r.id}
-              onClick={() => setEditingReminder(r)}
-              className={styles.reminderItem}
-            >
-              <ReminderCard key={r.id} reminder={r} />
-            </div>
-          ))}
-        </Section>
+        <div className={styles.reminderList}>
+          {/* Today */}
+          <Section
+            title="Today"
+            count={todayTotal}
+            showAll={showAllToday}
+            onToggleShowAll={() => setShowAllToday((v) => !v)}
+          >
+            {(showAllToday
+              ? todayReminders
+              : todayReminders.slice(0, PREVIEW_LIMIT)
+            ).map((r) => (
+              <div
+                key={r.id}
+                onClick={() => setEditingReminder(r)}
+                className={styles.reminderItem}
+              >
+                <ReminderCard key={r.id} reminder={r} />
+              </div>
+            ))}
+          </Section>
 
-        {/* Overdue */}
-        <Section
-          title="Overdue"
-          count={overdueTotal}
-          showAll={showAllOverdue}
-          onToggleShowAll={() => setShowAllOverdue((v) => !v)}
-          variant="overdue"
-        >
-          {(showAllOverdue
-            ? overdueReminders
-            : overdueReminders.slice(0, PREVIEW_LIMIT)
-          ).map((r) => (
-            <div
-              key={r.id}
-              onClick={() => setEditingReminder(r)}
-              className={styles.reminderItem}
-            >
-              <ReminderCard key={r.id} reminder={r} variant="overdue" />
-            </div>
-          ))}
-        </Section>
-      </div>
+          {/* Upcoming */}
+          <Section
+            title="Upcoming"
+            count={upcomingTotal}
+            showAll={showAllUpcoming}
+            onToggleShowAll={() => setShowAllUpcoming((v) => !v)}
+          >
+            {(showAllUpcoming
+              ? upcomingReminders
+              : upcomingReminders.slice(0, PREVIEW_LIMIT)
+            ).map((r) => (
+              <div
+                key={r.id}
+                onClick={() => setEditingReminder(r)}
+                className={styles.reminderItem}
+              >
+                <ReminderCard key={r.id} reminder={r} />
+              </div>
+            ))}
+          </Section>
+
+          {/* Overdue */}
+          <Section
+            title="Overdue"
+            count={overdueTotal}
+            showAll={showAllOverdue}
+            onToggleShowAll={() => setShowAllOverdue((v) => !v)}
+            variant="overdue"
+          >
+            {(showAllOverdue
+              ? overdueReminders
+              : overdueReminders.slice(0, PREVIEW_LIMIT)
+            ).map((r) => (
+              <div
+                key={r.id}
+                onClick={() => setEditingReminder(r)}
+                className={styles.reminderItem}
+              >
+                <ReminderCard key={r.id} reminder={r} variant="overdue" />
+              </div>
+            ))}
+          </Section>
+        </div>
+      </section>
 
       <ReminderModal
         open={modalOpen}

@@ -60,7 +60,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
         middle={bestPerformingSource?.source ?? null}
         bottom={
           bestPerformingSource
-            ? `Response rate: ${bestPerformingSource.rate}%`
+            ? `Response rate: ${Math.round(bestPerformingSource.rate)}%`
             : null
         }
       />
@@ -72,7 +72,7 @@ export default function InsightsRow({ data }: InsightsRowProps) {
         middle={bestPerformingResume?.title ?? null}
         bottom={
           bestPerformingResume
-            ? `Response rate: ${bestPerformingResume.rate}%`
+            ? `Response rate: ${Math.round(bestPerformingResume.rate)}%`
             : null
         }
       />

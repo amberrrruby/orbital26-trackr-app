@@ -3,7 +3,6 @@
   flex-direction: column;
   padding: var(--content-padding);
   width: 100%;
-  max-width: 960px;
   margin-inline: auto;
 }
 
@@ -24,6 +23,15 @@
   justify-content: flex-end;
   align-items: center;
   margin-bottom: var(--space-4);
+}
+
+.pageContent {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .statsRow {
