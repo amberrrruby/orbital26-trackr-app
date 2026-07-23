@@ -190,6 +190,7 @@ export default function ApplicationsTable({
     columns,
     state: { sorting, columnFilters, pagination, globalFilter },
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
