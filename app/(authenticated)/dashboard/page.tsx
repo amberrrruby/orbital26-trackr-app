@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { requireUserOrRedirectLogin } from "@/lib/auth";
 import LogoutButton from "../LogoutButton";
+import { ApplicationStatusBadge } from "@/app/components/ApplicationStatusBadge";
 import { prisma } from "@/lib/prisma";
 import styles from "./page.module.css";
-import { Reminder } from "@/lib/generated/client";
 import { getDashboardData } from "@/lib/dashboard";
 import DonutChartComponent from "@/app/components/dashboard/DonutChartComponent";
+import { ReminderWithApplication, SOURCE_OPTIONS } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -29,10 +30,66 @@ export function SummaryCard({
   );
 }
 
-export function ReminderRow({ item }: { item: Reminder }) {
+function getDaysUntil(date: Date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+
+  return Math.round(
+    (target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+}
+
+function getReminderMessage(
+  item: ReminderWithApplication,
+  group: "overdue" | "today" | "upcoming_alerts",
+) {
+  if (group !== "upcoming_alerts") return item.content;
+
+  const days = getDaysUntil(item.remindAt);
+
+  if (days === 1) return `${item.content} due tomorrow`;
+  return `${item.content} due in ${days} days`;
+}
+
+const REMINDER_ACCENT_CLASSES = {
+  overdue: styles.reminderOverdue,
+  today: styles.reminderToday,
+  upcoming_alerts: styles.reminderUpcomingAlerts,
+};
+
+export function ReminderRow({
+  item,
+  group,
+}: {
+  item: ReminderWithApplication;
+  group: "overdue" | "today" | "upcoming_alerts";
+}) {
+  const application = item.application;
+  const reminderMessage = getReminderMessage(item, group);
   return (
-    <div className={styles.reminderRow}>
-      <span className={styles.reminderTitle}>{item.content}</span>
+    <div
+      className={[styles.reminderRow, REMINDER_ACCENT_CLASSES[group]].join(" ")}
+    >
+      <div className={styles.reminderContent}>
+        <p className={styles.reminderTitle}>
+          {application
+            ? `${application.company} : ${reminderMessage}`
+            : reminderMessage}
+        </p>
+        {application?.role && (
+          <p className={styles.reminderMeta}>{`${application.role}`}</p>
+        )}
+      </div>
+
+      <span className={styles.reminderDate}>
+        {item.remindAt.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+        })}
+      </span>
     </div>
   );
 }
@@ -58,7 +115,14 @@ export default async function Dashboard() {
       <div className={styles.mainWrapper}>
         {/* Top bar */}
         <header className={styles.topbar}>
-          <h1 className={styles.pageTitle}>Dashboard</h1>
+          <div>
+            <h1 className={styles.title}>Dashboard</h1>
+            <p className={styles.description}>
+              Hi {user.name ?? ""}! Here&apos;s your application activity at a
+              glance.
+            </p>
+          </div>
+
           <div className={styles.topbarRight}>
             <div className={styles.userMeta}>
               <span className={styles.userName}>
@@ -69,6 +133,8 @@ export default async function Dashboard() {
             <LogoutButton />
           </div>
         </header>
+
+        <hr />
 
         <main className={styles.content}>
           <section className={styles.summaryRow} aria-label="Summary">
@@ -85,7 +151,7 @@ export default async function Dashboard() {
             <SummaryCard
               title="Reminders Needing Attention"
               value={data.attentionCount}
-              subtitle="Due Today, Overdue"
+              subtitle="Overdue, today, and upcoming alerts"
             />
           </section>
 
@@ -101,7 +167,6 @@ export default async function Dashboard() {
               </div>
             </div>
 
-            {/* TODO: carry over styling from reminders page */}
             <div
               className={styles.panel}
               aria-label="Reminders needing attention"
@@ -115,43 +180,49 @@ export default async function Dashboard() {
                 </Link>
               </div>
 
-              <div className={styles.reminderGroup}>
-                <h3 className={styles.reminderGroupTitle}>
-                  Overdue ({data.reminders.overdue.length})
-                </h3>
-                {data.reminders.overdue.length === 0 ? (
-                  <p className={styles.emptyState}>No overdue reminders.</p>
-                ) : (
-                  data.reminders.overdue.map((r) => (
-                    <ReminderRow key={r.id} item={r} />
-                  ))
-                )}
-              </div>
+              <div className={styles.remindersContent}>
+                <div className={styles.reminderGroup}>
+                  <h3 className={styles.reminderGroupTitle}>
+                    Overdue ({data.reminders.overdue.length})
+                  </h3>
+                  {data.reminders.overdue.length === 0 ? (
+                    <p className={styles.emptyState}>No overdue reminders.</p>
+                  ) : (
+                    data.reminders.overdue.map((r) => (
+                      <ReminderRow key={r.id} item={r} group="overdue" />
+                    ))
+                  )}
+                </div>
 
-              <div className={styles.reminderGroup}>
-                <h3 className={styles.reminderGroupTitle}>
-                  Today ({data.reminders.today.length})
-                </h3>
-                {data.reminders.today.length === 0 ? (
-                  <p className={styles.emptyState}>No reminders for today.</p>
-                ) : (
-                  data.reminders.today.map((r) => (
-                    <ReminderRow key={r.id} item={r} />
-                  ))
-                )}
-              </div>
+                <div className={styles.reminderGroup}>
+                  <h3 className={styles.reminderGroupTitle}>
+                    Today ({data.reminders.today.length})
+                  </h3>
+                  {data.reminders.today.length === 0 ? (
+                    <p className={styles.emptyState}>No reminders for today.</p>
+                  ) : (
+                    data.reminders.today.map((r) => (
+                      <ReminderRow key={r.id} item={r} group="today" />
+                    ))
+                  )}
+                </div>
 
-              <div className={styles.reminderGroup}>
-                <h3 className={styles.reminderGroupTitle}>
-                  Upcoming Alerts ({data.reminders.upcoming.length})
-                </h3>
-                {data.reminders.upcoming.length === 0 ? (
-                  <p className={styles.emptyState}>No upcoming alerts.</p>
-                ) : (
-                  data.reminders.upcoming.map((r) => (
-                    <ReminderRow key={r.id} item={r} />
-                  ))
-                )}
+                <div className={styles.reminderGroup}>
+                  <h3 className={styles.reminderGroupTitle}>
+                    Upcoming Alerts ({data.reminders.upcoming.length})
+                  </h3>
+                  {data.reminders.upcoming.length === 0 ? (
+                    <p className={styles.emptyState}>No upcoming alerts.</p>
+                  ) : (
+                    data.reminders.upcoming.map((r) => (
+                      <ReminderRow
+                        key={r.id}
+                        item={r}
+                        group="upcoming_alerts"
+                      />
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </section>
@@ -186,8 +257,10 @@ export default async function Dashboard() {
                       <tr key={app.id}>
                         <td>{app.company}</td>
                         <td>{app.role}</td>
-                        <td>{app.source ?? "—"}</td>
-                        <td>{app.status}</td>
+                        <td>{SOURCE_OPTIONS[app.source] ?? "—"}</td>
+                        <td>
+                          <ApplicationStatusBadge status={app.status} />
+                        </td>
                         <td>{app.updatedAt.toLocaleDateString()}</td>
                       </tr>
                     ))

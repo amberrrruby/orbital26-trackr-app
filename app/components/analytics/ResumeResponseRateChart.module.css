@@ -1,0 +1,94 @@
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.th:nth-child(1),
+.td:nth-child(1) {
+  width: 220px;
+}
+
+.th:nth-child(2),
+.td:nth-child(2) {
+  width: 140px;
+}
+
+.th:nth-child(4),
+.tdRate {
+  width: 120px;
+}
+
+.th {
+  text-align: left;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--color-text-secondary);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.td,
+.tdBar,
+.tdRate {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  vertical-align: middle;
+}
+
+.tdBar {
+  padding-inline: var(--space-5);
+}
+
+.tdRate {
+  font-weight: var(--weight-semi);
+  white-space: nowrap;
+}
+
+.barTrack {
+  width: min(100%, 640px);
+  height: 10px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    90deg,
+    var(--chart-blue-4) 0%,
+    var(--chart-blue-2) 100%
+  );
+  transition: width var(--ease-default);
+}
+
+@media (max-width: 760px) {
+  .th:nth-child(1),
+  .td:nth-child(1) {
+    width: 160px;
+  }
+
+  .th:nth-child(2),
+  .td:nth-child(2) {
+    width: 110px;
+  }
+
+  .th:nth-child(4),
+  .tdRate {
+    width: 90px;
+  }
+
+  .tdBar {
+    padding-inline: var(--space-3);
+  }
+}

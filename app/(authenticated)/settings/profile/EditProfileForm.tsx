@@ -6,43 +6,56 @@ import { Input } from "@/app/components/Input";
 import { Button } from "@/app/components/Button";
 import styles from "../Settings.module.css";
 import { ReminderSettings } from "@/lib/types";
+import { useToast } from "@/app/components/Toast";
 
 type Props = { userProfile: DBUser; userSettings: ReminderSettings };
 
 export default function EditProfileForm({ userProfile, userSettings }: Props) {
   const { name } = userProfile;
-
   const snapshot = name;
+  const { toast } = useToast();
 
   const [isDirty, setIsDirty] = useState(false);
-  const [errMsg, setErrMsg] = useState<string | null>(null);
 
   async function handleSubmitProfile(formData: FormData) {
-    setErrMsg(null);
     const result = await editProfile(formData);
 
     if (!result.ok) {
       const { error } = result;
-      if (error.type === "FAILURE") {
-        setErrMsg("Something went wrong, please refresh and try again.");
-        return;
-      }
-      setErrMsg(`${error.param}: ${error.message}`);
+      toast({
+        title:
+          error.type === "FAILURE" ? "Something went wrong" : "Invalid input",
+        description:
+          error.type === "FAILURE"
+            ? "Please refresh and try again."
+            : `${error.param}: ${error.message}`,
+        variant: "danger",
+      });
+      return;
     }
+
+    toast({ title: "Profile updated", variant: "success" });
+    setIsDirty(false);
   }
 
   async function handleSubmitReminders(formData: FormData) {
-    setErrMsg(null);
     const result = await updateReminderSettings(formData);
 
     if (!result.ok) {
       const { error } = result;
-      if (error.type === "FAILURE") {
-        setErrMsg("Something went wrong, please refresh and try again.");
-        return;
-      }
-      setErrMsg(`${error.param}: ${error.message}`);
+      toast({
+        title:
+          error.type === "FAILURE" ? "Something went wrong" : "Invalid input",
+        description:
+          error.type === "FAILURE"
+            ? "Please refresh and try again."
+            : `${error.param}: ${error.message}`,
+        variant: "danger",
+      });
+      return;
     }
+
+    toast({ title: "Reminder settings updated", variant: "success" });
   }
 
   return (
@@ -52,8 +65,6 @@ export default function EditProfileForm({ userProfile, userSettings }: Props) {
         action={handleSubmitProfile}
         className={styles.card}
       >
-        {errMsg && <div>{errMsg}</div>}
-
         <Input
           label="Display name"
           name="name"

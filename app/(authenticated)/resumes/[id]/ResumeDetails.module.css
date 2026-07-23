@@ -63,7 +63,7 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2.4fr) minmax(280px, 0.9fr);
   gap: var(--space-6);
   align-items: start;
 }
@@ -90,7 +90,6 @@
   color: var(--color-text-primary);
   font-size: var(--text-md);
   font-weight: var(--weight-semi);
-  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -119,6 +118,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-3);
+  max-width: 100%;
+  overflow: hidden;
   background: var(--color-bg-inset);
   padding: var(--space-2);
   border-radius: var(--radius-md);
@@ -138,9 +140,25 @@
 
 .applicationDetails {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--space-1);
   min-width: 0;
+  max-width: 100%;
+}
+
+.applicationBadge {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.applicationBadge > * {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .applicationCompany {
@@ -160,9 +178,14 @@
   white-space: nowrap;
 }
 
+.fileCard {
+  align-items: center;
+}
+
 .thumbnailWrapper {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 210 / 297;
+  align-self: center;
   overflow: hidden;
   background: var(--color-bg-inset);
   border-radius: var(--radius-md);
@@ -188,9 +211,11 @@
 }
 
 .fileInformation {
+  width: min(100%, 280px);
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  overflow: hidden;
 }
 
 .fileLink {
@@ -246,14 +271,106 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .left {
+    order: 1;
+  }
+
   .right {
-    order: -1;
+    order: 2;
   }
 
   .thumbnailWrapper {
-    max-height: var(--space-24);
-    aspect-ratio: auto;
+    width: min(100%, 260px);
+    max-height: none;
+    aspect-ratio: 210/ 297;
   }
+}
+
+/* Loading state */
+.backLink {
+  width: 150px;
+  height: 20px;
+}
+
+.skeletonActionButton {
+  width: 84px;
+  height: 32px;
+  border-radius: var(--radius-md);
+}
+
+.skeletonTitle {
+  width: min(360px, 70%);
+  height: 34px;
+  border-radius: var(--radius-md);
+}
+
+.skeletonTag {
+  width: 72px;
+  height: 16px;
+  border-radius: var(--radius-md);
+}
+
+.skeletonSectionTitle {
+  width: 150px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.skeletonTextLine {
+  width: 100%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonTextLineShort {
+  width: 68%;
+}
+
+.skeletonAppCompany {
+  width: 15opx;
+  height: 16px;
+}
+
+.skeletonAppRole {
+  width: 200px;
+  height: 14px;
+}
+
+.skeletonBadge {
+  width: 84px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+}
+
+.skeletonFileName {
+  width: 65%;
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonLastUpdated {
+  width: 140px;
+  height: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonStatLabel {
+  width: 80px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonStatValue {
+  width: 32px;
+  height: 14px;
+  border-radius: var(--radius-sm);
 }
 
 @media (max-width: 640px) {
@@ -271,9 +388,21 @@
     flex: 1;
   }
 
+  .skeletonActionButton {
+    flex: 1;
+    width: auto;
+  }
+
+  .skeletonBadge {
+    width: 76px;
+  }
+}
+
+@media (width: 480px) {
   .appItem {
     align-items: flex-start;
     flex-direction: column;
+    gap: var(--space-2);
   }
 }
 

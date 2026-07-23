@@ -1,5 +1,8 @@
 "use client";
 
+import ErrorDisplay from "@/app/components/ErrorDisplay";
+import { Button } from "@/app/components/Button";
+
 export default function AnalyticsError({
   error,
   reset,
@@ -8,10 +11,14 @@ export default function AnalyticsError({
   reset: () => void;
 }) {
   return (
-    <div>
-      <h2>Failed to load analytics</h2>
-      <p>An internal error occurred while fetching your data.</p>
-      <button onClick={reset}>Retry</button>
-    </div>
+    <main>
+      <ErrorDisplay
+        title="Failed to load analytics"
+        message="An internal error occurred while fetching your analytics data. Please try again."
+      />
+      <Button onClick={reset} variant="ghost">
+        Retry
+      </Button>
+    </main>
   );
 }

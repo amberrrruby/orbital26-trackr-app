@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { FileText, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/app/components/Button";
 import { Modal } from "@/app/components/Modal";
-import { Badge } from "@/app/components/Badge";
+import { ApplicationStatusBadge } from "@/app/components/ApplicationStatusBadge";
 import { useToast } from "@/app/components/Toast";
 
 type Props = {
@@ -64,7 +64,7 @@ export default function ResumeDetailsClient({
 
         <div className={styles.actions}>
           <Link href={`/resumes/${resume.id}/edit`}>
-            <Button variant="outline">
+            <Button variant="secondary">
               <div className={styles.actionButton}>
                 <Pencil className={styles.actionIcon} />
                 <p>Edit</p>
@@ -152,7 +152,9 @@ export default function ResumeDetailsClient({
                         </span>
                       </div>
 
-                      <Badge variant="accent">{app.status}</Badge>
+                      <div className={styles.applicationBadge}>
+                        <ApplicationStatusBadge status={app.status} />
+                      </div>
                     </Link>
                   </li>
                 ))}

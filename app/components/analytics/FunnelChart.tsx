@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
   LabelList,
   Tooltip,
+  Cell,
 } from "recharts";
 
 export default function AnalyticsFunnelChart({
@@ -14,17 +15,73 @@ export default function AnalyticsFunnelChart({
 }: {
   data: FunnelMetrics;
 }) {
+  const COLORS = [
+    "var(--chart-blue-1)",
+    "var(--chart-blue-2)",
+    "var(--chart-blue-3)",
+    "var(--chart-blue-4)",
+  ];
+
   const chartData = [
-    { name: "Submitted", value: data.submitted },
-    { name: "Progressed", value: data.progressedBeyondApplied },
-    { name: "Reached Interview", value: data.reachedInterview },
-    { name: "Received Offer", value: data.reachedOffer },
+    {
+      name: "Submitted",
+      value: data.submitted,
+      label: `Submitted: ${data.submitted}`,
+    },
+    {
+      name: "Progressed beyond Applied",
+      value: data.progressedBeyondApplied,
+      label: `Progressed: ${data.progressedBeyondApplied}`,
+    },
+    {
+      name: "Reached Interview",
+      value: data.reachedInterview,
+      label: `Interview: ${data.reachedInterview}`,
+    },
+    {
+      name: "Received Offer",
+      value: data.reachedOffer,
+      label: `Offer: ${data.reachedOffer}`,
+    },
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={280}>
       <FunnelChart>
-        <Tooltip />
+        <defs>
+          {COLORS.map((color, i) => (
+            <linearGradient
+              key={i}
+              id={`funnelGradient-${i}`}
+              x1="0"
+              y1="0"
+              x2="1"
+              y2="1"
+            >
+              <stop offset="0%" stopColor={color} />
+              <stop offset="100%" stopColor={color} />
+            </linearGradient>
+          ))}
+        </defs>
+
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--chart-tooltip-bg)",
+            border: "1px solid var(--chart-tooltip-border)",
+            borderRadius: "var(--radius-md)",
+            boxShadow: "var(--shadow-md)",
+            fontSize: "0.8rem",
+          }}
+          labelStyle={{
+            color: "var(--chart-tooltip-label)",
+            fontWeight: "var(--weight-medium)",
+            marginBottom: "var(--space-1)",
+          }}
+          itemStyle={{
+            color: "var(--chart-tooltip-value)",
+            fontWeight: "var(--weight-medium)",
+          }}
+        />
         <Funnel
           dataKey="value"
           nameKey="name"
@@ -32,7 +89,22 @@ export default function AnalyticsFunnelChart({
           lastShapeType="rectangle"
           isAnimationActive={true}
         >
-          <LabelList dataKey="name" position="right" />
+          {chartData.map((_, i) => (
+            <Cell
+              key={i}
+              fill={`url(#funnelGradient-${i})`}
+              stroke="var(--chart-funnel-stroke)"
+            />
+          ))}
+          <LabelList
+            dataKey="label"
+            position="inside"
+            style={{
+              fontSize: "0.75rem",
+              fill: "var(--color-text-inverse)",
+              fontWeight: "600",
+            }}
+          />
         </Funnel>
       </FunnelChart>
     </ResponsiveContainer>

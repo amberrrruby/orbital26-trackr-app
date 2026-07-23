@@ -9,6 +9,7 @@ import SourceBreakdownChart from "@/app/components/analytics/SourceBreakdownChar
 import { AnalyticsData } from "@/lib/analytics-types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { FileText } from "lucide-react";
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -36,6 +37,7 @@ vi.mock("recharts", () => ({
     <div>{children}</div>
   ),
   Bar: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Cell: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Line: () => null,
   XAxis: () => null,
   YAxis: () => null,
@@ -46,20 +48,33 @@ vi.mock("recharts", () => ({
 describe("InsightsCard", () => {
   it("renders title and middle", () => {
     render(
-      <InsightsCard title="Best source" middle="LinkedIn" bottom={null} />,
+      <InsightsCard
+        icon={FileText} // just an icon to compile; since it's hardcoded, hence not tested
+        title="Best source"
+        middle="LinkedIn"
+        bottom={null}
+      />,
     );
     expect(screen.getByText("Best source")).toBeInTheDocument();
     expect(screen.getByText("LinkedIn")).toBeInTheDocument();
   });
 
   it("renders - when middle is null", () => {
-    render(<InsightsCard title="Best source" middle={null} bottom={null} />);
+    render(
+      <InsightsCard
+        icon={FileText}
+        title="Best source"
+        middle={null}
+        bottom={null}
+      />,
+    );
     expect(screen.getByText("-")).toBeInTheDocument();
   });
 
   it("renders bottom when provided", () => {
     render(
       <InsightsCard
+        icon={FileText}
         title="Best source"
         middle="LinkedIn"
         bottom="Response Rate: 36%"
@@ -70,7 +85,12 @@ describe("InsightsCard", () => {
 
   it("omits bottom when not provided", () => {
     render(
-      <InsightsCard title="Best source" middle="LinkedIn" bottom={null} />,
+      <InsightsCard
+        icon={FileText}
+        title="Best source"
+        middle="LinkedIn"
+        bottom={null}
+      />,
     );
     expect(screen.queryByText(/response rate/i)).not.toBeInTheDocument();
   });
@@ -165,16 +185,6 @@ describe("FunnelSection", () => {
     expect(screen.getByText("Funnel Metrics")).toBeInTheDocument();
   });
 
-  it("renders Conversion Metrics heading", () => {
-    render(
-      <FunnelSection
-        funnelMetrics={funnelMetrics}
-        conversionMetrics={conversionMetrics}
-      />,
-    );
-    expect(screen.getByText("Conversion Metrics")).toBeInTheDocument();
-  });
-
   it("renders a ConversionMetricCard for each conversion metric", () => {
     render(
       <FunnelSection
@@ -182,11 +192,9 @@ describe("FunnelSection", () => {
         conversionMetrics={conversionMetrics}
       />,
     );
-    expect(screen.getByText("Submitted to Progressed")).toBeInTheDocument();
-    expect(screen.getByText("OA to Interview conversion")).toBeInTheDocument();
-    expect(
-      screen.getByText("Interview to Offer conversion"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Submitted → Progressed")).toBeInTheDocument();
+    expect(screen.getByText("OA/ Assessment → Interview")).toBeInTheDocument();
+    expect(screen.getByText("Interview → Offer")).toBeInTheDocument();
   });
 
   it("renders - for null conversion metrics", () => {

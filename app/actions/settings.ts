@@ -22,6 +22,7 @@ import {
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 const supabaseAdmin = createClient(
   env.NEXT_PUBLIC_SUPABASE_URL,
@@ -72,7 +73,7 @@ export async function changePassword(
     return { ok: false, error: { type: "FAILURE" } };
   }
 
-  redirect(`/settings/account?success=password-updated`);
+  return { ok: true, value: undefined };
 }
 
 export async function changeEmail(
@@ -105,7 +106,8 @@ export async function changeEmail(
     return { ok: false, error: { type: "FAILURE" } };
   }
 
-  redirect(`/settings/account?success=email-updated`);
+  revalidatePath("/layout");
+  return { ok: true, value: undefined };
 }
 
 export async function editProfile(
@@ -127,13 +129,19 @@ export async function editProfile(
     data: { name },
   } = parseResult;
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { name },
-  });
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { name },
+    });
+  } catch {
+    return { ok: false, error: { type: "FAILURE" } };
+  }
 
+  revalidatePath("/layout");
+  revalidatePath("/settings/profile");
   // Only a boolean `true` here because the page only does one thing, which is edit profile information
-  redirect(`/settings/profile?success=true`);
+  return { ok: true, value: undefined };
 }
 
 export async function getReminderSettings(): Promise<
@@ -193,10 +201,9 @@ export async function updateReminderSettings(
         settings: parseResult.data,
       },
     });
+    revalidatePath("/settings/profile");
+    return { ok: true, value: undefined };
   } catch {
     return { ok: false, error: { type: "FAILURE" } };
   }
-
-  // Only a boolean `true` here because the page only does one thing, which is edit profile information
-  redirect(`/settings/profile?success=true`);
 }

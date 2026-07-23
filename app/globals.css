@@ -63,17 +63,17 @@
   --shadow-xl: 0 16px 56px rgba(0, 0, 0, 0.6);
 
   /* Status Colors */
-  --status-wishlist: #f59e0b;
-  --status-wishlist-subtle: rgba(245, 158, 11, 0.12);
-  --status-wishlist-border: rgba(245, 158, 11, 0.28);
+  --status-wishlist: #22d3ee;
+  --status-wishlist-subtle: rgba(34, 211, 238, 0.12);
+  --status-wishlist-border: rgba(34, 211, 238, 0.28);
 
   --status-applied: #489df1;
   --status-applied-subtle: rgba(72, 157, 241, 0.12);
   --status-applied-border: rgba(72, 157, 241, 0.28);
 
-  --status-assessment: #22d3ee;
-  --status-assessment-subtle: rgba(34, 211, 238, 0.12);
-  --status-assessment-border: rgba(34, 211, 238, 0.28);
+  --status-assessment: #f59e0b;
+  --status-assessment-subtle: rgba(245, 158, 11, 0.12);
+  --status-assessment-border: rgba(245, 158, 11, 0.28);
 
   --status-interview: #a78bfa;
   --status-interview-subtle: rgba(167, 139, 250, 0.12);
@@ -86,6 +86,19 @@
   --status-rejected: #e05555;
   --status-rejected-subtle: rgba(224, 85, 85, 0.12);
   --status-rejected-border: rgba(224, 85, 85, 0.28);
+
+  /* Chart Colors */
+  --chart-blue-1: #1d4ed8;
+  --chart-blue-2: #2563eb;
+  --chart-blue-3: #3b82f6;
+  --chart-blue-4: #60a5fa;
+
+  --chart-funnel-stroke: rgba(248, 250, 252, 0.2);
+
+  --chart-tooltip-bg: #f8fafc;
+  --chart-tooltip-border: rgba(15, 23, 42, 0.12);
+  --chart-tooltip-label: #111827;
+  --chart-tooltip-value: var(--chart-blue-4);
 }
 
 /* ── Light theme ────────────────────────────────────────────── */
@@ -132,17 +145,17 @@
   --shadow-xl: 0 16px 56px rgba(0, 0, 0, 0.15);
 
   /* Status Colors */
-  --status-wishlist: #b45309;
-  --status-wishlist-subtle: rgba(180, 83, 9, 0.1);
-  --status-wishlist-border: rgba(180, 83, 9, 0.22);
+  --status-wishlist: #0e7490;
+  --status-wishlist-subtle: rgba(14, 116, 144, 0.1);
+  --status-wishlist-border: rgba(14, 116, 144, 0.22);
 
   --status-applied: #005bd1;
   --status-applied-subtle: rgba(0, 91, 209, 0.1);
   --status-applied-border: rgba(0, 91, 209, 0.22);
 
-  --status-assessment: #0e7490;
-  --status-assessment-subtle: rgba(14, 116, 144, 0.1);
-  --status-assessment-border: rgba(14, 116, 144, 0.22);
+  --status-assessment: #cf610d;
+  --status-assessment-subtle: rgba(180, 83, 9, 0.1);
+  --status-assessment-border: rgba(180, 83, 9, 0.22);
 
   --status-interview: #6d28d9;
   --status-interview-subtle: rgba(109, 40, 217, 0.1);
@@ -155,6 +168,19 @@
   --status-rejected: #c93535;
   --status-rejected-subtle: rgba(201, 53, 53, 0.1);
   --status-rejected-border: rgba(201, 53, 53, 0.22);
+
+  /* Chart Colors */
+  --chart-blue-1: #2563eb;
+  --chart-blue-2: #3b82f6;
+  --chart-blue-3: #60a5fa;
+  --chart-blue-4: #93c5fd;
+
+  --chart-funnel-stroke: rgba(30, 64, 175, 0.2);
+
+  --chart-tooltip-bg: #1e293b;
+  --chart-tooltip-border: rgba(248, 250, 252, 0.12);
+  --chart-tooltip-label: #f8fafc;
+  --chart-tooltip-value: var(--color-accent);
 }
 
 /* ── Theme-invariant tokens ─────────────────────────────────── */

@@ -4,6 +4,7 @@ import EditProfileForm from "@/app/(authenticated)/settings/profile/EditProfileF
 import type { User } from "@/lib/generated/client";
 import userEvent from "@testing-library/user-event";
 import { editProfile } from "@/app/actions/settings";
+import { ToastProvider } from "@/app/components/Toast";
 
 vi.mock("@/app/actions/settings", () => ({
   editProfile: vi.fn(),
@@ -27,7 +28,11 @@ const mockUser: User = {
 
 describe("Settings page", () => {
   test("save button is disabled initially", () => {
-    render(<EditProfileForm userProfile={mockUser} userSettings={settings} />);
+    render(
+      <ToastProvider>
+        <EditProfileForm userProfile={mockUser} userSettings={settings} />
+      </ToastProvider>,
+    );
 
     expect(
       screen.getByRole("button", { name: /save changes/i }),
@@ -37,7 +42,11 @@ describe("Settings page", () => {
   test("save button becomes enabled after changing display name", async () => {
     const u = userEvent.setup();
 
-    render(<EditProfileForm userProfile={mockUser} userSettings={settings} />);
+    render(
+      <ToastProvider>
+        <EditProfileForm userProfile={mockUser} userSettings={settings} />
+      </ToastProvider>,
+    );
 
     const input = screen.getByLabelText(/display name/i);
 
@@ -58,7 +67,11 @@ describe("Settings page", () => {
   test("save button becomes disabled again when reverted", async () => {
     const u = userEvent.setup();
 
-    render(<EditProfileForm userProfile={mockUser} userSettings={settings} />);
+    render(
+      <ToastProvider>
+        <EditProfileForm userProfile={mockUser} userSettings={settings} />
+      </ToastProvider>,
+    );
 
     const input = screen.getByLabelText(/display name/i);
 
@@ -83,7 +96,11 @@ describe("Settings page", () => {
 
     const u = userEvent.setup();
 
-    render(<EditProfileForm userProfile={mockUser} userSettings={settings} />);
+    render(
+      <ToastProvider>
+        <EditProfileForm userProfile={mockUser} userSettings={settings} />
+      </ToastProvider>,
+    );
 
     await u.clear(screen.getByLabelText(/display name/i));
     await u.type(screen.getByLabelText(/display name/i), "Someone2");

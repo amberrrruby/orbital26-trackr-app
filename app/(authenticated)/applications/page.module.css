@@ -23,3 +23,14 @@
   justify-content: flex-end;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .addButton {
+    justify-content: flex-start;
+    margin-top: var(--space-4);
+  }
+}
