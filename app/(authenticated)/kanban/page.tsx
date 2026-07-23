@@ -5,14 +5,7 @@ import Link from "next/link";
 import { Button } from "@/app/components/Button";
 import ErrorDisplay from "@/app/components/ErrorDisplay";
 
-function wait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 export default async function KanbanPage() {
-  await wait(3000);
   const result = await getApplications();
 
   if (!result.ok) {

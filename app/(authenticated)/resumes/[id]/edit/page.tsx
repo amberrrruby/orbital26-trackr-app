@@ -4,6 +4,7 @@ import { requireUserOrRedirectLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import { FileText } from "lucide-react";
+import Link from "next/link.js";
 import styles from "./page.module.css";
 
 type Props = {
@@ -12,7 +13,14 @@ type Props = {
   }>;
 };
 
+function wait(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export default async function EditResumeDetailPage({ params }: Props) {
+  await wait(3000);
   const { id } = await params;
   const userId = await requireUserOrRedirectLogin();
   const supabase = await createSupabaseServerClient();
@@ -38,6 +46,8 @@ export default async function EditResumeDetailPage({ params }: Props) {
 
   return (
     <main className={styles.page}>
+      <Link href={`/resumes/${resume.id}`}>← Back to Resume Details Page</Link>
+
       <div className={styles.header}>
         <h1>Edit resume details</h1>
         <p>Modify resume details or upload a new version.</p>

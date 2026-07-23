@@ -9,10 +9,10 @@ export default async function AddNewResumePage() {
     <main className={styles.page}>
       <Link href="/resumes">← Back to Resume Gallery</Link>
 
-      <div className={styles.header}>
+      <header className={styles.header}>
         <h1>Add Resume</h1>
         <p>Upload and fill in the details of a new resume.</p>
-      </div>
+      </header>
 
       <ResumeFormComponent userId={userId} />
     </main>
