@@ -6,7 +6,6 @@ const REMINDER_CARDS = Array.from({ length: 2 });
 const TABLE_ROWS = Array.from({ length: 5 });
 const LEGEND = Array.from({ length: 6 });
 const REMINDER_GROUPS = ["Overdue", "Today", "Upcoming Alerts"] as const;
-const TABLE_COLUMNS = Array.from({ length: 5 });
 
 function SummaryCardSkeleton() {
   return (
