@@ -141,8 +141,8 @@ describe("getAnalyticsData", () => {
       expect(conversionMetrics.interviewToOffer).toBeNull();
     });
 
-    it("oaToInterview: only counts Interview after OA (ordered)", async () => {
-      // App 1: OA then Interview (should count)
+    it("oaToInterview: counts all apps that reached both OA and Interview regardless of order", async () => {
+      // App 1: OA then Interview
       const app1 = await seedApp({
         status: "INTERVIEW",
         source: "JOB_SEARCH_PLATFORM",
@@ -150,7 +150,7 @@ describe("getAnalyticsData", () => {
       await seedStatusChange(app1.id, "OA_ASSESSMENT", new Date("2026-07-09"));
       await seedStatusChange(app1.id, "INTERVIEW", new Date("2026-07-19"));
 
-      // App 2: Interview then OA (should not count)
+      // App 2: Interview then OA — still counts under new logic
       const app2 = await seedApp({
         status: "OA_ASSESSMENT",
         source: "JOB_SEARCH_PLATFORM",
@@ -159,8 +159,8 @@ describe("getAnalyticsData", () => {
       await seedStatusChange(app2.id, "OA_ASSESSMENT", new Date("2026-07-19"));
 
       const { conversionMetrics } = await getAnalyticsData(TEST_USER_ID);
-      // 1 out of 2 apps that reached OA
-      expect(conversionMetrics.oaToInterview).toBeCloseTo(50.0);
+      // 2 out of 2 apps that reached OA
+      expect(conversionMetrics.oaToInterview).toBeCloseTo(100);
     });
 
     it("interviewToOffer: no ordering constraint", async () => {

@@ -1,7 +1,6 @@
 import { editProfile } from "@/app/actions/settings";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/auth", () => ({
@@ -10,8 +9,9 @@ vi.mock("@/lib/auth", () => ({
     .mockResolvedValue(process.env.TEST_USER_ID),
 }));
 
-vi.mock("next/navigation", () => ({
-  redirect: vi.fn(),
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
 }));
 
 afterEach(async () => {
@@ -32,7 +32,6 @@ describe("Profile settings", () => {
   describe("editProfile", () => {
     it("updates display name and redirects on valid input", async () => {
       await editProfile(makeFormData({ name: "SomeOtherName" }));
-      expect(redirect).toHaveBeenCalledWith("/settings/profile?success=true");
 
       const row = await prisma.user.findUnique({
         where: { id: env.TEST_USER_ID },

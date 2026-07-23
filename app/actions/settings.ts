@@ -106,7 +106,7 @@ export async function changeEmail(
     return { ok: false, error: { type: "FAILURE" } };
   }
 
-  revalidatePath("layout");
+  revalidatePath("/layout");
   return { ok: true, value: undefined };
 }
 
@@ -138,7 +138,7 @@ export async function editProfile(
     return { ok: false, error: { type: "FAILURE" } };
   }
 
-  revalidatePath("layout");
+  revalidatePath("/layout");
   revalidatePath("/settings/profile");
   // Only a boolean `true` here because the page only does one thing, which is edit profile information
   return { ok: true, value: undefined };
